@@ -14,7 +14,10 @@ jobs:
     name: Build Distribution
     runs-on: ubuntu-latest
     env:
-      CI_COMMIT_MESSAGE: Continuous Integration - Build Distribution
+      CI_COMMIT_MESSAGE: |
+        Continuous Integration - Build Distribution
+
+        [skip codacy]
       CI_COMMIT_AUTHOR: Continuous Integration
 
     strategy:
