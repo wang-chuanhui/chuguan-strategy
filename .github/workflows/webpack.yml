@@ -3,11 +3,9 @@ name: Build distribution with Webpack
 on:
   push:
     branches: [ "main" ]
-    # Ignore changes in folders that are affected by the auto commit. (Node.js project)
-    paths-ignore:
-      - 'dist/**'
-  # pull_request:
-  #  branches: [ "main" ]
+    paths:
+      - 'src/**'
+      - 'webpack.config.js'
 
 jobs:
   build:
