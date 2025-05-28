@@ -13,23 +13,23 @@ theme:
   icon:
     logo: material/mushroom
   palette:
-    - media: "(prefers-color-scheme: light)"
+    - media: '(prefers-color-scheme: light)'
       scheme: default
       primary: blue
       accent: light blue
       toggle:
         icon: material/brightness-7
         name: Switch to dark mode
-    - media: "(prefers-color-scheme: dark)"
+    - media: '(prefers-color-scheme: dark)'
       scheme: slate
       primary: blue
       accent: light blue
       toggle:
         icon: material/brightness-4
         name: Switch to light mode
-    - media: "(prefers-color-scheme)" # This covers both light and dark system preferences
+    - media: '(prefers-color-scheme)'
       toggle:
-        icon: material/brightness-auto # Icon for automatic mode
+        icon: material/brightness-auto
         name: Switch to light/dark mode (auto)
   features:
     - navigation.tabs
