@@ -2,6 +2,7 @@
 
 - [Bug Fix](?expand=1&template=bugfix.md)
 - [Feature](?expand=1&template=feature.md)
+- [Documentation](?expand=1&template=documentation.md)
 
 > [!NOTE]
 > The above types do not apply to any translation itself.
