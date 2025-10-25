@@ -210,15 +210,14 @@ class HomeView extends AbstractView {
     cardConfigurations.push(
       ...Registry.entities
         .filter((entity) => entity.entity_id.startsWith('person.'))
-        .map((person) => new PersonCard(person).getCard()),
+        .map((person) => new PersonCard(person).getCard())
     );
 
     return {
       type: 'vertical-stack',
       cards: stackHorizontal(
         cardConfigurations,
-        Registry.strategyOptions.home_view.stack_count['persons'] ??
-          Registry.strategyOptions.home_view.stack_count['_'],
+        Registry.strategyOptions.home_view.stack_count['persons'] ?? Registry.strategyOptions.home_view.stack_count['_']
       ),
     };
   }
@@ -258,7 +257,7 @@ class HomeView extends AbstractView {
         new AreaCard(area, {
           ...Registry.strategyOptions.areas['_'],
           ...Registry.strategyOptions.areas[area.area_id],
-        }).getCard(),
+        }).getCard()
       );
     }
 

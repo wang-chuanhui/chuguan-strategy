@@ -200,7 +200,7 @@ class Registry {
       Registry.strategyOptions.views = Object.fromEntries(
         entries.sort(([_, a], [__, b]) => {
           return (a.order ?? Infinity) - (b.order ?? Infinity) || (a.title ?? '').localeCompare(b.title ?? '');
-        }),
+        })
       ) as Record<SupportedViews, StrategyViewConfig>;
     };
 
@@ -216,7 +216,7 @@ class Registry {
           }
 
           return 0; // Maintain the original order when none or only one item is sortable.
-        }),
+        })
       ) as { [K in SupportedDomains]: K extends '_' ? AllDomainsConfig : SingleDomainConfig };
     };
 
@@ -256,7 +256,7 @@ class Registry {
         .whereDomain(domain)
         .where((entity) => !entity.entity_id.endsWith('_stateful_scene') && entity.platform !== 'group')
         .toList()
-        .map((entity) => `states['${entity.entity_id}']`),
+        .map((entity) => `states['${entity.entity_id}']`)
     );
 
     // noinspection SpellCheckingInspection

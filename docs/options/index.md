@@ -1,6 +1,6 @@
 # ⚙️ Overview
 
-The dashboard can be highly customized using the `options` parameter in the yaml configuration of your dashboard.
+The dashboard can be highly customized using the `options` parameter in the YAML configuration of your dashboard.
 
    ```yaml
    strategy:
