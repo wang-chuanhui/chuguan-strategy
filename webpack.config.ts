@@ -21,6 +21,13 @@ const config: webpack.Configuration = {
         use: 'ts-loader',
         exclude: /node_modules/,
       },
+      {
+        test: /\.(png|jpe?g|gif|svg)$/i,
+        type: 'asset/resource',
+        generator: {
+          filename: '[name].[ext]', // 输出到 dist/images/
+        },
+      }
     ],
   },
   plugins: [

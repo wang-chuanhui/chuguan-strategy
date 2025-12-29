@@ -1,6 +1,6 @@
 import { Registry } from "./Registry"
 import { LovelaceViewBackgroundConfig } from "./types/homeassistant/data/lovelace/config/view"
-
+import img from './view_background.jpg'
 
 const checked_urls: Record<string, boolean> = {}
 
@@ -38,6 +38,9 @@ export function gen_background(id: string): LovelaceViewBackgroundConfig {
     const exists = url_exists(bg_image)
     if (!exists) {
         bg_image = '/local/chuguan-strategy/view_background.jpg'
+    }
+    if (!url_exists(bg_image)) {
+        bg_image = img
     }
     return {
         image: bg_image,

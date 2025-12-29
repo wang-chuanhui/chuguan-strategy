@@ -1,7 +1,7 @@
 export const NOTIFICATIONS = [
   {
     storageKey: 'chips_deprecation',
-    title: 'ChuGUan Strategy',
+    title: 'ChuGuan Strategy',
     message:
       '## Deprecation Notice\n' +
       'As of v3.0.0, chips are replaced by badges.\n' +
