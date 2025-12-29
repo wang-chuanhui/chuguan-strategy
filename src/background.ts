@@ -30,6 +30,7 @@ function url_exists(url: string, method = 'HEAD') {
 export function gen_background(id: string): LovelaceViewBackgroundConfig {
     const options = Registry.strategyOptions
     let view_background = options.background_images && options.background_images[id]
+    img
     let bg_image = (
         view_background ||
         options.background_image ||
