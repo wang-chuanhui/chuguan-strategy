@@ -78,5 +78,9 @@
     "closing": "Closing",
     "stopped": "Stopped",
     "unclosed": "Unclosed"
+  },
+  "button": {
+    "all_buttons": "All Buttons",
+    "buttons": "Buttons"
   }
 }

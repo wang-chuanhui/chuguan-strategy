@@ -2,6 +2,7 @@
 
 import { EntityRegistryEntry } from '../types/homeassistant/data/entity_registry';
 import { ClimateCardConfig } from '../types/lovelace-mushroom/cards/climate-card-config';
+import { RegistryEntry } from '../types/strategy/strategy-generics';
 import AbstractCard from './AbstractCard';
 
 /**
@@ -15,8 +16,10 @@ class ClimateCard extends AbstractCard {
     return {
       type: 'custom:mushroom-climate-card',
       icon: undefined,
+      layout: 'horizontal',
       hvac_modes: ['off', 'cool', 'heat', 'fan_only'],
       show_temperature_control: true,
+      collapsible_controls: true,
     };
   }
 
@@ -30,6 +33,9 @@ class ClimateCard extends AbstractCard {
     super(entity);
 
     this.configuration = { ...this.configuration, ...ClimateCard.getDefaultConfig(), ...customConfiguration };
+  }
+  is_card_active(entity: RegistryEntry) {
+    return this.is_generic_card_active(entity, '!=', 'off')
   }
 }
 

@@ -2,6 +2,7 @@
 
 import { EntityRegistryEntry } from '../types/homeassistant/data/entity_registry';
 import { CoverCardConfig } from '../types/lovelace-mushroom/cards/cover-card-config';
+import { RegistryEntry } from '../types/strategy/strategy-generics';
 import AbstractCard from './AbstractCard';
 
 /**
@@ -15,6 +16,7 @@ class CoverCard extends AbstractCard {
     return {
       type: 'custom:mushroom-cover-card',
       icon: undefined,
+      layout: 'horizontal',
       show_buttons_control: true,
       show_position_control: true,
       show_tilt_position_control: true,
@@ -31,6 +33,9 @@ class CoverCard extends AbstractCard {
     super(entity);
 
     this.configuration = { ...this.configuration, ...CoverCard.getDefaultConfig(), ...customConfiguration };
+  }
+  is_card_active(entity: RegistryEntry) {
+    return this.is_generic_card_active(entity, '!=', 'closed')
   }
 }
 

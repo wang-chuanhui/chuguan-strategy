@@ -1,6 +1,6 @@
 {
-  "name": "Mushroom Dashboard Strategy",
+  "name": "Chuguan Dashboard Strategy",
   "render_readme": true,
-  "filename": "mushroom-strategy.js",
+  "filename": "chuguan-strategy.js",
   "homeassistant": "2024.7.0"
 }

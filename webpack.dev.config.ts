@@ -5,9 +5,9 @@ import webpack from 'webpack';
 
 const config: webpack.Configuration = {
   mode: 'development',
-  entry: './src/mushroom-strategy.ts',
+  entry: './src/chuguan-strategy.ts',
   output: {
-    filename: 'mushroom-strategy.js',
+    filename: 'chuguan-strategy.js',
     path: path.resolve(__dirname, 'dist'),
   },
   devtool: 'source-map',

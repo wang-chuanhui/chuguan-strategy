@@ -1,0 +1,86 @@
+{
+  "camera": {
+    "all_cameras": "所有摄像头",
+    "cameras": "摄像头"
+  },
+  "climate": {
+    "all_climates": "所有空调",
+    "climates": "空调"
+  },
+  "cover": {
+    "all_covers": "所有窗帘",
+    "covers": "窗帘"
+  },
+  "fan": {
+    "all_fans": "所有风扇",
+    "fans": "风扇"
+  },
+  "generic": {
+    "all": "所有",
+    "areas": "区域",
+    "busy": "工作",
+    "good_afternoon": "下午好",
+    "good_evening": "晚上好",
+    "good_morning": "早上好",
+    "hello": "你好",
+    "home": "家庭",
+    "miscellaneous": "杂项",
+    "numbers": "数字",
+    "off": "关闭",
+    "on": "开启",
+    "open": "打开",
+    "unavailable": "不可用",
+    "unclosed": "未关闭",
+    "undisclosed": "其他",
+    "unknown": "未知"
+  },
+  "input_select": {
+    "input_selects": "输入选择器"
+  },
+  "light": {
+    "all_lights": "所有灯",
+    "lights": "灯"
+  },
+  "lock": {
+    "all_locks": "所有锁",
+    "locked": "已锁",
+    "locks": "锁",
+    "unlocked": "开锁"
+  },
+  "media_player": {
+    "media_players": "媒体播放器"
+  },
+  "scene": {
+    "scenes": "场景"
+  },
+  "select": {
+    "selects": "选择器"
+  },
+  "sensor": {
+    "binary": "二进制传感器",
+    "sensors": "传感器"
+  },
+  "switch": {
+    "all_switches": "所有开关",
+    "chip_confirmation": "警告：此操作将关闭所有开关。是否继续？",
+    "switches": "开关"
+  },
+  "vacuum": {
+    "all_vacuums": "所有吸尘器",
+    "vacuums": "吸尘器"
+  },
+  "valve": {
+    "all_valves": "所有阀门",
+    "valves": "阀门",
+    "open": "打开",
+    "opening": "打开中",
+    "closed": "关闭",
+    "closing": "关闭中",
+    "stopped": "已停止",
+    "unclosed": "未关闭"
+  },
+  "button": {
+    "all_buttons": "所有按钮",
+    "buttons": "按钮"
+  }
+}

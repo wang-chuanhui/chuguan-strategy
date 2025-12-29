@@ -1,6 +1,8 @@
 // noinspection JSUnusedGlobalSymbols Class is dynamically imported.
 
 import { Registry } from '../Registry';
+import { EntityRegistryEntry } from '../types/homeassistant/data/entity_registry';
+import { ClimateCardConfig } from '../types/lovelace-mushroom/cards/climate-card-config';
 import { CustomHeaderCardConfig } from '../types/strategy/strategy-cards';
 import { SupportedDomains } from '../types/strategy/strategy-generics';
 import { ViewConfig } from '../types/strategy/strategy-views';
@@ -52,6 +54,20 @@ class ClimateView extends AbstractView {
       customConfiguration,
       ClimateView.getViewHeaderCardConfig()
     );
+  }
+
+  protected getSubClassCustomCardConfig(entity: EntityRegistryEntry): ClimateCardConfig | null | undefined {
+    const state = Registry.hassStates[entity.entity_id];
+    if (!state) {
+      return null
+    }
+    const hvac_modes = state.attributes['hvac_modes']
+    if (!hvac_modes) {
+      return null
+    }
+    return {
+      hvac_modes,
+    } as ClimateCardConfig
   }
 }
 

@@ -40,8 +40,8 @@ interface StoredNotification {
  * @see https://www.home-assistant.io/integrations/persistent_notification/
  */
 export class PersistentNotification {
-  private static readonly DEFAULT_NAMESPACE = 'mushroom_strategy';
-  private static readonly DEFAULT_TITLE = 'Mushroom Strategy Notification';
+  private static readonly DEFAULT_NAMESPACE = 'chuguan_strategy';
+  private static readonly DEFAULT_TITLE = 'ChuGuan Strategy Notification';
 
   private readonly hass: HomeAssistant;
   private readonly namespace: string;

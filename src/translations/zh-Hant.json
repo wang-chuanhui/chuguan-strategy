@@ -1,0 +1,86 @@
+{
+  "camera": {
+    "all_cameras": "所有攝像頭",
+    "cameras": "攝像頭"
+  },
+  "climate": {
+    "all_climates": "所有空調",
+    "climates": "空調"
+  },
+  "cover": {
+    "all_covers": "所有窗簾",
+    "covers": "窗簾"
+  },
+  "fan": {
+    "all_fans": "所有風扇",
+    "fans": "風扇"
+  },
+  "generic": {
+    "all": "所有",
+    "areas": "區域",
+    "busy": "工作",
+    "good_afternoon": "下午好",
+    "good_evening": "晚上好",
+    "good_morning": "早上好",
+    "hello": "你好",
+    "home": "家庭",
+    "miscellaneous": "雜項",
+    "numbers": "數字",
+    "off": "關閉",
+    "on": "開啓",
+    "open": "打開",
+    "unavailable": "不可用",
+    "unclosed": "未關閉",
+    "undisclosed": "其他",
+    "unknown": "未知"
+  },
+  "input_select": {
+    "input_selects": "輸入選擇器"
+  },
+  "light": {
+    "all_lights": "所有燈",
+    "lights": "燈"
+  },
+  "lock": {
+    "all_locks": "所有鎖",
+    "locked": "已鎖",
+    "locks": "鎖",
+    "unlocked": "開鎖"
+  },
+  "media_player": {
+    "media_players": "媒體播放器"
+  },
+  "scene": {
+    "scenes": "場景"
+  },
+  "select": {
+    "selects": "選擇器"
+  },
+  "sensor": {
+    "binary": "二進制傳感器",
+    "sensors": "傳感器"
+  },
+  "switch": {
+    "all_switches": "所有開關",
+    "chip_confirmation": "警告：此操作將關閉所有開關。是否繼續？",
+    "switches": "開關"
+  },
+  "vacuum": {
+    "all_vacuums": "所有吸塵器",
+    "vacuums": "吸塵器"
+  },
+  "valve": {
+    "all_valves": "所有閥門",
+    "valves": "閥門",
+    "open": "打開",
+    "opening": "打開中",
+    "closed": "關閉",
+    "closing": "關閉中",
+    "stopped": "已停止",
+    "unclosed": "未關閉"
+  },
+  "button": {
+    "all_buttons": "所有按鈕",
+    "buttons": "按鈕"
+  }
+}

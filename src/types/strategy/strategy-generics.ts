@@ -22,6 +22,7 @@ import { AreaRegistryEntry } from '../homeassistant/data/area_registry';
 const SUPPORTED_DOMAINS = [
   '_',
   'binary_sensor',
+  'button',
   'camera',
   'climate',
   'cover',
@@ -46,6 +47,7 @@ const SUPPORTED_DOMAINS = [
  * This constant array defines the views that are supported by the strategy.
  */
 const SUPPORTED_VIEWS = [
+  'button',
   'camera',
   'climate',
   'cover',
@@ -229,6 +231,8 @@ export interface StrategyConfig {
   };
   views: Record<SupportedViews, StrategyViewConfig>;
   quick_access_cards: LovelaceCardConfig[];
+  background_images?: {[key: string]: string}
+  background_image?: string
 }
 
 /**

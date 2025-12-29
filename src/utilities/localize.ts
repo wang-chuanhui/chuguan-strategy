@@ -3,6 +3,8 @@ import * as en from '../translations/en.json';
 import * as es from '../translations/es.json';
 import * as nl from '../translations/nl.json';
 import * as pt_br from '../translations/pt-BR.json';
+import * as zh_Hans from '../translations/zh-Hans.json';
+import * as zh_Hant from '../translations/zh-Hant.json';
 import { HomeAssistant } from '../types/homeassistant/types';
 import { logMessage, lvlWarn } from './debug';
 
@@ -13,6 +15,8 @@ const languages: Record<string, unknown> = {
   es,
   nl,
   'pt-BR': pt_br,
+  'zh-Hans': zh_Hans,
+  'zh-Hant': zh_Hant,
 };
 
 /** The fallback language if the user-defined language isn't defined */

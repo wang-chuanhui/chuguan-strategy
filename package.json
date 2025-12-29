@@ -1,30 +1,21 @@
 {
-  "name": "mushroom-strategy",
+  "name": "chuguan-strategy",
   "version": "2.5.0",
-  "description": "Automatically generate a dashboard of Mushroom cards.",
+  "description": "Automatically generate a dashboard of Mushroom cards. Based on mushroom-strategy (https://github.com/DigiLive/mushroom-strategy), Copyright (c) 2025 Ferry Cools, BSD-3-Clause",
   "keywords": [
     "dashboard",
     "strategy",
     "mushroom"
   ],
-  "homepage": "https://github.com/DigiLive/mushroom-strategy",
-  "bugs": "https://github.com/DigiLive/mushroom-strategy/issues",
+  "homepage": "https://github.com/wang-chuanhui/chuguan-strategy",
+  "bugs": "https://github.com/wang-chuanhui/chuguan-strategy/issues",
   "license": "MIT",
   "author": {
-    "name": "Ferry Cools"
-  },
-  "contributors": [
-    {
-      "name": "Aalian Khan"
-    }
-  ],
-  "funding": {
-    "type": "github",
-    "url": "https://github.com/sponsors/DigiLive"
+    "name": "wang-chuanhui"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/DigiLive/mushroom-strategy"
+    "url": "https://github.com/wang-chuanhui/chuguan-strategy"
   },
   "dependencies": {
     "deepmerge": "^4"
@@ -58,7 +49,7 @@
     "md:lint:fix": "markdownlint-cli2 \"**/*.md\" \"#node_modules\" \"#dist\" --fix",
     "build-dev": "webpack --config webpack.dev.config.ts",
     "build": "webpack",
-    "bump": "bump --preid alpha package.json package-lock.json README.md ./docs/index.md ./src/mushroom-strategy.ts",
+    "bump": "bump --preid alpha package.json package-lock.json README.md ./docs/index.md ./src/chuguan-strategy.ts",
     "prepare": "is-ci || husky"
   }
 }

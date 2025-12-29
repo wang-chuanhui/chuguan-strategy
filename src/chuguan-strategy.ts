@@ -21,15 +21,12 @@ import { PersistentNotification } from './utilities/PersistentNotification';
 import { HomeAssistant } from './types/homeassistant/types';
 import semver from 'semver/preload';
 import { NOTIFICATIONS } from './notifications';
+import { gen_background } from './background';
 
 /**
- * Mushroom Dashboard Strategy.<br>
- * <br>
- * Mushroom dashboard strategy provides a strategy for Home-Assistant to create a dashboard automatically.<br>
- * The strategy makes use Mushroom and Mini Graph cards to represent your entities.
- *
- * @see https://github.com/DigiLive/mushroom-strategy
+ * Based on mushroom-strategy (https://github.com/DigiLive/mushroom-strategy), Copyright (c) 2025 Ferry Cools, BSD-3-Clause
  */
+
 class MushroomStrategy extends HTMLTemplateElement {
   /**
    * Generate a dashboard.
@@ -60,6 +57,7 @@ class MushroomStrategy extends HTMLTemplateElement {
           const viewConfiguration = await currentView.getView();
 
           if (viewConfiguration.cards.length) {
+            viewConfiguration.background = gen_background(viewName);
             return viewConfiguration;
           }
 
@@ -85,20 +83,27 @@ class MushroomStrategy extends HTMLTemplateElement {
     }
 
     // Subviews for areas
+    const orders = views.map(item => item.order ?? 0)
+    const maxOrder = Math.max(...orders)
+    const areas = Registry.areas.filter(area => {
+      const areaEntities = new RegistryFilter(Registry.entities).whereAreaId(area.area_id).toList();
+      return areaEntities.length > 0
+    })
     views.push(
-      ...Registry.areas.map((area) => ({
+      ...areas.map((area, index) => ({
         title: area.name,
         path: area.area_id,
-        subview: true,
+        subview: false,
         hidden: area.hidden ?? false,
-        order: area.order ?? Infinity,
+        order: area.order ?? maxOrder + index + 1,
         strategy: {
-          type: 'custom:mushroom-strategy',
+          type: 'custom:chuguan-strategy',
           options: { area },
         },
+        background: gen_background(area.area_id)
       }))
     );
-
+    console.log(views)
     return { views };
   }
 
@@ -202,7 +207,7 @@ class MushroomStrategy extends HTMLTemplateElement {
         .not()
         .where((entity) => isSupportedDomain(entity.entity_id.split('.', 1)[0]))
         .toList();
-
+      console.log(miscellaneousEntities)
       if (miscellaneousEntities.length) {
         try {
           const MiscellaneousCard = (await import('./cards/MiscellaneousCard')).default;
@@ -232,7 +237,7 @@ class MushroomStrategy extends HTMLTemplateElement {
         }
       }
     }
-
+    console.log(viewCards)
     return { cards: viewCards };
   }
 
@@ -247,7 +252,7 @@ class MushroomStrategy extends HTMLTemplateElement {
    * @returns A promise that resolves when all notifications have been handled.
    */
   private static async handleNotifications(hass: HomeAssistant): Promise<void> {
-    const notificationManager = new PersistentNotification(hass, 'mushroom_strategy');
+    const notificationManager = new PersistentNotification(hass, 'chuguan_strategy');
     const currentVersion = STRATEGY_VERSION.replace(/^v/, '');
     const version = semver.coerce(currentVersion) || '0.0.0';
 
@@ -265,16 +270,16 @@ class MushroomStrategy extends HTMLTemplateElement {
         })
       );
     } catch (e) {
-      logMessage(lvlError, 'Error while handling persistent notifications for Mushroom Strategy', e);
+      logMessage(lvlError, 'Error while handling persistent notifications for ChuGuan Strategy', e);
     }
   }
 }
 
-customElements.define('ll-strategy-mushroom-strategy', MushroomStrategy);
+customElements.define('ll-strategy-chuguan-strategy', MushroomStrategy);
 
 const STRATEGY_VERSION = 'v2.5.0';
 console.info(
-  '%c Mushroom Strategy %c '.concat(STRATEGY_VERSION, ' '),
+  '%c ChuGuan Strategy %c '.concat(STRATEGY_VERSION, ' '),
   'color: white; background: coral; font-weight: 700;',
   'color: coral; background: white; font-weight: 700;'
 );

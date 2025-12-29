@@ -1,8 +1,10 @@
 // noinspection JSUnusedGlobalSymbols Class is dynamically imported.
 
 import { Registry } from '../Registry';
+import { EntityRegistryEntry } from '../types/homeassistant/data/entity_registry';
+import { CoverCardConfig } from '../types/lovelace-mushroom/cards/cover-card-config';
 import { CustomHeaderCardConfig } from '../types/strategy/strategy-cards';
-import { SupportedDomains } from '../types/strategy/strategy-generics';
+import { CustomCardConfig, SupportedDomains } from '../types/strategy/strategy-generics';
 import { ViewConfig } from '../types/strategy/strategy-views';
 import { localize } from '../utilities/localize';
 import AbstractView from './AbstractView';
@@ -53,6 +55,24 @@ class CoverView extends AbstractView {
 
     this.initializeViewConfig(CoverView.getDefaultConfig(), customConfiguration, CoverView.getViewHeaderCardConfig());
   }
+
+    protected getSubClassCustomCardConfig(entity: EntityRegistryEntry): CoverCardConfig | null | undefined {
+      const state = Registry.hassStates[entity.entity_id];
+      if (!state) {
+        return null
+      }
+      const supported_features =  state.attributes.supported_features
+      if (!supported_features) {
+        return null
+      }
+      const hasPosition = (supported_features & 4) !== 0
+      const hasTilt = (supported_features & 128) !== 0
+      return {
+        show_buttons_control: true, 
+        show_position_control: hasPosition,
+        show_tilt_position_control: hasTilt
+      } as CoverCardConfig
+    }
 }
 
 export default CoverView;

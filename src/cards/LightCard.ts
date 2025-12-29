@@ -2,7 +2,7 @@
 
 import { EntityRegistryEntry } from '../types/homeassistant/data/entity_registry';
 import { LightCardConfig } from '../types/lovelace-mushroom/cards/light-card-config';
-import { isCallServiceActionConfig } from '../types/strategy/strategy-generics';
+import { isCallServiceActionConfig, RegistryEntry } from '../types/strategy/strategy-generics';
 import AbstractCard from './AbstractCard';
 
 /**
@@ -16,6 +16,7 @@ class LightCard extends AbstractCard {
     return {
       type: 'custom:mushroom-light-card',
       icon: undefined,
+      layout: 'default',
       show_brightness_control: true,
       show_color_control: true,
       show_color_temp_control: true,
@@ -49,6 +50,10 @@ class LightCard extends AbstractCard {
     }
 
     this.configuration = { ...this.configuration, ...configuration, ...customConfiguration };
+  }
+
+  is_card_active(entity: RegistryEntry) {
+    return this.is_generic_card_active(entity)
   }
 }
 

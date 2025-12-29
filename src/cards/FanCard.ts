@@ -2,6 +2,7 @@
 
 import { EntityRegistryEntry } from '../types/homeassistant/data/entity_registry';
 import { FanCardConfig } from '../types/lovelace-mushroom/cards/fan-card-config';
+import { RegistryEntry } from '../types/strategy/strategy-generics';
 import AbstractCard from './AbstractCard';
 
 /**
@@ -31,6 +32,9 @@ class FanCard extends AbstractCard {
     super(entity);
 
     this.configuration = { ...this.configuration, ...FanCard.getDefaultConfig(), ...customConfiguration };
+  }
+  is_card_active(entity: RegistryEntry) {
+    return this.is_generic_card_active(entity)
   }
 }
 

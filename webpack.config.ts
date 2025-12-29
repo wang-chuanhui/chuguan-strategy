@@ -5,10 +5,10 @@ import webpack from 'webpack';
 
 const config: webpack.Configuration = {
   mode: 'production',
-  entry: './src/mushroom-strategy.ts',
+  entry: './src/chuguan-strategy.ts',
   output: {
     clean: true,
-    filename: 'mushroom-strategy.js',
+    filename: 'chuguan-strategy.js',
     path: path.resolve(__dirname, 'dist'),
   },
   resolve: {

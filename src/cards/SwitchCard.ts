@@ -2,6 +2,7 @@
 
 import { EntityRegistryEntry } from '../types/homeassistant/data/entity_registry';
 import { EntityCardConfig } from '../types/lovelace-mushroom/cards/entity-card-config';
+import { RegistryEntry } from '../types/strategy/strategy-generics';
 import AbstractCard from './AbstractCard';
 
 /**
@@ -32,6 +33,11 @@ class SwitchCard extends AbstractCard {
 
     this.configuration = { ...this.configuration, ...SwitchCard.getDefaultConfig(), ...customConfiguration };
   }
+
+  is_card_active(entity: RegistryEntry) {
+    return this.is_generic_card_active(entity)
+  }
+
 }
 
 export default SwitchCard;

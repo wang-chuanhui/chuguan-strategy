@@ -50,9 +50,37 @@ abstract class AbstractCard {
    */
   getCard(): AbstractCardConfig {
     return {
+      card_mod: this.is_card_active(this.entity),
       ...this.configuration,
       entity: 'entity_id' in this.entity ? this.entity.entity_id : undefined,
     };
+  }
+
+  is_card_active(entity: RegistryEntry): any {
+    return null
+  }
+
+  is_generic_card_active(entity: RegistryEntry, cmp = '==', state = 'on', ha_card_extra = '') {
+    // console.info('IS CARD ACTIVE', entity.entity_id, cmp, state)
+    const style = {
+      '.': `ha-card {
+                  background-color: {{ 'white'
+                                       if states(config.entity)${cmp}'${state}' else
+                                       'rgba(130, 130, 130, 0.5)' }};
+                  backdrop-filter: blur(5px);
+                }${ha_card_extra}`,
+      'mushroom-state-info$': `.container { {{
+                                     '--card-primary-color: black;
+                                      --card-secondary-color: grey;'
+                                       if states(config.entity)${cmp}'${state}' else
+                                     '--card-primary-color: white;
+                                      --card-secondary-color: lightgrey;'
+                                   }} }`
+    }
+
+    return {
+      style: style
+    }
   }
 }
 

@@ -1,7 +1,7 @@
 export const NOTIFICATIONS = [
   {
     storageKey: 'chips_deprecation',
-    title: 'Mushroom Strategy',
+    title: 'ChuGUan Strategy',
     message:
       '## Deprecation Notice\n' +
       'As of v3.0.0, chips are replaced by badges.\n' +
@@ -12,7 +12,7 @@ export const NOTIFICATIONS = [
   },
   {
     storageKey: 'greetingCard_poll',
-    title: 'Mushroom Strategy',
+    title: 'ChuGuan Strategy',
     message:
       '## Greeting Card Poll\n' +
       "Please follow below link to read about the greeting card's future and cast your vote.\n" +

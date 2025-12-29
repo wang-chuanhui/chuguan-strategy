@@ -1,16 +1,17 @@
-import { HassServiceTarget } from 'home-assistant-js-websocket';
+import { HassEntity, HassServiceTarget } from 'home-assistant-js-websocket';
 import HeaderCard from '../cards/HeaderCard';
 import { Registry } from '../Registry';
 import { LovelaceCardConfig } from '../types/homeassistant/data/lovelace/config/card';
 import { LovelaceViewConfig } from '../types/homeassistant/data/lovelace/config/view';
 import { StackCardConfig } from '../types/homeassistant/panels/lovelace/cards/types';
 import { AbstractCardConfig, CustomHeaderCardConfig, StrategyHeaderCardConfig } from '../types/strategy/strategy-cards';
-import { SupportedDomains } from '../types/strategy/strategy-generics';
+import { CustomCardConfig, SupportedDomains } from '../types/strategy/strategy-generics';
 import { ViewConfig, ViewConstructor } from '../types/strategy/strategy-views';
 import { sanitizeClassName } from '../utilities/auxiliaries';
 import { logMessage, lvlFatal } from '../utilities/debug';
 import RegistryFilter from '../utilities/RegistryFilter';
 import { stackHorizontal } from '../utilities/cardStacking';
+import { EntityRegistryEntry } from '../types/homeassistant/data/entity_registry';
 
 /**
  * Abstract View Class.
@@ -94,7 +95,7 @@ abstract class AbstractView {
       // Create a card configuration for each entity in the current area.
       areaCards.push(
         ...areaEntities.map((entity) =>
-          new DomainCard(entity, Registry.strategyOptions.card_options?.[entity.entity_id]).getCard()
+          new DomainCard(entity, this.getCustomCardConfig(entity)).getCard()
         )
       );
 
@@ -103,7 +104,7 @@ abstract class AbstractView {
         areaCards = stackHorizontal(
           areaCards,
           Registry.strategyOptions.domains[this.domain as SupportedDomains].stack_count ??
-            Registry.strategyOptions.domains['_'].stack_count
+          Registry.strategyOptions.domains['_'].stack_count
         );
 
         // Create and insert a Header card.
@@ -161,6 +162,16 @@ abstract class AbstractView {
         .filter((entity) => entity.entity_id.startsWith(this.domain + '.'))
         .map((entity) => entity.entity_id),
     };
+  }
+
+  protected getCustomCardConfig(entity: EntityRegistryEntry): CustomCardConfig | null | undefined {
+    const sg = Registry.strategyOptions.card_options?.[entity.entity_id];
+    const subClassCustomCardConfig = this.getSubClassCustomCardConfig(entity);
+    return { ...subClassCustomCardConfig, ...sg }
+  }
+
+  protected getSubClassCustomCardConfig(entity: EntityRegistryEntry): CustomCardConfig | null | undefined {
+    return null
   }
 }
 

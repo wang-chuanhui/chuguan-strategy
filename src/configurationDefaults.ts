@@ -51,6 +51,11 @@ export const ConfigurationDefaults: StrategyDefaults = {
       hidden: false,
       stack_count: 2, // TODO: Add to wiki. also for other configurations.
     },
+    button: {
+      title: localize('button.buttons'),
+      showControls: false,
+      hidden: false,
+    },
     camera: {
       title: localize('camera.cameras'),
       showControls: false,
@@ -164,8 +169,12 @@ export const ConfigurationDefaults: StrategyDefaults = {
       order: 7,
       hidden: false,
     },
+    button: {
+      order: 12,
+      hidden: false,
+    },
     climate: {
-      order: 6,
+      order: 5,
       hidden: false,
     },
     cover: {
@@ -173,7 +182,7 @@ export const ConfigurationDefaults: StrategyDefaults = {
       hidden: false,
     },
     fan: {
-      order: 3,
+      order: 6,
       hidden: false,
     },
     home: {
@@ -193,7 +202,7 @@ export const ConfigurationDefaults: StrategyDefaults = {
       hidden: false,
     },
     switch: {
-      order: 5,
+      order: 3,
       hidden: false,
     },
     vacuum: {
