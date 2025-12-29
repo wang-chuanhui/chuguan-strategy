@@ -9,7 +9,7 @@ const config: webpack.Configuration = {
   output: {
     clean: true,
     filename: 'chuguan-strategy.js',
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, 'dist')
   },
   resolve: {
     extensions: ['.ts', '.js'],
@@ -25,7 +25,7 @@ const config: webpack.Configuration = {
         test: /\.(png|jpe?g|gif|svg)$/i,
         type: 'asset/resource',
         generator: {
-          filename: '[name].[ext]', // 输出到 dist/images/
+          filename: '[name][ext]', // 输出到 dist/images/
         },
       }
     ],
