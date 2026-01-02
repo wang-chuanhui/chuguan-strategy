@@ -66,8 +66,9 @@ abstract class AbstractCard {
       '.': `ha-card {
                   background-color: {{ 'white'
                                        if states(config.entity)${cmp}'${state}' else
-                                       'rgba(130, 130, 130, 0.5)' }};
-                  backdrop-filter: blur(5px);
+                                       'rgba(50, 50, 50, 0.4)' }};
+                  backdrop-filter: blur(20px);
+                  -webkit-backdrop-filter: blur(20px);
                 }${ha_card_extra}`,
       'mushroom-state-info$': `.container { {{
                                      '--card-primary-color: black;

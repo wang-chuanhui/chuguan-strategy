@@ -40,11 +40,27 @@ export function stackHorizontal(
 
     const stackedCardConfigurations: StackCardConfig[] = [];
 
-    for (let i = 0; i < cards.length; i += columnCount) {
+    for (let i = 0; i < cards.length;) {
+      const current: LovelaceCardConfig[] = []
+      let all_stack_count = 0
+      let element_count = 0
+      for (let j = i; j < cards.length; j++) {
+        const element = cards[j]
+        const stack_count = element['stack_count'] || 1
+        if (all_stack_count + stack_count > columnCount) {
+          break
+        }
+        all_stack_count += stack_count
+        current.push(element)
+        element_count++
+        console.log('push', j, '/', cards.length)
+      }
+      i = i + element_count
       stackedCardConfigurations.push({
         type: 'horizontal-stack',
-        cards: cards.slice(i, i + columnCount),
+        cards: current,
       } as StackCardConfig);
+
     }
 
     return stackedCardConfigurations;

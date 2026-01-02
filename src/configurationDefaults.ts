@@ -55,6 +55,7 @@ export const ConfigurationDefaults: StrategyDefaults = {
       title: localize('button.buttons'),
       showControls: false,
       hidden: false,
+      stack_count: 2,
     },
     camera: {
       title: localize('camera.cameras'),
@@ -99,6 +100,7 @@ export const ConfigurationDefaults: StrategyDefaults = {
       onService: 'light.turn_on',
       offService: 'light.turn_off',
       hidden: false,
+      stack_count: 2,
     },
     lock: {
       title: localize('lock.locks'),
@@ -138,6 +140,7 @@ export const ConfigurationDefaults: StrategyDefaults = {
       onService: 'switch.turn_on',
       offService: 'switch.turn_off',
       hidden: false,
+      stack_count: 2,
     },
     vacuum: {
       title: localize('vacuum.vacuums'),

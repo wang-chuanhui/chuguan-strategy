@@ -1,5 +1,6 @@
 // noinspection JSUnusedGlobalSymbols Class is dynamically imported.
 
+import { Registry } from '../Registry';
 import { EntityRegistryEntry } from '../types/homeassistant/data/entity_registry';
 import { LightCardConfig } from '../types/lovelace-mushroom/cards/light-card-config';
 import { isCallServiceActionConfig, RegistryEntry } from '../types/strategy/strategy-generics';
@@ -16,7 +17,7 @@ class LightCard extends AbstractCard {
     return {
       type: 'custom:mushroom-light-card',
       icon: undefined,
-      layout: 'default',
+      layout: 'horizontal',
       show_brightness_control: true,
       show_color_control: true,
       show_color_temp_control: true,
@@ -49,11 +50,35 @@ class LightCard extends AbstractCard {
       configuration.double_tap_action.target = { entity_id: entity.entity_id };
     }
 
-    this.configuration = { ...this.configuration, ...configuration, ...customConfiguration };
+    this.configuration = { ...this.configuration, ...configuration, ...this.getSubClassCustomCardConfig(entity), ...customConfiguration };
   }
 
   is_card_active(entity: RegistryEntry) {
     return this.is_generic_card_active(entity)
+  }
+  protected getSubClassCustomCardConfig(entity: EntityRegistryEntry): LightCardConfig | null | undefined {
+    const state = Registry.hassStates[entity.entity_id];
+    if (!state) {
+      return null
+    }
+     const supportedColorModes = state.attributes['supported_color_modes']
+    if (Array.isArray(supportedColorModes)) {
+      let onoff = false, brightness = false, color_temp = false, color = false,
+          scm = supportedColorModes[0]
+          onoff = scm == 'onoff'
+          brightness = [ 'brightness', 'color_temp', 'hs', 'xy',
+                          'rgb', 'rgbw', 'rgbww' ].includes(scm)
+          color_temp = scm == 'color_temp'
+          color = [ 'hs', 'xy', 'rgb', 'rgbw', 'rgbww' ].includes(scm)
+          return {
+            show_brightness_control: brightness,
+            show_color_temp_control: color_temp,
+            show_color_control: color,
+            layout: 'horizontal',
+            stack_count: (brightness || color || color_temp) ? 2 : 1,
+          } as LightCardConfig
+    }
+    return null;
   }
 }
 

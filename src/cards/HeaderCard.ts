@@ -54,11 +54,11 @@ class HeaderCard {
         type: 'custom:mushroom-title-card',
         title: this.configuration.title,
         subtitle: this.configuration.subtitle,
-        card_mod: {
-          style: {
-            '.': "ha-card {--subtitle-color: #555;}"
-          }
-        }
+        // card_mod: {
+        //   style: {
+        //     '.': "ha-card {--subtitle-color: #555;}"
+        //   }
+        // }
       },
     ];
 

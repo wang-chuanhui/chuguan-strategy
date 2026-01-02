@@ -27,4 +27,5 @@ export type LightCardConfig = LovelaceCardConfig &
     show_color_control?: boolean;
     collapsible_controls?: boolean;
     use_light_color?: boolean;
+    stack_count?: number;
   };

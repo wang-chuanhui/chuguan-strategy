@@ -8,7 +8,7 @@ const config: webpack.Configuration = {
   entry: './src/chuguan-strategy.ts',
   output: {
     filename: 'chuguan-strategy.js',
-    path: path.resolve(__dirname, '../../config/www/chuguan-strategy')
+    path: path.resolve(__dirname, '../../config/www/community/chuguan-strategy')
   },
   devtool: 'source-map',
   resolve: {

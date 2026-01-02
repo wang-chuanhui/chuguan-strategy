@@ -53,29 +53,6 @@ class LightView extends AbstractView {
     this.initializeViewConfig(LightView.getDefaultConfig(), customConfiguration, LightView.getViewHeaderCardConfig());
   }
 
-  protected getSubClassCustomCardConfig(entity: EntityRegistryEntry): LightCardConfig | null | undefined {
-    const state = Registry.hassStates[entity.entity_id];
-    if (!state) {
-      return null
-    }
-     const supportedColorModes = state.attributes['supported_color_modes']
-    if (Array.isArray(supportedColorModes)) {
-      let onoff = false, brightness = false, color_temp = false, color = false,
-          scm = supportedColorModes[0]
-          onoff = scm == 'onoff'
-          brightness = [ 'brightness', 'color_temp', 'hs', 'xy',
-                          'rgb', 'rgbw', 'rgbww' ].includes(scm)
-          color_temp = scm == 'color_temp'
-          color = [ 'hs', 'xy', 'rgb', 'rgbw', 'rgbww' ].includes(scm)
-          return {
-            show_brightness_control: brightness,
-            show_color_temp_control: color_temp,
-            show_color_control: color,
-            layout: onoff ? 'default' : 'horizontal',
-          } as LightCardConfig
-    }
-    return null;
-  }
 }
 
 export default LightView;

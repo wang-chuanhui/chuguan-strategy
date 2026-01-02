@@ -101,6 +101,7 @@ abstract class AbstractView {
 
       // Stack the cards of the current area.
       if (areaCards.length) {
+        console.log(this.domain, Registry.strategyOptions.domains[this.domain as SupportedDomains].stack_count, Registry.strategyOptions.domains['_'].stack_count)
         areaCards = stackHorizontal(
           areaCards,
           Registry.strategyOptions.domains[this.domain as SupportedDomains].stack_count ??
@@ -166,13 +167,9 @@ abstract class AbstractView {
 
   protected getCustomCardConfig(entity: EntityRegistryEntry): CustomCardConfig | null | undefined {
     const sg = Registry.strategyOptions.card_options?.[entity.entity_id];
-    const subClassCustomCardConfig = this.getSubClassCustomCardConfig(entity);
-    return { ...subClassCustomCardConfig, ...sg }
+    return sg
   }
 
-  protected getSubClassCustomCardConfig(entity: EntityRegistryEntry): CustomCardConfig | null | undefined {
-    return null
-  }
 }
 
 export default AbstractView;

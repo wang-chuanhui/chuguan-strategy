@@ -56,19 +56,6 @@ class ClimateView extends AbstractView {
     );
   }
 
-  protected getSubClassCustomCardConfig(entity: EntityRegistryEntry): ClimateCardConfig | null | undefined {
-    const state = Registry.hassStates[entity.entity_id];
-    if (!state) {
-      return null
-    }
-    const hvac_modes = state.attributes['hvac_modes']
-    if (!hvac_modes) {
-      return null
-    }
-    return {
-      hvac_modes,
-    } as ClimateCardConfig
-  }
 }
 
 export default ClimateView;
