@@ -22,6 +22,7 @@ import { HomeAssistant } from './types/homeassistant/types';
 import semver from 'semver/preload';
 import { NOTIFICATIONS } from './notifications';
 import { gen_background } from './background';
+import { subscribeEvnets } from './utilities/event';
 
 /**
  * Based on mushroom-strategy (https://github.com/DigiLive/mushroom-strategy), Copyright (c) 2025 Ferry Cools, BSD-3-Clause
@@ -276,6 +277,8 @@ class MushroomStrategy extends HTMLTemplateElement {
 }
 
 customElements.define('ll-strategy-chuguan-strategy', MushroomStrategy);
+
+subscribeEvnets()
 
 const STRATEGY_VERSION = 'v2.5.0';
 console.info(

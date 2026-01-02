@@ -66,7 +66,7 @@ abstract class AbstractCard {
       '.': `ha-card {
                   background-color: {{ 'white'
                                        if states(config.entity)${cmp}'${state}' else
-                                       'rgba(50, 50, 50, 0.4)' }};
+                                       'rgba(0, 0, 0, 0.3)' }};
                   backdrop-filter: blur(20px);
                   -webkit-backdrop-filter: blur(20px);
                 }${ha_card_extra}`,

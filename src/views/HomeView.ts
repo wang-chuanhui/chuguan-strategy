@@ -68,14 +68,14 @@ class HomeView extends AbstractView {
 
       return homeViewCards;
     }
-
+    console.log(chipsSection, personsSection, areasSection);
     if (chipsSection) {
       homeViewCards.push(chipsSection);
     }
 
-    if (personsSection) {
-      homeViewCards.push(personsSection);
-    }
+    // if (personsSection) {
+    //   homeViewCards.push(personsSection);
+    // }
 
     // Create the greeting section.
     if (!Registry.strategyOptions.home_view.hidden.includes('greeting')) {
@@ -103,6 +103,22 @@ class HomeView extends AbstractView {
         } as ActionConfig,
       } as TemplateCardConfig);
     }
+    import('../cards/EventButton')
+    homeViewCards.push({
+      type: 'horizontal-stack',
+      cards: [
+        {
+          type: 'custom:chuguan-event-button', 
+          title: localize('event.hide_sidebar'), 
+          event: 'cg_hide_sidebar',
+        },
+        {
+          type: 'custom:chuguan-event-button', 
+          title: localize('event.show_sidebar'), 
+          event: 'cg_show_sidebar',
+        },
+      ],
+    })
 
     if (Registry.strategyOptions.quick_access_cards) {
       homeViewCards.push(...Registry.strategyOptions.quick_access_cards);

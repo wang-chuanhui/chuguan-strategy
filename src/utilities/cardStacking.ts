@@ -53,7 +53,6 @@ export function stackHorizontal(
         all_stack_count += stack_count
         current.push(element)
         element_count++
-        console.log('push', j, '/', cards.length)
       }
       i = i + element_count
       stackedCardConfigurations.push({

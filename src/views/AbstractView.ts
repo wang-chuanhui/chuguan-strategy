@@ -101,7 +101,6 @@ abstract class AbstractView {
 
       // Stack the cards of the current area.
       if (areaCards.length) {
-        console.log(this.domain, Registry.strategyOptions.domains[this.domain as SupportedDomains].stack_count, Registry.strategyOptions.domains['_'].stack_count)
         areaCards = stackHorizontal(
           areaCards,
           Registry.strategyOptions.domains[this.domain as SupportedDomains].stack_count ??

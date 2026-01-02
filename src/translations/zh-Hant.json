@@ -82,5 +82,9 @@
   "button": {
     "all_buttons": "所有按鈕",
     "buttons": "按鈕"
+  }, 
+  "event": {
+    "hide_sidebar": "隱藏侧边栏",
+    "show_sidebar": "顯示侧边栏"
   }
 }
