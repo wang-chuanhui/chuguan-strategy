@@ -1,3 +1,5 @@
+import { Registry } from "../Registry";
+import { SortItem } from "../types/strategy/strategy-model";
 import { collapseSidebar } from "./sidebar";
 
 
@@ -13,6 +15,9 @@ export function subscribeEvnets() {
     });
     document.addEventListener("cg_show_sidebar", (e) => {
         collapseSidebar(false);
-    }
-    )
+    })
+    document.addEventListener('cg_sort_area', (e) => {
+        const detail: SortItem[] = (e as CustomEvent).detail;
+        Registry.config.saveAreaSort(detail)
+    })
 }

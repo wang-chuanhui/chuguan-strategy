@@ -17,6 +17,7 @@ import {
 import { logMessage, lvlFatal, lvlOff, lvlWarn, setDebugLevel } from './utilities/debug';
 import setupCustomLocalize from './utilities/localize';
 import RegistryFilter from './utilities/RegistryFilter';
+import { ConfigManager } from './utilities/config';
 
 /**
  * Registry Class
@@ -33,7 +34,7 @@ class Registry {
    */
   // noinspection JSUnusedLocalSymbols
   // eslint-disable-next-line @typescript-eslint/no-empty-function
-  private constructor() {}
+  private constructor() { }
 
   /** Entries of Home Assistant's device registry. */
   private static _devices: DeviceRegistryEntry[];
@@ -90,6 +91,8 @@ class Registry {
     return Registry._areas;
   }
 
+  public static config: ConfigManager;
+
   /** The Custom strategy configuration. */
   private static _strategyOptions: StrategyConfig;
 
@@ -114,6 +117,9 @@ class Registry {
     // Import the Hass States and strategy options.
     Registry._hassStates = info.hass.states;
     const { ConfigurationDefaults } = await import('./configurationDefaults');
+    Registry.config = new ConfigManager(info.hass);
+
+
 
     try {
       Registry._strategyOptions = deepmerge(ConfigurationDefaults, info.config?.strategy?.options ?? {});
@@ -134,7 +140,6 @@ class Registry {
     } catch (e) {
       logMessage(lvlFatal, 'Error importing Home Assistant registries!', e);
     }
-
     // Process the entries of the Strategy Options.
     Registry._strategyOptions.extra_views.map((view) => ({
       ...view,

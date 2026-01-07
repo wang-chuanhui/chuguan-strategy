@@ -37,11 +37,11 @@
 
 <!-- Badge References -->
 
-[releaseBadge]: https://img.shields.io/github/v/tag/wang-chuanhui/chuguan-strategy?filter=v1.0.0&label=Release
+[releaseBadge]: https://img.shields.io/github/v/tag/wang-chuanhui/chuguan-strategy?filter=v1.0.3&label=Release
 
 <!-- Repository References -->
 
-[releaseUrl]: https://github.com/wang-chuanhui/chuguan-strategy/releases/tag/v1.0.0
+[releaseUrl]: https://github.com/wang-chuanhui/chuguan-strategy/releases/tag/v1.0.3
 [mushroomCardsHacs]: https://my.home-assistant.io/redirect/hacs_repository/?owner=piitaya&repository=lovelace-mushroom
 [cardModHacs]: https://my.home-assistant.io/redirect/hacs_repository/?owner=thomasloven&repository=lovelace-card-mod
 [ChuGuanStrategyHacs]: https://my.home-assistant.io/redirect/hacs_repository/?owner=wang-chuanhui&repository=chuguan-strategy&category=plugin

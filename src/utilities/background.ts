@@ -1,6 +1,6 @@
-import { Registry } from "./Registry"
-import { LovelaceViewBackgroundConfig } from "./types/homeassistant/data/lovelace/config/view"
-import img from './view_background.jpg'
+import { Registry } from "../Registry"
+import { LovelaceViewBackgroundConfig } from "../types/homeassistant/data/lovelace/config/view"
+import img from '../view_background.jpg'
 
 const checked_urls: Record<string, boolean> = {}
 

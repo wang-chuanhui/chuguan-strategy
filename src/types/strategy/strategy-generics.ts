@@ -169,7 +169,7 @@ export interface ViewInfo {
   hass: HomeAssistant;
   view: LovelaceViewRawConfig & {
     strategy: {
-      options?: StrategyConfig & { area: StrategyArea };
+      options?: StrategyConfig & { area: StrategyArea, type: string };
     };
   };
 }

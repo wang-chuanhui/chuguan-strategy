@@ -1,8 +1,10 @@
-import { CSSResultGroup, LitElement, css, html, TemplateResult } from 'lit'
-import { customElement } from 'lit/decorators.js'
+import { CSSResultGroup, LitElement, css, html, TemplateResult, PropertyValues } from 'lit'
+import { customElement, property } from 'lit/decorators.js'
+import { HomeAssistant } from '../types/homeassistant/types';
 
 @customElement('chuguan-event-button')
 export class EventButton extends LitElement {
+  @property({ attribute: false }) public hass!: HomeAssistant;
 
     config: { title: string, event: string } = {
         title: '',

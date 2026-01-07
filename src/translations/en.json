@@ -86,5 +86,9 @@
   "event": {
     "hide_sidebar": "Hide Sidebar",
     "show_sidebar": "Show Sidebar"
+  }, 
+  "setting": {
+    "title": "Setting", 
+    "area_sort": "Area Sort"
   }
 }

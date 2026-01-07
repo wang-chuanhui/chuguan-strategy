@@ -23,6 +23,7 @@
     "strictNullChecks": true,
     // 6. Project Structure and Build Integrity
     "forceConsistentCasingInFileNames": true,
+    "experimentalDecorators": true,
     "skipLibCheck": true
   },
   "ts-node": {

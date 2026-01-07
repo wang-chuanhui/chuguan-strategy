@@ -86,5 +86,9 @@
   "event": {
     "hide_sidebar": "隱藏侧边栏",
     "show_sidebar": "顯示侧边栏"
+  }, 
+  "setting": {
+    "title": "設置", 
+    "area_sort": "區域排序"
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "chuguan-strategy",
-  "version": "2.5.0",
+  "version": "1.0.3",
   "description": "Automatically generate a dashboard of Mushroom cards. Based on mushroom-strategy (https://github.com/DigiLive/mushroom-strategy), Copyright (c) 2025 Ferry Cools, BSD-3-Clause",
   "keywords": [
     "dashboard",
@@ -18,7 +18,8 @@
     "url": "https://github.com/wang-chuanhui/chuguan-strategy"
   },
   "dependencies": {
-    "deepmerge": "^4"
+    "deepmerge": "^4",
+    "sortablejs": "^1.15.6"
   },
   "devDependencies": {
     "@types/semver": "^7.7.1",
@@ -40,7 +41,8 @@
     "typescript": "^5.9.3",
     "version-bump-prompt": "^6",
     "webpack": "^5.102.1",
-    "webpack-cli": "^6.0.1"
+    "webpack-cli": "^6.0.1", 
+    "@types/sortablejs": "^1.15.9"
   },
   "scripts": {
     "ts:format": "prettier --write \"**/*.ts\"",
