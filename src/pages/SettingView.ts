@@ -6,6 +6,7 @@ import { Registry } from "../Registry";
 import AreaSortView from "./AreaSortView";
 import { ActionsSharedConfig } from "../types/lovelace-mushroom/shared/config/actions-config";
 import { TemplateCardConfig } from "../types/lovelace-mushroom/cards/template-card-config";
+import DomainSortView from "./DomainSortView";
 
 
 export default class SettingView {
@@ -28,7 +29,7 @@ export default class SettingView {
                 },
             },
             background: gen_background('setting'),
-        } as StrategyViewConfig, ...new AreaSortView().getViews()]
+        } as StrategyViewConfig, ...new AreaSortView().getViews(), ...new DomainSortView().getViews()]
     }
 
     async getCards(): Promise<LovelaceCardConfig[]> {
@@ -37,12 +38,12 @@ export default class SettingView {
         const verticalStackCards: LovelaceCardConfig[] = []
         verticalStackCards.push(...this.getSidebar())
         verticalStackCards.push(this.getSortAres())
+        verticalStackCards.push(this.getSortDomain())
 
         cards.push({
             type: 'vertical-stack',
             cards: verticalStackCards
         })
-        console.log(cards)
         return cards
     }
 
@@ -73,6 +74,26 @@ export default class SettingView {
             tap_action: {
                 action: 'navigate',
                 navigation_path: 'area_sort',
+                navigation_replace: true,
+            },
+            hold_action: {
+                action: 'none',
+            },
+            double_tap_action: {
+                action: 'none',
+            },
+        }
+    }
+
+    getSortDomain(): TemplateCardConfig {
+        return {
+            type: 'custom:mushroom-template-card',
+            primary: localize('setting.domain_sort'),
+            icon: 'mdi:domain',
+            icon_color: 'blue',
+            tap_action: {
+                action: 'navigate',
+                navigation_path: 'domain_sort',
                 navigation_replace: true,
             },
             hold_action: {

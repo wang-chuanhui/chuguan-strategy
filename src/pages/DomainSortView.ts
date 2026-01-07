@@ -1,21 +1,23 @@
 import { Registry } from "../Registry";
 import { LovelaceCardConfig } from "../types/homeassistant/data/lovelace/config/card";
-import { StrategyViewConfig } from "../types/strategy/strategy-generics";
+import { isSupportedView, SingleDomainConfig, StrategyViewConfig, SupportedDomains } from "../types/strategy/strategy-generics";
 import { gen_background } from "../utilities/background";
 import { localize } from "../utilities/localize";
 
 
 
-export default class AreaSortView {
+export default class DomainSortView {
 
     constructor(options: any = {}) {
 
     }
 
+
+
     getViews(): StrategyViewConfig[] {
         return [{
-            title: localize('setting.area_sort'),
-            path: 'area_sort',
+            title: localize('setting.domain_sort'),
+            path: 'domain_sort',
             back_path: 'setting',
             subview: true,
             hidden: false,
@@ -23,7 +25,7 @@ export default class AreaSortView {
             strategy: {
                 type: 'custom:chuguan-strategy',
                 options: {
-                    type: 'area_sort',
+                    type: 'domain_sort',
                 },
             },
             background: gen_background('setting'),
@@ -44,17 +46,24 @@ export default class AreaSortView {
     }
 
     getSortAres(): LovelaceCardConfig {
-        const areas = Registry.config.areas
-        const areaList = areas.map((area, index) => ({
-            id: area.area_id,
-            name: area.name,
-            visible: !area.hidden,
-            order: area.order ?? index + 1,
-        }))
+        const views = Registry.strategyOptions.views
+        console.log(views)
+        const domains = Object.keys(views).filter((key) => key !== '_' && key !== 'default').filter(i => i != 'home').filter(isSupportedView)
+        const domainList = domains.map((domain, index) => {
+            const config = Registry.strategyOptions.views[domain]
+            const d = Registry.strategyOptions.domains[domain as SupportedDomains] as SingleDomainConfig
+            return {
+                id: domain,
+                name: d?.title ?? domain,
+                visible: !config.hidden,
+                order: config.order ?? index + 2,
+            }
+        })
+        console.log(domainList)
         return {
             type: 'custom:chuguan-sort-list',
-            list: areaList, 
-            event: 'cg_sort_area', 
+            list: domainList,
+            event: 'cg_sort_domains',
             action: {
                 action: 'navigate',
                 navigation_path: 'setting'

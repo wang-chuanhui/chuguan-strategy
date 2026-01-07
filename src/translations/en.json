@@ -90,6 +90,7 @@
   "setting": {
     "title": "Setting", 
     "area_sort": "Area Sort", 
-    "save": "Save"
+    "save": "Save", 
+    "domain_sort": "Domain Sort"
   }
 }

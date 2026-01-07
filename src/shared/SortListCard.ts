@@ -24,7 +24,6 @@ export class SortListCard extends LitElement {
     }
 
     setConfig(config: LovelaceCardConfig) {
-        console.log(config)
         this.list = config.list || [];
         this.title = config.title || ''
         this.event = config.event || ''

@@ -169,11 +169,11 @@ export const ConfigurationDefaults: StrategyDefaults = {
   },
   views: {
     camera: {
-      order: 7,
+      order: 6,
       hidden: false,
     },
     button: {
-      order: 12,
+      order: 9,
       hidden: false,
     },
     climate: {
@@ -185,7 +185,7 @@ export const ConfigurationDefaults: StrategyDefaults = {
       hidden: false,
     },
     fan: {
-      order: 6,
+      order: 8,
       hidden: false,
     },
     home: {
@@ -197,11 +197,11 @@ export const ConfigurationDefaults: StrategyDefaults = {
       hidden: false,
     },
     lock: {
-      order: 10,
+      order: 7,
       hidden: false,
     },
     scene: {
-      order: 9,
+      order: 12,
       hidden: false,
     },
     switch: {
@@ -209,7 +209,7 @@ export const ConfigurationDefaults: StrategyDefaults = {
       hidden: false,
     },
     vacuum: {
-      order: 8,
+      order: 10,
       hidden: false,
     },
     valve: {

@@ -4,7 +4,7 @@
 
 import { Registry } from "../Registry";
 import { HomeAssistant } from "../types/homeassistant/types";
-import { StrategyArea, StrategyConfig } from "../types/strategy/strategy-generics";
+import { StrategyArea, StrategyConfig, StrategyViewConfig, SupportedDomains, SupportedViews } from "../types/strategy/strategy-generics";
 import { SortItem } from "../types/strategy/strategy-model";
 
 export class ConfigManager {
@@ -78,10 +78,32 @@ export class ConfigManager {
                     hidden: !item.visible
                 } as StrategyArea
                 this.options.areas[item.id] = area
-            }
-            if (area) {
+            }else {
                 area.order = item.order
                 area.hidden = !item.visible
+            }
+        }
+        await this.saveConfig(this.options as StrategyConfig)
+    }
+
+        async saveDomainSort(details: SortItem[]) {
+        if (this.options.views == null) {
+            this.options.views = {} as any
+        }
+        const min = Math.min(...details.map(i => i.order))
+        const add = 2 - min
+        for (const item of details) {
+            const key = item.id as SupportedViews
+            let view = this.options.views![key]
+            if (view == null) {
+                view = {
+                    order: item.order + add,
+                    hidden: !item.visible
+                } as StrategyViewConfig
+                this.options.views![key] = view
+            }else {
+                view.order = item.order + add
+                view.hidden = !item.visible
             }
         }
         await this.saveConfig(this.options as StrategyConfig)

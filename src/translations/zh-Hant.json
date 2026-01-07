@@ -90,6 +90,7 @@
   "setting": {
     "title": "設置", 
     "area_sort": "區域排序", 
-    "save": "保存"
+    "save": "保存", 
+    "domain_sort": "類型排序"
   }
 }

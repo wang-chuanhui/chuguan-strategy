@@ -20,4 +20,8 @@ export function subscribeEvnets() {
         const detail: SortItem[] = (e as CustomEvent).detail;
         Registry.config.saveAreaSort(detail)
     })
+    document.addEventListener('cg_sort_domains', (e) => {
+        const detail: SortItem[] = (e as CustomEvent).detail;
+        Registry.config.saveDomainSort(detail)
+    })
 }
