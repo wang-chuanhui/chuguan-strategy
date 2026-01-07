@@ -118,7 +118,7 @@ class Registry {
     Registry._hassStates = info.hass.states;
     const { ConfigurationDefaults } = await import('./configurationDefaults');
     Registry.config = new ConfigManager(info.hass);
-
+    Registry.config.options = info.config?.strategy?.options ?? {};
 
 
     try {
@@ -195,6 +195,10 @@ class Registry {
 
       // Remove hidden areas if configured as so and sort them by name.
 
+      Registry.config.areas = new RegistryFilter(Registry.areas).orderBy(['order', 'name'], 'asc').toList();
+      if (Registry.strategyOptions.areas.undisclosed?.hidden == true) {
+        Registry.config.areas.push({...ConfigurationDefaults.areas.undisclosed, ...Registry.strategyOptions.areas['_'], ...Registry.strategyOptions.areas.undisclosed});
+      }
       Registry._areas = new RegistryFilter(Registry.areas).isNotHidden().orderBy(['order', 'name'], 'asc').toList();
     }
 

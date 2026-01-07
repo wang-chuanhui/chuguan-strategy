@@ -24,7 +24,7 @@ import { NOTIFICATIONS } from './notifications';
 import { gen_background } from './utilities/background';
 import { subscribeEvnets } from './utilities/event';
 import { AreaView } from './views/AreaView';
-import { SettingView } from './pages/SettingView';
+import SettingView from './pages/SettingView';
 import './shared/EventButton';
 import './shared/SortListCard';
 /**
@@ -96,7 +96,7 @@ class MushroomStrategy extends HTMLTemplateElement {
     views.push(
       ...areas.map((area, index) => (AreaView.getView(area, maxOrder + index + 1)))
     );
-    views.push(new SettingView().getView());
+    views.push(...new SettingView().getViews());
     console.log(views)
     return { views };
   }
@@ -119,6 +119,13 @@ class MushroomStrategy extends HTMLTemplateElement {
     if (options?.type === 'setting') {
       const cards = await new SettingView().getCards();
       return {cards}
+    }
+    if (options?.type) {
+      const moduleName = sanitizeClassName(`${options.type}View`);
+      const View = (await import(`./pages/${moduleName}`)).default;
+      const currentView = new View(options);
+      const viewCards = await currentView.getCards();
+      return {cards: viewCards}
     }
     if (options?.area) {
       const area = options.area

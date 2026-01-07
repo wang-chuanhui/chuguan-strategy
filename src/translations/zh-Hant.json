@@ -89,6 +89,7 @@
   }, 
   "setting": {
     "title": "設置", 
-    "area_sort": "區域排序"
+    "area_sort": "區域排序", 
+    "save": "保存"
   }
 }

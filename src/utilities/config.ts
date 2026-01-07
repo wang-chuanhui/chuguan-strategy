@@ -10,6 +10,8 @@ import { SortItem } from "../types/strategy/strategy-model";
 export class ConfigManager {
 
     hass: HomeAssistant
+    options: Partial<StrategyConfig> = {}
+    areas: StrategyArea[] = []
 
     constructor(hass: HomeAssistant) {
         this.hass = hass
@@ -60,26 +62,29 @@ export class ConfigManager {
                 options: config
             }
         }
+        console.log(data)
         await this.hass.callWS({ type: 'lovelace/config/save', url_path: key, config: data })
     }
 
     async saveAreaSort(details: SortItem[]) {
+        if (this.options.areas == null) {
+            this.options.areas = {}
+        }
         for (const item of details) {
-            let area = Registry.strategyOptions.areas[item.id]
+            let area = this.options.areas[item.id]
             if (area == null) {
                 area = {
-                    area_id: item.id,
                     order: item.order,
                     hidden: !item.visible
                 } as StrategyArea
-                Registry.strategyOptions.areas[item.id] = area
+                this.options.areas[item.id] = area
             }
             if (area) {
                 area.order = item.order
                 area.hidden = !item.visible
             }
-            await this.saveConfig(Registry.strategyOptions)
         }
+        await this.saveConfig(this.options as StrategyConfig)
     }
 
 }

@@ -89,6 +89,7 @@
   }, 
   "setting": {
     "title": "Setting", 
-    "area_sort": "Area Sort"
+    "area_sort": "Area Sort", 
+    "save": "Save"
   }
 }

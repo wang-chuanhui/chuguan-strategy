@@ -3,16 +3,19 @@ import { StrategyViewConfig } from "../types/strategy/strategy-generics";
 import { localize } from "../utilities/localize";
 import { LovelaceCardConfig } from "../types/homeassistant/data/lovelace/config/card";
 import { Registry } from "../Registry";
+import AreaSortView from "./AreaSortView";
+import { ActionsSharedConfig } from "../types/lovelace-mushroom/shared/config/actions-config";
+import { TemplateCardConfig } from "../types/lovelace-mushroom/cards/template-card-config";
 
 
-export class SettingView {
+export default class SettingView {
 
     constructor() {
 
     }
 
-    getView(): StrategyViewConfig {
-        return {
+    getViews(): StrategyViewConfig[] {
+        return [{
             title: localize('setting.title'),
             path: 'setting',
             subview: false,
@@ -25,7 +28,7 @@ export class SettingView {
                 },
             },
             background: gen_background('setting'),
-        } as StrategyViewConfig
+        } as StrategyViewConfig, ...new AreaSortView().getViews()]
     }
 
     async getCards(): Promise<LovelaceCardConfig[]> {
@@ -61,22 +64,23 @@ export class SettingView {
         }]
     }
 
-    getSortAres(): LovelaceCardConfig {
-        const areas = Registry.areas
-        const areaList = areas.map((area, index) => ({
-            id: area.area_id,
-            name: area.name,
-            visible: !area.hidden,
-            order: area.order ?? index + 1,
-        }))
+    getSortAres(): TemplateCardConfig {
         return {
-            type: 'custom:chuguan-sort-list',
-            list: areaList,
-            title: localize('setting.area_sort'),
-            event: 'cg_sort_area',
-            action: () => {
-                console.log('sort area')
-            }
+            type: 'custom:mushroom-template-card',
+            primary: localize('setting.area_sort'),
+            icon: 'mdi:floor-plan',
+            icon_color: 'blue',
+            tap_action: {
+                action: 'navigate',
+                navigation_path: 'area_sort',
+                navigation_replace: true,
+            },
+            hold_action: {
+                action: 'none',
+            },
+            double_tap_action: {
+                action: 'none',
+            },
         }
     }
 

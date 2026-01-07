@@ -3,13 +3,17 @@ import { customElement, property, state } from "lit/decorators.js";
 import { LovelaceCardConfig } from "../types/homeassistant/data/lovelace/config/card";
 import { SortItem } from '../types/strategy/strategy-model'
 import Sortable from "sortablejs";
+import { repeat } from 'lit/directives/repeat.js';
+import { localize } from "../utilities/localize";
+import { ActionConfig } from "../types/homeassistant/data/lovelace/config/action";
 
 
 
 @customElement('chuguan-sort-list')
 export class SortListCard extends LitElement {
-    @property({type: String}) title: string = ''
-    @property({type: String}) event: string = ''
+    @property({ type: String }) title: string = ''
+    @property({ type: String }) event: string = ''
+    @property({ type: Object }) action: ActionConfig = { action: 'none' }
     @property({ type: Array })
     list: SortItem[] = [];
     sortable?: Sortable
@@ -21,12 +25,10 @@ export class SortListCard extends LitElement {
 
     setConfig(config: LovelaceCardConfig) {
         console.log(config)
-        if (config.action) {
-            config.action()
-        }
         this.list = config.list || [];
         this.title = config.title || ''
         this.event = config.event || ''
+        this.action = config.action || { action: 'none' }
     }
 
     connectedCallback(): void {
@@ -77,53 +79,75 @@ export class SortListCard extends LitElement {
                 this.list.forEach((item, index) => {
                     item.order = index
                 })
-                console.log(this.list.map(i => `${i.name}-${i.order}`))
-                if (this.event) {
-                    this.dispatchEvent(new CustomEvent(this.event, {
-                        detail: this.list,
-                        bubbles: true,
-                        composed: true
-                    }))
-                }
             },
         });
     }
 
     clickItem(element: SortItem) {
-        this.list = this.list.map((item) => ({
+        const newList = this.list.map((item) => ({
             ...item,
             visible: item.id === element.id ? !item.visible : item.visible
         }))
+        this.list = newList
+    }
+
+    clickSave() {
+        if (this.action.action != 'none') {
+            const detail = {
+                config: {
+                    tap_action: this.action
+                },
+                action: 'tap'
+            }
+            const ce = new CustomEvent('hass-action', { detail, bubbles: true, composed: true });
+            this.dispatchEvent(ce);
+        }
+        if (this.event) {
+            this.dispatchEvent(new CustomEvent(this.event, {
+                detail: this.list,
+                bubbles: true,
+                composed: true
+            }))
+        }
     }
 
     protected render(): TemplateResult {
-        console.log('render', this.list.map(i => i.name))
         return html`
-            <ha-card>
-                <div class="chuguan-sort-list">
+            <div>
+                <ha-card>
                     <div class="chuguan-sort-list-title">${this.title}</div>
-                    ${this.list.map((item, index) => html`
-                        <div class="chuguan-sort-item ${item.visible ? 'visible' : 'hidden'}" data-section-id="${item.id}" data-index="${index}">
-                            <button class="sort-item-visibility-toggle ${item.visible ? 'visible' : 'hidden'}" @click="${() => this.clickItem(item)}">
-                                <ha-icon icon="${item.visible ? 'mdi:eye' : 'mdi:eye-off'}"></ha-icon>
-                            </button>
-                            <div class="sort-item-info">
-                                <span class="sort-item-name">${item.name}</span>
+                    <div class="chuguan-sort-list">
+                        ${repeat(
+            this.list,
+            (item) => item.id, // 👈 必须是稳定唯一的 key
+            (item) => html`
+                            <div class="chuguan-sort-item ${item.visible ? 'visible' : 'hidden'}">
+                                <button class="sort-item-visibility-toggle ${item.visible ? 'visible' : 'hidden'}" @click="${() => this.clickItem(item)}">
+                                    <ha-icon icon="${item.visible ? 'mdi:eye' : 'mdi:eye-off'}"></ha-icon>
+                                </button>
+                                <div class="sort-item-info">
+                                    <span class="sort-item-name">${item.name}</span>
+                                </div>
+                                <div class="sort-item-drag">
+                                    <ha-icon icon="mdi:menu"></ha-icon>
+                                </div>
                             </div>
-                            <div class="sort-item-drag">
-                                <ha-icon icon="mdi:menu"></ha-icon>
-                            </div>
-                        </div>
-                    `)}
-                </div>
-            </ha-card>
+                        `
+        )}
+                    </div>
+                </ha-card>
+                <ha-card style="margin-top: 10px;">
+                    <button class="save-button" @click="${() => this.clickSave()}">
+                        <span>${localize('setting.save')}</span>
+                    </button>
+                </ha-card>
+            </div>
+            
     `;
     }
 
     static get styles(): CSSResultGroup {
         return css`
-            .chuguan-sort-list {
-                padding: 16px;
                 .chuguan-sort-list-title {
                     font-size: 16px;
                     font-weight: 500;
@@ -131,6 +155,21 @@ export class SortListCard extends LitElement {
                     text-align: center;
                     line-height: 36px;
                 }
+                    .save-button {
+                        line-height: 1;
+                        padding: 16px;
+                        color: var(--primary-color);
+                        background-color: unset;
+                        border: none;
+                        width: 100%;
+                        font-size: 16px;
+                        font-weight: 500;
+                    }
+                    .save-button:active {
+                        opacity: 0.5;
+                    }
+            .chuguan-sort-list {
+                padding: 16px;
                 .chuguan-sort-item {
                     display: flex;
                     align-items: center;
