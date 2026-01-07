@@ -10,18 +10,9 @@ export function subscribeEvnets() {
         return
     }
     isSubscribe = true;
-    document.addEventListener("cg_hide_sidebar", (e) => {
-        collapseSidebar(true);
-    });
-    document.addEventListener("cg_show_sidebar", (e) => {
-        collapseSidebar(false);
-    })
-    document.addEventListener('cg_sort_area', (e) => {
-        const detail: SortItem[] = (e as CustomEvent).detail;
-        Registry.config.saveAreaSort(detail)
-    })
-    document.addEventListener('cg_sort_domains', (e) => {
-        const detail: SortItem[] = (e as CustomEvent).detail;
-        Registry.config.saveDomainSort(detail)
-    })
+    // const originDispatchEvent = EventTarget.prototype.dispatchEvent
+    // EventTarget.prototype.dispatchEvent = function (event: Event): boolean {
+    //     console.log(event.type, (event as CustomEvent).detail, event.bubbles, event.composed)
+    //     return originDispatchEvent.call(this, event);
+    // }
 }

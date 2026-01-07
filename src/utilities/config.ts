@@ -15,31 +15,18 @@ export class ConfigManager {
 
     constructor(hass: HomeAssistant) {
         this.hass = hass
+        document.addEventListener('cg_sort_area', (e) => {
+            const detail: SortItem[] = (e as CustomEvent).detail;
+            this.saveAreaSort(detail)
+        })
+        document.addEventListener('cg_sort_domains', (e) => {
+            const detail: SortItem[] = (e as CustomEvent).detail;
+            this.saveDomainSort(detail)
+        })
     }
 
-    private getCurrentDashboardKey(): string | null {
-        try {
-            const currentPath = window.location.pathname;
-
-            const dashboardMatch = currentPath.match(/\/([^\/]+)/);
-            if (dashboardMatch && dashboardMatch[1]) {
-                const dashboardKey = dashboardMatch[1];
-
-                // SPECIAL CASE: For Home Assistant storage, 'lovelace' should be null (default dashboard)
-                // but for component isolation, we'll use 'lovelace' in other methods
-                if (dashboardKey === 'lovelace') {
-                    return null; // Default dashboard for HA storage
-                }
-
-                return dashboardKey;
-            }
-
-            console.warn('🔑 Could not extract dashboard key from path:', currentPath);
-            return null; // Default fallback for storage
-        } catch (error) {
-            console.error('🏠 CHUGUAN: Error getting dashboard key:', error);
-            return null;
-        }
+    getCurrentDashboardKey(): string | null {
+        return this.hass.panelUrl
     }
 
     async getConfig() {
@@ -78,15 +65,16 @@ export class ConfigManager {
                     hidden: !item.visible
                 } as StrategyArea
                 this.options.areas[item.id] = area
-            }else {
+            } else {
                 area.order = item.order
                 area.hidden = !item.visible
             }
         }
         await this.saveConfig(this.options as StrategyConfig)
+        window.location.reload()
     }
 
-        async saveDomainSort(details: SortItem[]) {
+    async saveDomainSort(details: SortItem[]) {
         if (this.options.views == null) {
             this.options.views = {} as any
         }
@@ -101,7 +89,7 @@ export class ConfigManager {
                     hidden: !item.visible
                 } as StrategyViewConfig
                 this.options.views![key] = view
-            }else {
+            } else {
                 view.order = item.order + add
                 view.hidden = !item.visible
             }

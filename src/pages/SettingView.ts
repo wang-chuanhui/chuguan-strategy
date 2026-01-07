@@ -7,6 +7,8 @@ import AreaSortView from "./AreaSortView";
 import { ActionsSharedConfig } from "../types/lovelace-mushroom/shared/config/actions-config";
 import { TemplateCardConfig } from "../types/lovelace-mushroom/cards/template-card-config";
 import DomainSortView from "./DomainSortView";
+import "../shared/DockedSidebar";
+
 
 
 export default class SettingView {
@@ -49,19 +51,7 @@ export default class SettingView {
 
     getSidebar(): LovelaceCardConfig[] {
         return [{
-            type: 'horizontal-stack',
-            cards: [
-                {
-                    type: 'custom:chuguan-event-button',
-                    title: localize('event.hide_sidebar'),
-                    event: 'cg_hide_sidebar',
-                },
-                {
-                    type: 'custom:chuguan-event-button',
-                    title: localize('event.show_sidebar'),
-                    event: 'cg_show_sidebar',
-                },
-            ],
+            type: 'custom:chuguan-docked-sidebar',
         }]
     }
 
@@ -96,6 +86,27 @@ export default class SettingView {
                 navigation_path: 'domain_sort',
                 navigation_replace: true,
             },
+            hold_action: {
+                action: 'none',
+            },
+            double_tap_action: {
+                action: 'none',
+            },
+        }
+    }
+
+    editBackground(): TemplateCardConfig {
+        return {
+            type: 'custom:mushroom-template-card',
+            primary: localize('setting.domain_sort'),
+            icon: 'mdi:domain',
+            icon_color: 'blue',
+            tap_action: {
+                action: 'fire-dom-event', 
+                detail: {
+                    event: 'cg_edit_background',
+                }
+            } as any,
             hold_action: {
                 action: 'none',
             },

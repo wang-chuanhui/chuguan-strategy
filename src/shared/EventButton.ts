@@ -6,14 +6,14 @@ import { HomeAssistant } from '../types/homeassistant/types';
 export class EventButton extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant;
 
-    config: { title: string, event: string } = {
+    config: { title: string, event: string, detail?: any } = {
         title: '',
         event: ''
     };
     private _handleClick() {
         const event = this.config.event ?? "";
         if (event) {
-            this.dispatchEvent(new CustomEvent(event, { bubbles: true, composed: true }));
+            this.dispatchEvent(new CustomEvent(event, { detail: this.config.detail, bubbles: true, composed: true }));
         }
     }
 
@@ -23,6 +23,7 @@ export class EventButton extends LitElement {
 
 
     render() {
+      console.log(this.hass.dockedSidebar)
         return html`
       <ha-card class="my-button">
         <div>
