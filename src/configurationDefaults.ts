@@ -45,6 +45,12 @@ export const ConfigurationDefaults: StrategyDefaults = {
       showControls: true,
       stack_count: 1,
     },
+    alarm_control_panel: {
+      title: localize('alarm_control_panel.title'),
+      showControls: false,
+      hidden: false,
+      stack_count: 1,
+    },
     binary_sensor: {
       title: `${localize('sensor.binary')} ` + localize('sensor.sensors'),
       showControls: false,

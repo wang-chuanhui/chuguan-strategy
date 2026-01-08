@@ -43,6 +43,7 @@ export class AreaView {
 
     async getCards(): Promise<LovelaceCardConfig[]> {
         const exposedDomainNames = Registry.getExposedNames('domain');
+        console.log(exposedDomainNames)
         const area = this.area;
         const areaEntities = new RegistryFilter(Registry.entities).whereAreaId(area.area_id).toList();
         const viewCards: LovelaceCardConfig[] = [...(area.extra_cards ?? [])];

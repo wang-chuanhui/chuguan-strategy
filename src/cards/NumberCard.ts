@@ -15,6 +15,7 @@ class NumberCard extends AbstractCard {
     return {
       type: 'custom:mushroom-number-card',
       icon: undefined,
+      layout: 'horizontal',
     };
   }
 

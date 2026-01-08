@@ -21,6 +21,7 @@ import { AreaRegistryEntry } from '../homeassistant/data/area_registry';
  */
 const SUPPORTED_DOMAINS = [
   '_',
+  'alarm_control_panel',
   'binary_sensor',
   'button',
   'camera',

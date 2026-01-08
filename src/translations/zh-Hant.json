@@ -57,7 +57,7 @@
     "selects": "選擇器"
   },
   "sensor": {
-    "binary": "二進制傳感器",
+    "binary": "二元傳感器",
     "sensors": "傳感器"
   },
   "switch": {
@@ -92,5 +92,8 @@
     "area_sort": "區域排序", 
     "save": "保存", 
     "domain_sort": "類型排序"
+  }, 
+  "alarm_control_panel": {
+    "title": "安全"
   }
 }

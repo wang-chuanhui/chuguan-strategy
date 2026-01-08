@@ -92,5 +92,8 @@
     "area_sort": "Area Sort", 
     "save": "Save", 
     "domain_sort": "Domain Sort"
+  }, 
+  "alarm_control_panel": {
+    "title": "Security"
   }
 }
