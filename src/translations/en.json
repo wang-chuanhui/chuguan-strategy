@@ -102,5 +102,13 @@
   "humidifier": {
     "all_humidifiers": "All Humidifiers",
     "humidifiers": "Humidifiers"
+  }, 
+  "siren": {
+    "all_sirens": "All Sirens",
+    "sirens": "Sirens"
+  }, 
+  "text": {
+    "all_texts": "All Texts",
+    "texts": "Texts"
   }
 }

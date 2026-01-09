@@ -150,6 +150,17 @@ export const ConfigurationDefaults: StrategyDefaults = {
       showControls: false,
       hidden: false,
     },
+    siren: {
+      title: localize('siren.sirens'),
+      showControls: false,
+      hidden: false,
+      stack_count: 2
+    },
+    text: {
+      title: localize('text.texts'),
+      showControls: false,
+      hidden: false,
+    },
     switch: {
       title: localize('switch.switches'),
       iconOn: 'mdi:power-plug',

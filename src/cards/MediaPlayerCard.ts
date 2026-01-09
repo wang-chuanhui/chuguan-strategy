@@ -15,9 +15,10 @@ class MediaPlayerCard extends AbstractCard {
     return {
       type: 'custom:mushroom-media-player-card',
       use_media_info: true,
-      media_controls: ['on_off', 'play_pause_stop'],
+      media_controls: ['on_off', 'shuffle', 'previous', 'play_pause_stop', 'next', 'repeat'],
       show_volume_level: true,
       volume_controls: ['volume_mute', 'volume_set', 'volume_buttons'],
+      icon: undefined
     };
   }
 

@@ -1,5 +1,6 @@
 import { Condition } from '../../../panels/common/validate-condition';
 import { LovelaceGridOptions, LovelaceLayoutOptions } from '../../../panels/lovelace/types';
+import { ActionConfig } from './action';
 
 /**
  * Represents the configuration for a Lovelace card in Home Assistant.
@@ -24,4 +25,34 @@ export interface LovelaceCardConfig {
   visibility?: Condition[];
 
   [key: string]: any;
+}
+
+
+export type EntityNameItem =
+  | {
+      type: "entity" | "device" | "area" | "floor";
+    }
+  | {
+      type: "text";
+      text: string;
+    };
+
+
+
+
+export interface TileCardConfig extends LovelaceCardConfig {
+  entity: string;
+  name?: string | EntityNameItem | EntityNameItem[];
+  hide_state?: boolean;
+  state_content?: string | string[];
+  icon?: string;
+  color?: string;
+  show_entity_picture?: boolean;
+  vertical?: boolean;
+  tap_action?: ActionConfig;
+  hold_action?: ActionConfig;
+  double_tap_action?: ActionConfig;
+  icon_tap_action?: ActionConfig;
+  icon_hold_action?: ActionConfig;
+  icon_double_tap_action?: ActionConfig;
 }

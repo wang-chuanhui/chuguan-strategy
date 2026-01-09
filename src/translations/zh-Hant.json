@@ -102,5 +102,13 @@
   "humidifier": {
     "all_humidifiers": "所有加濕器",
     "humidifiers": "加濕器"
+  },
+  "siren": {
+    "all_sirens": "所有警報器",
+    "sirens": "警報器"
+  },
+  "text": {
+    "all_texts": "所有文本",
+    "texts": "文本"
   }
 }

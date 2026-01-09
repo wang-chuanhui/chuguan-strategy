@@ -18,6 +18,7 @@ import registryFilter from '../utilities/RegistryFilter';
 import { stackHorizontal } from '../utilities/cardStacking';
 import CalendarCard, { CalendarProCard } from '../cards/CalendarCard';
 import CameraCard from '../cards/CameraCard';
+import { EntityRegistryEntry } from '../types/homeassistant/data/entity_registry';
 
 /**
  * Home View Class.
@@ -119,7 +120,7 @@ class HomeView extends AbstractView {
       homeViewCards.push(...Registry.strategyOptions.extra_cards);
     }
 
-    return [
+    const res = [
       {
         type: 'vertical-stack',
         cards: this.getCalendarCard(),
@@ -128,11 +129,15 @@ class HomeView extends AbstractView {
         type: 'vertical-stack',
         cards: homeViewCards,
       },
-      {
-        type: 'vertical-stack',
-        cards: this.getCameraCards(),
-      }
     ];
+    const cameras = Registry.entities.filter((entity) => entity.entity_id.startsWith('camera.'));
+    if (cameras.length > 0) {
+      res.push({
+        type: 'vertical-stack',
+        cards: this.getCameraCards(cameras),
+      })
+    }
+    return res
   }
 
   private getCalendarCard(): LovelaceCardConfig[] {
@@ -148,8 +153,7 @@ class HomeView extends AbstractView {
   }
 
 
-  private getCameraCards(): LovelaceCardConfig[] {
-    const entities = Registry.entities.filter((entity) => entity.entity_id.startsWith('camera.'));
+  private getCameraCards(entities: EntityRegistryEntry[]): LovelaceCardConfig[] {
     const cards = entities.map((entity) => new CameraCard(entity, this.getCustomCardConfig(entity) as PictureEntityCardConfig).getCard());
     return stackHorizontal(cards, 1);
   }

@@ -39,7 +39,9 @@ const SUPPORTED_DOMAINS = [
   'security',
   'select',
   'sensor',
+  'siren',
   'switch',
+  'text',
   'vacuum',
   'valve',
 ] as const;
