@@ -15,9 +15,9 @@ class CameraCard extends AbstractCard {
     return {
       entity: '',
       type: 'picture-entity',
-      show_name: false,
-      show_state: false,
-      camera_view: 'live',
+      show_name: true,
+      show_state: true,
+      camera_view: 'auto',
     };
   }
 

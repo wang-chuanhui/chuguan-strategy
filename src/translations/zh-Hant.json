@@ -82,18 +82,25 @@
   "button": {
     "all_buttons": "所有按鈕",
     "buttons": "按鈕"
-  }, 
+  },
   "event": {
-    "hide_sidebar": "隱藏侧边栏",
-    "show_sidebar": "顯示侧边栏"
-  }, 
+    "hide_sidebar": "隱藏側邊欄",
+    "show_sidebar": "顯示側邊欄"
+  },
   "setting": {
-    "title": "設置", 
-    "area_sort": "區域排序", 
-    "save": "保存", 
+    "title": "設置",
+    "area_sort": "區域排序",
+    "save": "保存",
     "domain_sort": "類型排序"
-  }, 
+  },
   "alarm_control_panel": {
     "title": "安全"
+  },
+  "security": {
+    "title": "安全"
+  },
+  "humidifier": {
+    "all_humidifiers": "所有加濕器",
+    "humidifiers": "加濕器"
   }
 }

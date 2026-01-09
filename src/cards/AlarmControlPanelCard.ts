@@ -49,6 +49,10 @@ class AlarmControlPanelCard extends AbstractCard {
         } as AlarmControlPanelCardConfig
     }
 
+    is_card_active(entity: EntityRegistryEntry) {
+        return this.is_generic_card_active(entity, '!=', 'disarmed')
+    }
+
 
 }
 

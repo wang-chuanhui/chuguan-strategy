@@ -51,6 +51,10 @@ abstract class AbstractView {
     return (this.constructor as unknown as ViewConstructor).domain;
   }
 
+  protected domains(): Record<string, boolean | string[]> {
+    return {}
+  }
+
   /**
    * Get a view configuration.
    *
@@ -63,15 +67,38 @@ abstract class AbstractView {
     };
   }
 
+  protected isInThisDomain(entity: EntityRegistryEntry): boolean {
+    const prefix = this.domain + '.';
+    const entity_id = entity.entity_id ?? ""
+    if (entity_id.startsWith(prefix)) {
+      return true;
+    }
+    const domains = this.domains()
+    for (const domain of Object.keys(domains)) {
+      const domainConfig = domains[domain]
+      if (typeof domainConfig === 'boolean' && domainConfig) {
+        if (entity_id.startsWith(domain + '.')) {
+          return true;
+        }
+      }
+      if (Array.isArray(domainConfig)) {
+        const state = Registry.hassStates[entity.entity_id]
+        const deviceClass = state.attributes.device_class
+        if (deviceClass && domainConfig.includes(deviceClass)) {
+          return true;
+        }
+      }
+    }
+    return false;
+  }
+
   /**
    * Create the configuration of the cards to include in the view.
    */
   protected async createCardConfigurations(): Promise<LovelaceCardConfig[]> {
     const viewCards: LovelaceCardConfig[] = [];
-    const moduleName = sanitizeClassName(this.domain + 'Card');
-    const DomainCard = (await import(`../cards/${moduleName}`)).default;
     const domainEntities = new RegistryFilter(Registry.entities)
-      .whereDomain(this.domain)
+      .where(e => this.isInThisDomain(e))
       .where((entity) => !entity.entity_id.endsWith('_stateful_scene'))
       .toList();
 
@@ -93,17 +120,19 @@ abstract class AbstractView {
       }
 
       // Create a card configuration for each entity in the current area.
-      areaCards.push(
-        ...areaEntities.map((entity) =>
-          new DomainCard(entity, this.getCustomCardConfig(entity)).getCard()
-        )
-      );
+      for (const entity of areaEntities) {
+        const domain = entity.entity_id.split('.')[0]
+        const moduleName = sanitizeClassName(domain + 'Card');
+        const DomainCard = (await import(`../cards/${moduleName}`)).default;
+        const card = new DomainCard(entity, this.getCustomCardConfig(entity)).getCard()
+        areaCards.push(card)
+      }
 
       // Stack the cards of the current area.
       if (areaCards.length) {
         areaCards = stackHorizontal(
           areaCards,
-          Registry.strategyOptions.domains[this.domain as SupportedDomains].stack_count ??
+          Registry.strategyOptions.domains[this.domain as SupportedDomains]?.stack_count ??
           Registry.strategyOptions.domains['_'].stack_count
         );
 

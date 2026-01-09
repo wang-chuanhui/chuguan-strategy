@@ -1,10 +1,6 @@
-// noinspection JSUnusedGlobalSymbols Class is dynamically imported.
-
 import { Registry } from '../Registry';
-import { EntityRegistryEntry } from '../types/homeassistant/data/entity_registry';
-import { CoverCardConfig } from '../types/lovelace-mushroom/cards/cover-card-config';
 import { CustomHeaderCardConfig } from '../types/strategy/strategy-cards';
-import { CustomCardConfig, SupportedDomains } from '../types/strategy/strategy-generics';
+import { SupportedDomains } from '../types/strategy/strategy-generics';
 import { ViewConfig } from '../types/strategy/strategy-views';
 import { localize } from '../utilities/localize';
 import AbstractView from './AbstractView';

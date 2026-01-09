@@ -95,5 +95,12 @@
   }, 
   "alarm_control_panel": {
     "title": "Security"
+  }, 
+  "security": {
+    "title": "Security"
+  }, 
+  "humidifier": {
+    "all_humidifiers": "All Humidifiers",
+    "humidifiers": "Humidifiers"
   }
 }

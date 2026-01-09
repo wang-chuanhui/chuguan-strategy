@@ -13,9 +13,7 @@ class BinarySensorCard extends SensorCard {
   /** Returns the default configuration object for the card. */
   static getDefaultConfig(): EntityCardConfig {
     return {
-      type: 'custom:mushroom-entity-card',
-      icon: 'mdi:power-cycle',
-      icon_color: 'green',
+      type: 'tile',
     };
   }
 
@@ -27,7 +25,8 @@ class BinarySensorCard extends SensorCard {
    */
   constructor(entity: EntityRegistryEntry, customConfiguration?: EntityCardConfig) {
     super(entity);
-
+    this.configuration.icon = undefined
+    this.configuration.line_color = undefined
     this.configuration = { ...this.configuration, ...BinarySensorCard.getDefaultConfig(), ...customConfiguration };
   }
 }

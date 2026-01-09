@@ -14,7 +14,7 @@ import {
   SupportedDomains,
   SupportedViews,
 } from './types/strategy/strategy-generics';
-import { logMessage, lvlFatal, lvlOff, lvlWarn, setDebugLevel } from './utilities/debug';
+import { logAllEvents, logMessage, lvlFatal, lvlOff, lvlWarn, setDebugLevel } from './utilities/debug';
 import setupCustomLocalize from './utilities/localize';
 import RegistryFilter from './utilities/RegistryFilter';
 import { ConfigManager } from './utilities/config';
@@ -126,8 +126,11 @@ class Registry {
     } catch (e) {
       logMessage(lvlFatal, 'Error importing strategy options!', e);
     }
-
+    
     setDebugLevel(Registry.strategyOptions.debug ? lvlFatal : lvlOff);
+    if (Registry.strategyOptions.debug) {
+      logAllEvents()
+    }
 
     // Import the registries of Home Assistant.
     try {
@@ -140,6 +143,23 @@ class Registry {
     } catch (e) {
       logMessage(lvlFatal, 'Error importing Home Assistant registries!', e);
     }
+    const all: Record<string, Record<string, EntityRegistryEntry[]>> = {}
+    for (const entity of Registry._entities) {
+      const entity_id = entity.entity_id ?? "";
+      const domain = entity_id.split('.')[0];
+      const state = Registry.hassStates[entity_id];
+      const dc = state?.attributes?.device_class ?? "";
+      if (!all[domain]) {
+        all[domain] = {};
+      }
+      const domainEntities = all[domain];
+      if (!domainEntities[dc]) {
+        domainEntities[dc] = [entity];
+      }else {
+        domainEntities[dc].push(entity);
+      }
+    }
+    console.log(all)
     // Process the entries of the Strategy Options.
     Registry._strategyOptions.extra_views.map((view) => ({
       ...view,

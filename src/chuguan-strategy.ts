@@ -9,6 +9,7 @@ import {
   DashboardInfo,
   isSupportedDomain,
   isSupportedView,
+  NotInAreaDomains,
   StrategyArea,
   StrategyViewConfig,
   ViewInfo,
@@ -90,7 +91,7 @@ class MushroomStrategy extends HTMLTemplateElement {
     const orders = views.map(item => item.order ?? 0)
     const maxOrder = Math.max(...orders)
     const areas = Registry.areas.filter(area => {
-      const areaEntities = new RegistryFilter(Registry.entities).whereAreaId(area.area_id).toList();
+      const areaEntities = new RegistryFilter(Registry.entities).whereAreaId(area.area_id).whereNotDomain(NotInAreaDomains).toList();
       return areaEntities.length > 0
     })
     views.push(

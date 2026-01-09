@@ -146,6 +146,18 @@ class RegistryFilter<T extends RegistryEntry, K extends keyof T = keyof T> {
     return this;
   }
 
+  whereNotDomain(domains: string[]): this {
+    const predicate = (entry: T) => {
+      const entryObj = entry as { entity_id?: string };
+      const domain = entryObj.entity_id?.split('.')[0];
+      return !domains.includes(domain ?? '');
+    };
+
+    this.filters.push(this.checkInversion(predicate));
+
+    return this;
+  }
+
   /**
    * Filters entries by their floor id.
    *

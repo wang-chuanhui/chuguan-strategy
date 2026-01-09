@@ -1,5 +1,6 @@
 // noinspection JSUnusedGlobalSymbols Class is dynamically imported.
 
+import { Registry } from '../Registry';
 import { EntityRegistryEntry } from '../types/homeassistant/data/entity_registry';
 import { FanCardConfig } from '../types/lovelace-mushroom/cards/fan-card-config';
 import { RegistryEntry } from '../types/strategy/strategy-generics';
@@ -23,6 +24,11 @@ class FanCard extends AbstractCard {
     };
   }
 
+  has_percentage = false
+  has_oscillate = false
+  has_direction = false
+
+
   /**
    * Class constructor.
    *
@@ -31,11 +37,28 @@ class FanCard extends AbstractCard {
    */
   constructor(entity: EntityRegistryEntry, customConfiguration?: FanCardConfig) {
     super(entity);
-
-    this.configuration = { ...this.configuration, ...FanCard.getDefaultConfig(), ...customConfiguration };
+    this.setupFeatures(entity)
+    this.configuration = { ...this.configuration, ...FanCard.getDefaultConfig(), ...{
+      show_percentage_control: this.has_percentage,
+      show_oscillate_control: this.has_oscillate,
+      show_direction_control: this.has_direction,
+    }, ...customConfiguration };
   }
   is_card_active(entity: RegistryEntry) {
     return this.is_generic_card_active(entity)
+  }
+  private setupFeatures(entity: EntityRegistryEntry) {
+    const state = Registry.hassStates[entity.entity_id];
+    if (!state) {
+      return
+    }
+    const supported_features = state.attributes.supported_features
+    if (!supported_features) {
+      return
+    }
+    this.has_percentage = (supported_features & 1) !== 0
+    this.has_oscillate = (supported_features & 2) !== 0
+    this.has_direction = (supported_features & 4) !== 0
   }
 }
 

@@ -68,3 +68,16 @@ export interface StackCardConfig extends LovelaceCardConfig {
   cards: LovelaceCardConfig[];
   title?: string;
 }
+
+export type FullCalendarView =
+  | "dayGridMonth"
+  | "dayGridWeek"
+  | "dayGridDay"
+  | "listWeek";
+
+export interface CalendarCardConfig extends LovelaceCardConfig {
+  entities: string[];
+  initial_view?: FullCalendarView;
+  title?: string;
+  theme?: string;
+}

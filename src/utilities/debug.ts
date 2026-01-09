@@ -110,12 +110,12 @@ export function setDebugLevel(level: DebugLevel) {
  * It might be required to throw an additional Error after logging with `lvlError ` or `lvlFatal` to satisfy the
  * TypeScript compiler.
  */
-export function logMessage(level: DebugLevel, message: string, ...details: unknown[]): void {
+export function _logMessage(level: DebugLevel, message: string, ...details: unknown[]): void {
   if (currentLevel === DebugLevel.Off || level > currentLevel) {
     return;
   }
 
-  const frontEndMessage: string = 'Mushroom Strategy - An error occurred. Check the console (F12) for details.';
+  const frontEndMessage: string = 'ChuGuan Strategy - An error occurred. Check the console (F12) for details.';
   const prefix = `[${DebugLevel[level].toUpperCase()}]`;
   const safeDetails = details.map(deepClone);
   const caller = `[at ${getCallerName(new Error().stack)}]`;
@@ -137,5 +137,30 @@ export function logMessage(level: DebugLevel, message: string, ...details: unkno
       console.error(`${prefix}${caller} ${message}`, ...safeDetails);
       alert?.(`${prefix} ${message}`);
       throw frontEndMessage;
+  }
+}
+
+export function logMessage(level: DebugLevel, message: string, ...details: unknown[]): void {
+  try {
+    _logMessage(level, message, ...details);
+  } catch (error) {
+    console.error('logMessage error', level, message, ...details);
+  }
+}
+
+export function logAllEvents() {
+  const originDispatchEvent = EventTarget.prototype.dispatchEvent
+  EventTarget.prototype.dispatchEvent = function (event: Event): boolean {
+    try {
+      const detail = (event as CustomEvent).detail
+      console.log(event.type, detail)
+      //dialogImport
+      if (event.type == 'show-dialog' && detail.dialogImport) {
+        console.log(detail.dialogImport)
+      }
+    } catch (error) {
+      console.log(event.type, error)
+    }
+    return originDispatchEvent.call(this, event);
   }
 }

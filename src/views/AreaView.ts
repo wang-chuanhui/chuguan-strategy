@@ -1,7 +1,7 @@
 import { HassServiceTarget } from "home-assistant-js-websocket";
 import { Registry } from "../Registry";
 import { LovelaceCardConfig } from "../types/homeassistant/data/lovelace/config/card";
-import { isSupportedDomain, StrategyArea, StrategyViewConfig } from "../types/strategy/strategy-generics";
+import { isSupportedDomain, NotInAreaDomains, StrategyArea, StrategyViewConfig } from "../types/strategy/strategy-generics";
 import RegistryFilter from "../utilities/RegistryFilter";
 import { sanitizeClassName } from "../utilities/auxiliaries";
 import HeaderCard from "../cards/HeaderCard";
@@ -43,9 +43,8 @@ export class AreaView {
 
     async getCards(): Promise<LovelaceCardConfig[]> {
         const exposedDomainNames = Registry.getExposedNames('domain');
-        console.log(exposedDomainNames)
         const area = this.area;
-        const areaEntities = new RegistryFilter(Registry.entities).whereAreaId(area.area_id).toList();
+        const areaEntities = new RegistryFilter(Registry.entities).whereAreaId(area.area_id).whereNotDomain(NotInAreaDomains).toList();
         const viewCards: LovelaceCardConfig[] = [...(area.extra_cards ?? [])];
 
         // Set the target for any Header card to the current area.

@@ -52,7 +52,7 @@ export const ConfigurationDefaults: StrategyDefaults = {
       stack_count: 1,
     },
     binary_sensor: {
-      title: `${localize('sensor.binary')} ` + localize('sensor.sensors'),
+      title: localize('sensor.binary'),
       showControls: false,
       hidden: false,
       stack_count: 2, // TODO: Add to wiki. also for other configurations.
@@ -94,6 +94,11 @@ export const ConfigurationDefaults: StrategyDefaults = {
       offService: 'fan.turn_off',
       hidden: false,
     },
+    humidifier: {
+      title: localize('humidifier.humidifiers'),
+      showControls: false,
+      hidden: false,
+    },
     input_select: {
       title: localize('input_select.input_selects'),
       showControls: false,
@@ -133,6 +138,12 @@ export const ConfigurationDefaults: StrategyDefaults = {
       title: localize('select.selects'),
       showControls: false,
       hidden: false,
+    },
+    security: {
+      title: localize('security.title'),
+      showControls: false,
+      hidden: false,
+      stack_count: 1,
     },
     sensor: {
       title: localize('sensor.sensors'),
@@ -199,6 +210,10 @@ export const ConfigurationDefaults: StrategyDefaults = {
       hidden: false,
     },
     light: {
+      order: 2,
+      hidden: false,
+    },
+    security: {
       order: 2,
       hidden: false,
     },

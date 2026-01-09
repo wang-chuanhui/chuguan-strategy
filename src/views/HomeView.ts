@@ -3,7 +3,7 @@
 import { Registry } from '../Registry';
 import { ActionConfig } from '../types/homeassistant/data/lovelace/config/action';
 import { LovelaceCardConfig } from '../types/homeassistant/data/lovelace/config/card';
-import { AreaCardConfig, StackCardConfig } from '../types/homeassistant/panels/lovelace/cards/types';
+import { AreaCardConfig, PictureEntityCardConfig, StackCardConfig } from '../types/homeassistant/panels/lovelace/cards/types';
 import { ChipsCardConfig } from '../types/lovelace-mushroom/cards/chips-card';
 import { PersonCardConfig } from '../types/lovelace-mushroom/cards/person-card-config';
 import { TemplateCardConfig } from '../types/lovelace-mushroom/cards/template-card-config';
@@ -16,6 +16,8 @@ import { localize } from '../utilities/localize';
 import AbstractView from './AbstractView';
 import registryFilter from '../utilities/RegistryFilter';
 import { stackHorizontal } from '../utilities/cardStacking';
+import CalendarCard, { CalendarProCard } from '../cards/CalendarCard';
+import CameraCard from '../cards/CameraCard';
 
 /**
  * Home View Class.
@@ -104,6 +106,7 @@ class HomeView extends AbstractView {
       } as TemplateCardConfig);
     }
 
+    homeViewCards.push(...this.getCalendarProCard());
     if (Registry.strategyOptions.quick_access_cards) {
       homeViewCards.push(...Registry.strategyOptions.quick_access_cards);
     }
@@ -119,9 +122,36 @@ class HomeView extends AbstractView {
     return [
       {
         type: 'vertical-stack',
+        cards: this.getCalendarCard(),
+      },
+      {
+        type: 'vertical-stack',
         cards: homeViewCards,
       },
+      {
+        type: 'vertical-stack',
+        cards: this.getCameraCards(),
+      }
     ];
+  }
+
+  private getCalendarCard(): LovelaceCardConfig[] {
+    const entities = Registry.entities.filter((entity) => entity.entity_id.startsWith('calendar.'));
+    const calendarCard = new CalendarCard(entities);
+    return [calendarCard.getCard()];
+  }
+
+  private getCalendarProCard(): LovelaceCardConfig[] {
+    const entities = Registry.entities.filter((entity) => entity.entity_id.startsWith('calendar.'));
+    const por = new CalendarProCard(entities)
+    return [por.getCard()];
+  }
+
+
+  private getCameraCards(): LovelaceCardConfig[] {
+    const entities = Registry.entities.filter((entity) => entity.entity_id.startsWith('camera.'));
+    const cards = entities.map((entity) => new CameraCard(entity, this.getCustomCardConfig(entity) as PictureEntityCardConfig).getCard());
+    return stackHorizontal(cards, 1);
   }
 
   /**

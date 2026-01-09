@@ -24,6 +24,10 @@ class CoverCard extends AbstractCard {
     };
   }
 
+  hasOpen = true
+  hasPosition = true
+  hasTilt = true
+
   /**
    * Class constructor.
    *
@@ -32,29 +36,39 @@ class CoverCard extends AbstractCard {
    */
   constructor(entity: EntityRegistryEntry, customConfiguration?: CoverCardConfig) {
     super(entity);
-
+    this.setupFeatures(entity)
     this.configuration = { ...this.configuration, ...CoverCard.getDefaultConfig(), ...this.getSubClassCustomCardConfig(entity), ...customConfiguration };
+    if (this.hasOpen == false) {
+      this.configuration.tap_action = { action: 'none' }
+    }
   }
-  is_card_active(entity: RegistryEntry) {
+  is_card_active(entity: EntityRegistryEntry) {
+    if (this.hasOpen == false) {
+      return null;
+    }
     return this.is_generic_card_active(entity, '!=', 'closed')
   }
   protected getSubClassCustomCardConfig(entity: EntityRegistryEntry): CoverCardConfig | null | undefined {
-      const state = Registry.hassStates[entity.entity_id];
-      if (!state) {
-        return null
-      }
-      const supported_features =  state.attributes.supported_features
-      if (!supported_features) {
-        return null
-      }
-      const hasPosition = (supported_features & 4) !== 0
-      const hasTilt = (supported_features & 128) !== 0
-      return {
-        show_buttons_control: true, 
-        show_position_control: hasPosition,
-        show_tilt_position_control: hasTilt
-      } as CoverCardConfig
+    return {
+      show_buttons_control: this.hasOpen,
+      show_position_control: this.hasPosition,
+      show_tilt_position_control: this.hasTilt
+    } as CoverCardConfig
+  }
+
+  private setupFeatures(entity: EntityRegistryEntry) {
+    const state = Registry.hassStates[entity.entity_id];
+    if (!state) {
+      return
     }
+    const supported_features = state.attributes.supported_features
+    if (!supported_features) {
+      return
+    }
+    this.hasOpen = (supported_features & 1) !== 0
+    this.hasPosition = (supported_features & 4) !== 0
+    this.hasTilt = (supported_features & 128) !== 0
+  }
 }
 
 export default CoverCard;

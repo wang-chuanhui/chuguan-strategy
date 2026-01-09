@@ -95,5 +95,12 @@
   }, 
   "alarm_control_panel": {
     "title": "安全"
+  }, 
+  "security": {
+    "title": "安全"
+  }, 
+  "humidifier": {
+    "all_humidifiers": "所有加湿器",
+    "humidifiers": "加湿器"
   }
 }

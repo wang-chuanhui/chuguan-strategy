@@ -29,12 +29,14 @@ const SUPPORTED_DOMAINS = [
   'cover',
   'default',
   'fan',
+  'humidifier',
   'input_select',
   'light',
   'lock',
   'media_player',
   'number',
   'scene',
+  'security',
   'select',
   'sensor',
   'switch',
@@ -57,6 +59,7 @@ const SUPPORTED_VIEWS = [
   'light',
   'lock',
   'scene',
+  'security',
   'switch',
   'vacuum',
   'valve',
@@ -81,6 +84,7 @@ export type SupportedDomains = (typeof SUPPORTED_DOMAINS)[number];
 export type SupportedViews = (typeof SUPPORTED_VIEWS)[number];
 export type SupportedChips = (typeof SUPPORTED_CHIPS)[number];
 export type HomeViewSections = (typeof HOME_VIEW_SECTIONS)[number];
+export const NotInAreaDomains = ['calendar']
 
 /**
  * Base interface for sortable items.
