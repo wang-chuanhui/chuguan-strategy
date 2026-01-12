@@ -85,6 +85,7 @@ export const ConfigurationDefaults: StrategyDefaults = {
       title: localize('generic.miscellaneous'),
       showControls: false,
       hidden: false,
+      stack_count: 2,
     },
     fan: {
       title: localize('fan.fans'),
@@ -161,6 +162,11 @@ export const ConfigurationDefaults: StrategyDefaults = {
       showControls: false,
       hidden: false,
     },
+    todo: {
+      title: localize('todo.todos'),
+      showControls: false,
+      hidden: false,
+    },
     switch: {
       title: localize('switch.switches'),
       iconOn: 'mdi:power-plug',
@@ -184,6 +190,18 @@ export const ConfigurationDefaults: StrategyDefaults = {
       iconOff: 'mdi:valve-closed',
       onService: 'valve.open_valve',
       offService: 'valve.close_valve',
+      hidden: false,
+      stack_count: 2,
+    },
+    water_heater: {
+      title: localize('water_heater.water_heaters'),
+      showControls: false,
+      hidden: false,
+      stack_count: 2
+    },
+    weather: {
+      title: localize('weather.weather'),
+      showControls: false,
       hidden: false,
     },
   },

@@ -20,33 +20,11 @@ export default class TileCard extends AbstractCard {
     constructor(entity: EntityRegistryEntry, customConfiguration?: LovelaceCardConfig) {
         super(entity);
         this.setupFeatures(entity);
-        console.log(this.getSubConfiguration(), customConfiguration)
         this.configuration = { ...this.configuration, ...(this.constructor as typeof TileCard).getDefaultConfig(), ...this.getSubConfiguration(), ...customConfiguration };
-        console.log(this.configuration)
     }
 
     getSubConfiguration(): Partial<TitleCardConfig> {
         return {}
     }
 
-    setupFeatures(entity: EntityRegistryEntry) {
-        const state = Registry.hassStates[entity.entity_id];
-        if (!state) {
-            return
-        }
-        this.setupFeaturesState(entity, state);
-        const supported_features = state.attributes.supported_features
-        if (!supported_features) {
-            return
-        }
-        this.setupFeaturesSupported(entity, supported_features);
-    }
-
-    setupFeaturesState(entity: EntityRegistryEntry, state: HassEntity) {
-
-    }
-
-    setupFeaturesSupported(entity: EntityRegistryEntry, supported_features: number) {
-
-    }
 }

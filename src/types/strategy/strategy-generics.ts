@@ -42,8 +42,11 @@ const SUPPORTED_DOMAINS = [
   'siren',
   'switch',
   'text',
+  'todo',
   'vacuum',
   'valve',
+  'water_heater',
+  'weather',
 ] as const;
 
 /**

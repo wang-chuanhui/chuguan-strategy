@@ -81,3 +81,40 @@ export interface CalendarCardConfig extends LovelaceCardConfig {
   title?: string;
   theme?: string;
 }
+
+export interface TodoListCardConfig extends LovelaceCardConfig {
+  title?: string;
+  theme?: string;
+  entity?: string;
+  hide_completed?: boolean;
+  hide_create?: boolean;
+  hide_section_headers?: boolean;
+  sort?: string;
+}
+
+export type EntityNameItem =
+  | {
+      type: "entity" | "device" | "area" | "floor";
+    }
+  | {
+      type: "text";
+      text: string;
+    };
+
+export type ModernForecastType = "hourly" | "daily" | "twice_daily";
+export type ForecastType = ModernForecastType | "legacy";
+
+export interface WeatherForecastCardConfig extends LovelaceCardConfig {
+  entity: string;
+  name?: string | EntityNameItem | EntityNameItem[];
+  show_current?: boolean;
+  show_forecast?: boolean;
+  forecast_type?: ForecastType;
+  forecast_slots?: number;
+  secondary_info_attribute?: "visibility" | "dew_point" | "air_pressure" | "humidity" | "temperature" | "wind_speed" | "precipitation" | undefined;
+  round_temperature?: boolean;
+  theme?: string;
+  tap_action?: ActionConfig;
+  hold_action?: ActionConfig;
+  double_tap_action?: ActionConfig;
+}

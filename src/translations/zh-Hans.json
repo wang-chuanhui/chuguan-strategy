@@ -110,5 +110,14 @@
   "text": {
     "all_texts": "所有文本",
     "texts": "文本"
+  }, 
+  "todo": {
+    "todos": "待办事项"
+  }, 
+  "water_heater": {
+    "water_heaters": "热水器"
+  }, 
+  "weather": {
+    "weather": "天气预报"
   }
 }

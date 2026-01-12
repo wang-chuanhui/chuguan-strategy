@@ -3,7 +3,7 @@
 import { Registry } from '../Registry';
 import { ActionConfig } from '../types/homeassistant/data/lovelace/config/action';
 import { LovelaceCardConfig } from '../types/homeassistant/data/lovelace/config/card';
-import { AreaCardConfig, PictureEntityCardConfig, StackCardConfig } from '../types/homeassistant/panels/lovelace/cards/types';
+import { AreaCardConfig, PictureEntityCardConfig, StackCardConfig, TodoListCardConfig } from '../types/homeassistant/panels/lovelace/cards/types';
 import { ChipsCardConfig } from '../types/lovelace-mushroom/cards/chips-card';
 import { PersonCardConfig } from '../types/lovelace-mushroom/cards/person-card-config';
 import { TemplateCardConfig } from '../types/lovelace-mushroom/cards/template-card-config';
@@ -19,6 +19,8 @@ import { stackHorizontal } from '../utilities/cardStacking';
 import CalendarCard, { CalendarProCard } from '../cards/CalendarCard';
 import CameraCard from '../cards/CameraCard';
 import { EntityRegistryEntry } from '../types/homeassistant/data/entity_registry';
+import TodoCard from '../cards/TodoCard';
+import TileCard from '../cards/TileCard';
 
 /**
  * Home View Class.
@@ -107,7 +109,8 @@ class HomeView extends AbstractView {
       } as TemplateCardConfig);
     }
 
-    homeViewCards.push(...this.getCalendarProCard());
+    homeViewCards.push(...this.getTodoCard());
+
     if (Registry.strategyOptions.quick_access_cards) {
       homeViewCards.push(...Registry.strategyOptions.quick_access_cards);
     }
@@ -143,7 +146,7 @@ class HomeView extends AbstractView {
   private getCalendarCard(): LovelaceCardConfig[] {
     const entities = Registry.entities.filter((entity) => entity.entity_id.startsWith('calendar.'));
     const calendarCard = new CalendarCard(entities);
-    return [calendarCard.getCard()];
+    return [...this.getCalendarProCard(), calendarCard.getCard(), ...this.getUpdates()];
   }
 
   private getCalendarProCard(): LovelaceCardConfig[] {
@@ -152,6 +155,22 @@ class HomeView extends AbstractView {
     return [por.getCard()];
   }
 
+  private getTodoCard(): LovelaceCardConfig[] {
+    const entities = Registry.entities.filter((entity) => entity.entity_id.startsWith('todo.'));
+    const todoCards = entities.map((entity) => new TodoCard(entity, this.getCustomCardConfig(entity) as TodoListCardConfig).getCard());
+    return todoCards;
+  }
+
+  private getUpdates(): LovelaceCardConfig[] {
+    const entities = Registry.updates.filter((entity) => {
+      return entity.entity_id.startsWith('update.') && Registry.hassStates[entity.entity_id].state !== 'off';
+    });
+    const states = entities.map((entity) => Registry.hassStates[entity.entity_id]);
+    console.log(states)
+    const updateCards = entities.map((entity) => new TileCard(entity, this.getCustomCardConfig(entity) as LovelaceCardConfig).getCard());
+    const stacks = stackHorizontal(updateCards, 2)
+    return stacks;
+  }
 
   private getCameraCards(entities: EntityRegistryEntry[]): LovelaceCardConfig[] {
     const cards = entities.map((entity) => new CameraCard(entity, this.getCustomCardConfig(entity) as PictureEntityCardConfig).getCard());

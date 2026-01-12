@@ -14,10 +14,10 @@ class ValveCard extends AbstractCard {
   /** Returns the default configuration object for the card. */
   static getDefaultConfig(): TemplateCardConfig {
     return {
-      type: 'custom:mushroom-template-card',
-      icon: 'mdi:valve',
-      icon_color: 'blue',
-      double_tap_action: {
+      type: 'custom:mushroom-entity-card',
+      icon: undefined,
+      icon_color: undefined,
+      tap_action: {
         action: 'toggle',
       },
     };
@@ -35,20 +35,20 @@ class ValveCard extends AbstractCard {
     // Initialize the default configuration.
     const configuration = ValveCard.getDefaultConfig();
 
-    configuration.entity = entity.entity_id;
-    configuration.icon = entity.icon ?? configuration.icon;
-    configuration.primary = entity.name ?? entity.original_name ?? '?';
-    configuration.secondary = `{% 
-                                 set mapping = {
-                                   'open': '${localize('valve.open')}',
-                                   'opening': '${localize('valve.opening')}',
-                                   'closed': '${localize('valve.closed')}',
-                                   'closing': '${localize('valve.closing')}',
-                                   'stopped': '${localize('valve.stopped')}',
-                                   'unavailable': '${localize('generic.unavailable')}'
-                                 }
-                               %}
-                               {{ mapping.get(states('${entity.entity_id}'), '${localize('generic.unknown')}') }}`;
+    // configuration.entity = entity.entity_id;
+    // configuration.icon = entity.icon ?? configuration.icon;
+    // configuration.primary = entity.name ?? entity.original_name ?? '?';
+    // configuration.secondary = `{% 
+    //                              set mapping = {
+    //                                'open': '${localize('valve.open')}',
+    //                                'opening': '${localize('valve.opening')}',
+    //                                'closed': '${localize('valve.closed')}',
+    //                                'closing': '${localize('valve.closing')}',
+    //                                'stopped': '${localize('valve.stopped')}',
+    //                                'unavailable': '${localize('generic.unavailable')}'
+    //                              }
+    //                            %}
+    //                            {{ mapping.get(states('${entity.entity_id}'), '${localize('generic.unknown')}') }}`;
 
     this.configuration = { ...this.configuration, ...configuration, ...customConfiguration };
   }

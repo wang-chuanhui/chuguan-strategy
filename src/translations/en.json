@@ -110,5 +110,14 @@
   "text": {
     "all_texts": "All Texts",
     "texts": "Texts"
+  }, 
+  "todo": {
+    "todos": "Todos"
+  }, 
+  "water_heater": {
+    "water_heaters": "Water Heaters"
+  }, 
+  "weather": {
+    "weather": "Weather"
   }
 }

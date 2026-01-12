@@ -1,4 +1,6 @@
+import { HassEntity } from 'home-assistant-js-websocket';
 import { Registry } from '../Registry';
+import { EntityRegistryEntry } from '../types/homeassistant/data/entity_registry';
 import { LovelaceCardConfig } from '../types/homeassistant/data/lovelace/config/card';
 import { AbstractCardConfig } from '../types/strategy/strategy-cards';
 import { RegistryEntry } from '../types/strategy/strategy-generics';
@@ -83,6 +85,28 @@ abstract class AbstractCard {
       style: style
     }
   }
+
+  setupFeatures(entity: EntityRegistryEntry) {
+    const state = Registry.hassStates[entity.entity_id];
+    if (!state) {
+      return
+    }
+    this.setupFeaturesState(entity, state);
+    const supported_features = state.attributes.supported_features
+    if (!supported_features) {
+      return
+    }
+    this.setupFeaturesSupported(entity, supported_features);
+  }
+
+  setupFeaturesState(entity: EntityRegistryEntry, state: HassEntity) {
+
+  }
+
+  setupFeaturesSupported(entity: EntityRegistryEntry, supported_features: number) {
+
+  }
+
 }
 
 export default AbstractCard;

@@ -47,15 +47,8 @@ class FanCard extends AbstractCard {
   is_card_active(entity: RegistryEntry) {
     return this.is_generic_card_active(entity)
   }
-  private setupFeatures(entity: EntityRegistryEntry) {
-    const state = Registry.hassStates[entity.entity_id];
-    if (!state) {
-      return
-    }
-    const supported_features = state.attributes.supported_features
-    if (!supported_features) {
-      return
-    }
+
+  setupFeaturesSupported(entity: EntityRegistryEntry, supported_features: number): void {
     this.has_percentage = (supported_features & 1) !== 0
     this.has_oscillate = (supported_features & 2) !== 0
     this.has_direction = (supported_features & 4) !== 0

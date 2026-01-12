@@ -78,6 +78,11 @@ class Registry {
     return Registry._entities;
   }
 
+  private static _updates: EntityRegistryEntry[] = []
+  static get updates(): EntityRegistryEntry[] {
+    return Registry._updates;
+  }
+
   /** Entries of Home Assistant's area registry. */
   private static _areas: StrategyArea[] = [];
 
@@ -166,6 +171,7 @@ class Registry {
       subview: false,
     }));
 
+    Registry._updates = new RegistryFilter(Registry.entities).whereDomain('update').toList()
     // Process entries of the HASS entity registry.
     Registry._entities = new RegistryFilter(Registry.entities)
       .not()
