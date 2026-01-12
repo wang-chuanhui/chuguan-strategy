@@ -21,6 +21,9 @@ import CameraCard from '../cards/CameraCard';
 import { EntityRegistryEntry } from '../types/homeassistant/data/entity_registry';
 import TodoCard from '../cards/TodoCard';
 import TileCard from '../cards/TileCard';
+import "../clock/chuguan-clock-card";
+import ClockCard from '../cards/ClockCard';
+import UpdateCard from '../cards/UpdateCard';
 
 /**
  * Home View Class.
@@ -109,7 +112,8 @@ class HomeView extends AbstractView {
       } as TemplateCardConfig);
     }
 
-    homeViewCards.push(...this.getTodoCard());
+    homeViewCards.push(...this.getClockCards())
+    // homeViewCards.push(...this.getTodoCard());
 
     if (Registry.strategyOptions.quick_access_cards) {
       homeViewCards.push(...Registry.strategyOptions.quick_access_cards);
@@ -162,14 +166,22 @@ class HomeView extends AbstractView {
   }
 
   private getUpdates(): LovelaceCardConfig[] {
-    const entities = Registry.updates.filter((entity) => {
-      return entity.entity_id.startsWith('update.') && Registry.hassStates[entity.entity_id].state !== 'off';
-    });
-    const states = entities.map((entity) => Registry.hassStates[entity.entity_id]);
-    console.log(states)
-    const updateCards = entities.map((entity) => new TileCard(entity, this.getCustomCardConfig(entity) as LovelaceCardConfig).getCard());
-    const stacks = stackHorizontal(updateCards, 2)
-    return stacks;
+    const entities = Registry.updates;
+    const updateCards = entities.map((entity) => new UpdateCard(entity, this.getCustomCardConfig(entity) as LovelaceCardConfig).getCard());
+    return [{
+      type: 'grid',
+      cards: updateCards,
+      columns: 2,
+      square: false
+    }];
+  }
+
+  private getClockCards(): LovelaceCardConfig[] {
+    const clockCards = [
+      new ClockCard({} as any, { clock_style: 'analog', no_background: true, border: true }).getCard(),
+      new ClockCard({} as any, {} as any).getCard(),
+    ];
+    return stackHorizontal(clockCards, 2);
   }
 
   private getCameraCards(entities: EntityRegistryEntry[]): LovelaceCardConfig[] {

@@ -19,7 +19,8 @@
   },
   "dependencies": {
     "deepmerge": "^4",
-    "sortablejs": "^1.15.6"
+    "sortablejs": "^1.15.6",
+    "memoize-one": "6.0.0"
   },
   "devDependencies": {
     "@types/semver": "^7.7.1",

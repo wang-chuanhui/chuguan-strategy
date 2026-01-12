@@ -1,5 +1,7 @@
 import { ActionConfig } from '../../../data/lovelace/config/action';
 import { LovelaceCardConfig } from '../../../data/lovelace/config/card';
+import memoizeOne from "memoize-one";
+
 
 /**
  * Home Assistant Area Card Config.
@@ -118,3 +120,95 @@ export interface WeatherForecastCardConfig extends LovelaceCardConfig {
   hold_action?: ActionConfig;
   double_tap_action?: ActionConfig;
 }
+
+export enum TimeFormat {
+  language = "language",
+  system = "system",
+  am_pm = "12",
+  twenty_four = "24",
+}
+
+export interface ClockCardConfig extends LovelaceCardConfig {
+  type: "custom:chuguan-clock-card";
+  title?: string;
+  clock_style?: "digital" | "analog";
+  clock_size?: "small" | "medium" | "large";
+  show_seconds?: boolean | undefined;
+  seconds_motion?: "continuous" | "tick";
+  time_format?: TimeFormat;
+  time_zone?: string;
+  no_background?: boolean;
+  // Analog clock options
+  border?: boolean;
+  ticks?: "none" | "quarter" | "hour" | "minute";
+  face_style?: "markers" | "numbers_upright" | "roman";
+}
+
+export enum TimeZone {
+  local = "local",
+  server = "server",
+}
+
+const RESOLVED_TIME_ZONE = Intl.DateTimeFormat?.().resolvedOptions?.().timeZone;
+
+export const LOCAL_TIME_ZONE = RESOLVED_TIME_ZONE ?? "UTC";
+
+
+export const resolveTimeZone = (option: TimeZone, serverTimeZone: string) =>
+  option === TimeZone.local && RESOLVED_TIME_ZONE
+    ? LOCAL_TIME_ZONE
+    : serverTimeZone;
+
+export enum NumberFormat {
+  language = "language",
+  system = "system",
+  comma_decimal = "comma_decimal",
+  decimal_comma = "decimal_comma",
+  quote_decimal = "quote_decimal",
+  space_comma = "space_comma",
+  none = "none",
+}
+
+export enum DateFormat {
+  language = "language",
+  system = "system",
+  DMY = "DMY",
+  MDY = "MDY",
+  YMD = "YMD",
+}
+
+export enum FirstWeekday {
+  language = "language",
+  monday = "monday",
+  tuesday = "tuesday",
+  wednesday = "wednesday",
+  thursday = "thursday",
+  friday = "friday",
+  saturday = "saturday",
+  sunday = "sunday",
+}
+
+export interface FrontendLocaleData {
+  language: string;
+  number_format: NumberFormat;
+  time_format: TimeFormat;
+  date_format: DateFormat;
+  first_weekday: FirstWeekday;
+  time_zone: TimeZone;
+}
+
+export const useAmPm = memoizeOne((locale: FrontendLocaleData): boolean => {
+  if (
+    locale.time_format === TimeFormat.language ||
+    locale.time_format === TimeFormat.system
+  ) {
+    const testLanguage =
+      locale.time_format === TimeFormat.language ? locale.language : undefined;
+    const test = new Date("January 1, 2023 22:00:00").toLocaleString(
+      testLanguage
+    );
+    return test.includes("10");
+  }
+
+  return locale.time_format === TimeFormat.am_pm;
+});
