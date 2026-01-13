@@ -42,7 +42,7 @@ export const ConfigurationDefaults: StrategyDefaults = {
     _: {
       hide_config_entities: undefined,
       hide_diagnostic_entities: undefined,
-      showControls: true,
+      showControls: false,
       stack_count: 1,
     },
     alarm_control_panel: {
@@ -79,7 +79,7 @@ export const ConfigurationDefaults: StrategyDefaults = {
       iconOff: 'mdi:arrow-down',
       onService: 'cover.open_cover',
       offService: 'cover.close_cover',
-      hidden: false,
+      hidden: true,
     },
     default: {
       title: localize('generic.miscellaneous'),
@@ -93,7 +93,7 @@ export const ConfigurationDefaults: StrategyDefaults = {
       iconOff: 'mdi:fan-off',
       onService: 'fan.turn_on',
       offService: 'fan.turn_off',
-      hidden: false,
+      hidden: true,
     },
     humidifier: {
       title: localize('humidifier.humidifiers'),

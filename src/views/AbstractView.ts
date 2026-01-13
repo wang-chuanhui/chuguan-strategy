@@ -95,6 +95,10 @@ abstract class AbstractView {
     return false;
   }
 
+  protected showHeader(): boolean {
+    return false
+  }
+
   /**
    * Create the configuration of the cards to include in the view.
    */
@@ -116,7 +120,7 @@ abstract class AbstractView {
     }
 
     // Add a Header Card to control all the entities in the view.
-    if (this.viewHeaderCardConfiguration.cards.length && viewCards.length) {
+    if (this.showHeader() &&this.viewHeaderCardConfiguration.cards.length && viewCards.length) {
       viewCards.unshift(this.viewHeaderCardConfiguration);
     }
 

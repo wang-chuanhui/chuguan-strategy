@@ -14,11 +14,12 @@ class ClimateChip extends AbstractChip {
   static getDefaultConfig(): TemplateChipConfig {
     return {
       type: 'template',
-      icon: 'mdi:thermostat',
+      icon: 'mdi:fan',
       icon_color: 'orange',
       content: Registry.getCountTemplate('climate', 'ne', 'off'),
       tap_action: {
-        action: 'none',
+        action: 'navigate',
+        navigation_path: 'climates',
       },
       hold_action: {
         action: 'navigate',

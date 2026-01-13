@@ -23,7 +23,7 @@ class ClimateView extends AbstractView {
     return {
       title: localize('climate.climates'),
       path: 'climates',
-      icon: 'mdi:thermostat',
+      icon: 'mdi:fan',
       subview: false,
       headerCardConfiguration: {
         showControls: false,
@@ -39,6 +39,14 @@ class ClimateView extends AbstractView {
         `${Registry.getCountTemplate(ClimateView.domain, 'ne', 'off')} ${localize('climate.climates')} ` +
         localize('generic.busy'),
     };
+  }
+
+  protected domains(): Record<string, boolean | string[]> {
+    return {
+      [ClimateView.domain]: true,
+      cover: true,
+      fan: true
+    }
   }
 
   /**

@@ -4,8 +4,8 @@
     "cameras": "摄像头"
   },
   "climate": {
-    "all_climates": "所有空调",
-    "climates": "空调"
+    "all_climates": "所有温控",
+    "climates": "温控"
   },
   "cover": {
     "all_covers": "所有窗帘",
