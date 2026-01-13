@@ -63,12 +63,14 @@ const SUPPORTED_VIEWS = [
   'home',
   'light',
   'lock',
+  'media_player',
   'scene',
   'security',
   'sensor',
   'switch',
   'vacuum',
   'valve',
+  'water_heater',
 ] as const;
 
 /**

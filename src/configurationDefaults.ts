@@ -269,7 +269,15 @@ export const ConfigurationDefaults: StrategyDefaults = {
     sensor: {
       order: 13,
       hidden: false,
-    }
+    }, 
+    media_player: {
+      order: 14,
+      hidden: false,
+    },
+    water_heater: {
+      order: 15,
+      hidden: false,
+    },
   },
   quick_access_cards: [],
 };
