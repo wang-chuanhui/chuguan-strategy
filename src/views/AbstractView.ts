@@ -63,6 +63,7 @@ abstract class AbstractView {
   async getView(): Promise<LovelaceViewConfig> {
     return {
       ...this.baseConfiguration,
+      type: 'masonry',
       cards: await this.createCardConfigurations(),
     };
   }
@@ -82,10 +83,12 @@ abstract class AbstractView {
         }
       }
       if (Array.isArray(domainConfig)) {
-        const state = Registry.hassStates[entity.entity_id]
-        const deviceClass = state.attributes.device_class
-        if (deviceClass && domainConfig.includes(deviceClass)) {
-          return true;
+        if (entity_id.startsWith(domain + '.')) {
+          const state = Registry.hassStates[entity.entity_id]
+          const deviceClass = state.attributes.device_class
+          if (deviceClass && domainConfig.includes(deviceClass)) {
+            return true;
+          }
         }
       }
     }
@@ -104,47 +107,12 @@ abstract class AbstractView {
 
     // Create card configurations for each area.
     for (const area of Registry.areas) {
-      let areaCards: AbstractCardConfig[] = [];
-
-      // Set the target of the Header card to the current area.
-      let target: HassServiceTarget = {
-        area_id: [area.area_id],
-      };
-      const areaEntities = new RegistryFilter(domainEntities).whereAreaId(area.area_id).toList();
-
-      // Set the target of the Header card to entities without an area.
-      if (area.area_id === 'undisclosed') {
-        target = {
-          entity_id: areaEntities.map((entity) => entity.entity_id),
-        };
+      const areaEntities = new RegistryFilter(domainEntities).whereAreaId(area.area_id).toList()
+      const info = await this.createAreaCards(area, areaEntities)
+      if (info) {
+        viewCards.push(...info);
       }
 
-      // Create a card configuration for each entity in the current area.
-      for (const entity of areaEntities) {
-        const domain = entity.entity_id.split('.')[0]
-        const moduleName = sanitizeClassName(domain + 'Card');
-        const DomainCard = (await import(`../cards/${moduleName}`)).default;
-        const card = new DomainCard(entity, this.getCustomCardConfig(entity)).getCard()
-        areaCards.push(card)
-      }
-
-      // Stack the cards of the current area.
-      if (areaCards.length) {
-        areaCards = stackHorizontal(
-          areaCards,
-          Registry.strategyOptions.domains[this.domain as SupportedDomains]?.stack_count ??
-          Registry.strategyOptions.domains['_'].stack_count
-        );
-
-        // Create and insert a Header card.
-        const areaHeaderCardOptions = (
-          'headerCardConfiguration' in this.baseConfiguration ? this.baseConfiguration.headerCardConfiguration : {}
-        ) as CustomHeaderCardConfig;
-
-        areaCards.unshift(new HeaderCard(target, { title: area.name, ...areaHeaderCardOptions }).createCard());
-
-        viewCards.push({ type: 'vertical-stack', cards: areaCards });
-      }
     }
 
     // Add a Header Card to control all the entities in the view.
@@ -153,6 +121,52 @@ abstract class AbstractView {
     }
 
     return viewCards;
+  }
+
+  protected async createAreaCards(area: { area_id: string, name: string }, domainEntities: EntityRegistryEntry[]) {
+    let areaCards: AbstractCardConfig[] = [];
+
+    // Set the target of the Header card to the current area.
+    let target: HassServiceTarget = {
+      area_id: [area.area_id],
+    };
+    const areaEntities = new RegistryFilter(domainEntities).whereAreaId(area.area_id).toList();
+
+    // Set the target of the Header card to entities without an area.
+    if (area.area_id === 'undisclosed') {
+      target = {
+        entity_id: areaEntities.map((entity) => entity.entity_id),
+      };
+    }
+
+    // Create a card configuration for each entity in the current area.
+    for (const entity of areaEntities) {
+      const domain = entity.entity_id.split('.')[0]
+      const moduleName = sanitizeClassName(domain + 'Card');
+      const DomainCard = (await import(`../cards/${moduleName}`)).default;
+      const card = new DomainCard(entity, this.getCustomCardConfig(entity)).getCard()
+      areaCards.push(card)
+    }
+
+    // Stack the cards of the current area.
+    if (areaCards.length) {
+      areaCards = stackHorizontal(
+        areaCards,
+        Registry.strategyOptions.domains[this.domain as SupportedDomains]?.stack_count ??
+        Registry.strategyOptions.domains['_'].stack_count
+      );
+
+      // Create and insert a Header card.
+      const areaHeaderCardOptions = (
+        'headerCardConfiguration' in this.baseConfiguration ? this.baseConfiguration.headerCardConfiguration : {}
+      ) as CustomHeaderCardConfig;
+
+      const header = new HeaderCard(target, { title: area.name, ...areaHeaderCardOptions }).createCard()
+      areaCards.unshift(header)
+      const content: LovelaceCardConfig = { type: 'vertical-stack', cards: areaCards }
+      return [content]
+    }
+    return null
   }
 
   /**
@@ -193,7 +207,7 @@ abstract class AbstractView {
     };
   }
 
-  protected getCustomCardConfig(entity: EntityRegistryEntry): CustomCardConfig | null | undefined {
+  protected getCustomCardConfig(entity: EntityRegistryEntry): CustomCardConfig | undefined {
     const sg = Registry.strategyOptions.card_options?.[entity.entity_id];
     return sg
   }

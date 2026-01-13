@@ -1,8 +1,10 @@
 // noinspection JSUnusedGlobalSymbols Class is dynamically imported.
 
+import { HassEntity } from 'home-assistant-js-websocket';
 import { EntityRegistryEntry } from '../types/homeassistant/data/entity_registry';
 import { VACUUM_COMMANDS, VacuumCardConfig } from '../types/lovelace-mushroom/cards/vacuum-card-config';
 import AbstractCard from './AbstractCard';
+import { RegistryEntry } from '../types/strategy/strategy-generics';
 
 /**
  * Vacuum Card Class
@@ -34,6 +36,10 @@ class VacuumCard extends AbstractCard {
     super(entity);
 
     this.configuration = { ...this.configuration, ...VacuumCard.getDefaultConfig(), ...customConfiguration };
+  }
+
+  is_card_active(entity: RegistryEntry) {
+    return this.is_generic_card_active(entity, 'in', '["cleaning", "returning", "paused"]')
   }
 }
 

@@ -24,6 +24,7 @@ import TileCard from '../cards/TileCard';
 import "../clock/chuguan-clock-card";
 import ClockCard from '../cards/ClockCard';
 import UpdateCard from '../cards/UpdateCard';
+import WeatherCard from '../cards/WeatherCard';
 
 /**
  * Home View Class.
@@ -113,6 +114,7 @@ class HomeView extends AbstractView {
     }
 
     homeViewCards.push(...this.getClockCards())
+    homeViewCards.push(...this.getWeatherCards());
     // homeViewCards.push(...this.getTodoCard());
 
     if (Registry.strategyOptions.quick_access_cards) {
@@ -130,16 +132,16 @@ class HomeView extends AbstractView {
     const res = [
       {
         type: 'vertical-stack',
-        cards: this.getCalendarCard(),
+        cards: homeViewCards,
       },
       {
         type: 'vertical-stack',
-        cards: homeViewCards,
+        cards: this.getCalendarCard(),
       },
     ];
     const cameras = Registry.entities.filter((entity) => entity.entity_id.startsWith('camera.'));
     if (cameras.length > 0) {
-      res.push({
+      res.unshift({
         type: 'vertical-stack',
         cards: this.getCameraCards(cameras),
       })
@@ -184,6 +186,12 @@ class HomeView extends AbstractView {
     return stackHorizontal(clockCards, 2);
   }
 
+  private getWeatherCards(): LovelaceCardConfig[] {
+    const entities = Registry.entities.filter((entity) => entity.entity_id.startsWith('weather.'));
+    const weatherCards = entities.map((entity) => new WeatherCard(entity, this.getCustomCardConfig(entity) as any).getCard());
+    return weatherCards;
+  }
+
   private getCameraCards(entities: EntityRegistryEntry[]): LovelaceCardConfig[] {
     const cards = entities.map((entity) => new CameraCard(entity, this.getCustomCardConfig(entity) as PictureEntityCardConfig).getCard());
     return stackHorizontal(cards, 1);
@@ -207,23 +215,23 @@ class HomeView extends AbstractView {
 
     // Weather chip.
     // FIXME: It's not possible to hide the weather chip in the configuration.
-    const weatherEntityId =
-      Registry.strategyOptions.chips.weather_entity === 'auto'
-        ? Registry.entities.find((entity) => entity.entity_id.startsWith('weather.'))?.entity_id
-        : Registry.strategyOptions.chips.weather_entity;
+    // const weatherEntityId =
+    //   Registry.strategyOptions.chips.weather_entity === 'auto'
+    //     ? Registry.entities.find((entity) => entity.entity_id.startsWith('weather.'))?.entity_id
+    //     : Registry.strategyOptions.chips.weather_entity;
 
-    if (weatherEntityId) {
-      try {
-        Chip = (await import('../chips/WeatherChip')).default;
-        const weatherChip = new Chip(weatherEntityId);
+    // if (weatherEntityId) {
+    //   try {
+    //     Chip = (await import('../chips/WeatherChip')).default;
+    //     const weatherChip = new Chip(weatherEntityId);
 
-        chipConfigurations.push(weatherChip.getChipConfiguration());
-      } catch (e) {
-        logMessage(lvlError, 'Error importing chip weather!', e);
-      }
-    } else {
-      logMessage(lvlInfo, 'Weather chip has no entities available.');
-    }
+    //     chipConfigurations.push(weatherChip.getChipConfiguration());
+    //   } catch (e) {
+    //     logMessage(lvlError, 'Error importing chip weather!', e);
+    //   }
+    // } else {
+    //   logMessage(lvlInfo, 'Weather chip has no entities available.');
+    // }
 
     // Numeric chips.
     for (const chipName of exposedChips) {

@@ -21,7 +21,6 @@ export default class TileCard extends AbstractCard {
         super(entity);
         this.setupFeatures(entity);
         this.configuration = { ...this.configuration, ...(this.constructor as typeof TileCard).getDefaultConfig(), ...this.getSubConfiguration(), ...customConfiguration };
-        console.log(this.configuration);
     }
 
     getSubConfiguration(): Partial<TitleCardConfig> {

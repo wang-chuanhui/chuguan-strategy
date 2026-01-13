@@ -1,6 +1,10 @@
 // noinspection JSUnusedGlobalSymbols Class is dynamically imported.
 
+import CameraCard from '../cards/CameraCard';
+import HeaderCard from '../cards/HeaderCard';
 import { Registry } from '../Registry';
+import { EntityRegistryEntry } from '../types/homeassistant/data/entity_registry';
+import { LovelaceCardConfig } from '../types/homeassistant/data/lovelace/config/card';
 import { CustomHeaderCardConfig } from '../types/strategy/strategy-cards';
 import { SupportedDomains } from '../types/strategy/strategy-generics';
 import { ViewConfig } from '../types/strategy/strategy-views';
@@ -48,6 +52,17 @@ class CameraView extends AbstractView {
     super();
 
     this.initializeViewConfig(CameraView.getDefaultConfig(), customConfiguration, CameraView.getViewHeaderCardConfig());
+  }
+
+  protected async createAreaCards(area: { area_id: string; name: string; }, domainEntities: EntityRegistryEntry[]): Promise<LovelaceCardConfig[] | null> {
+    const cards = domainEntities.map(item => {
+      return new CameraCard(item, this.getCustomCardConfig(item) as any).getCard()
+    })
+    if (cards.length > 0) {
+      const header = new HeaderCard({}, { title: area.name }).createCard()
+      cards.unshift(header)
+    }
+    return cards
   }
 }
 
