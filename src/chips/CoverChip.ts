@@ -14,7 +14,7 @@ class CoverChip extends AbstractChip {
   static getDefaultConfig(): TemplateChipConfig {
     return {
       type: 'template',
-      icon: 'mdi:window-open',
+      icon: 'mdi:curtains',
       icon_color: 'cyan',
       content: Registry.getCountTemplate('cover', 'search', '(open|opening|closing)'),
       tap_action: {
@@ -22,7 +22,7 @@ class CoverChip extends AbstractChip {
       },
       hold_action: {
         action: 'navigate',
-        navigation_path: 'covers',
+        navigation_path: 'climates',
       },
     };
   }

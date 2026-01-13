@@ -23,7 +23,7 @@ class ClimateView extends AbstractView {
     return {
       title: localize('climate.climates'),
       path: 'climates',
-      icon: 'mdi:fan',
+      icon: 'mdi:home-thermometer',
       subview: false,
       headerCardConfiguration: {
         showControls: false,
@@ -45,7 +45,8 @@ class ClimateView extends AbstractView {
     return {
       [ClimateView.domain]: true,
       cover: true,
-      fan: true
+      fan: true, 
+      humidifier: true
     }
   }
 

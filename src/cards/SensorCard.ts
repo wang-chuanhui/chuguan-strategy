@@ -1,4 +1,6 @@
+import { Registry } from '../Registry';
 import { EntityRegistryEntry } from '../types/homeassistant/data/entity_registry';
+import { entityIcon } from '../types/homeassistant/data/icons';
 import { EntityCardConfig } from '../types/lovelace-mushroom/cards/entity-card-config';
 import AbstractCard from './AbstractCard';
 
@@ -28,6 +30,22 @@ class SensorCard extends AbstractCard {
     super(entity);
 
     this.configuration = { ...this.configuration, ...SensorCard.getDefaultConfig(), ...customConfiguration };
+  }
+
+  static async createCard(entity: EntityRegistryEntry) {
+    const state = Registry.hassStates[entity.entity_id];
+    const device_class = state?.attributes.device_class;
+    if (device_class == null || device_class == 'enum') {
+      return new SensorCard(entity, { icon: undefined } as EntityCardConfig).getCard();
+    }
+    const options = {
+      ...(entity.device_id && Registry.strategyOptions.card_options?.[entity.device_id]),
+      ...Registry.strategyOptions.card_options?.[entity.entity_id],
+      type: 'custom:mini-graph-card',
+      entities: [entity.entity_id],
+      icon: await entityIcon(Registry.config.hass, state, state?.state),
+    };
+    return new SensorCard(entity, options).getCard();
   }
 }
 

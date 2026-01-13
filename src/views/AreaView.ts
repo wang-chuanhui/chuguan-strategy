@@ -9,8 +9,7 @@ import SensorCard from "../cards/SensorCard";
 import { stackHorizontal } from "../utilities/cardStacking";
 import { logMessage, lvlError } from "../utilities/debug";
 import { gen_background } from "../utilities/background";
-import { EntityCardConfig } from "../types/lovelace-mushroom/cards/entity-card-config";
-import { entityIcon } from "../types/homeassistant/data/icons";
+import WeatherCard from "../cards/WeatherCard";
 
 
 export class AreaView {
@@ -80,19 +79,7 @@ export class AreaView {
                     let domainCardsPromises = entities
                         // .filter((entity) => Registry.hassStates[entity.entity_id]?.attributes.unit_of_measurement)
                         .map(async (entity) => {
-                            const state = Registry.hassStates[entity.entity_id];
-                            const device_class = state?.attributes.device_class;
-                            if (device_class == null || device_class == 'enum') {
-                                return new SensorCard(entity, {icon: undefined} as EntityCardConfig).getCard();    
-                            }
-                            const options = {
-                                ...(entity.device_id && Registry.strategyOptions.card_options?.[entity.device_id]),
-                                ...Registry.strategyOptions.card_options?.[entity.entity_id],
-                                type: 'custom:mini-graph-card',
-                                entities: [entity.entity_id],
-                                icon: await entityIcon(Registry.config.hass, state, state?.state),
-                            };
-                            return new SensorCard(entity, options).getCard();
+                            return await SensorCard.createCard(entity);
                         });
                     let domainCards = await Promise.all(domainCardsPromises);
                     if (domainCards.length) {
@@ -112,6 +99,9 @@ export class AreaView {
                         ...(entity.device_id && Registry.strategyOptions.card_options?.[entity.device_id]),
                         ...Registry.strategyOptions.card_options?.[entity.entity_id],
                     };
+                    if (domain == 'weather') {
+                        return WeatherCard.createCard(entity, cardOptions);
+                    }
                     return new DomainCard(entity, cardOptions).getCard();
                 });
 

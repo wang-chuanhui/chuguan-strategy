@@ -45,6 +45,7 @@ class MushroomStrategy extends HTMLTemplateElement {
    * Called when opening a dashboard.
    */
   static async generateDashboard(info: DashboardInfo): Promise<LovelaceConfig> {
+    console.log(info)
     await Registry.initialize(info);
 
     await MushroomStrategy.handleNotifications(info.hass);

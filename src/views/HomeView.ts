@@ -188,7 +188,7 @@ class HomeView extends AbstractView {
 
   private getWeatherCards(): LovelaceCardConfig[] {
     const entities = Registry.entities.filter((entity) => entity.entity_id.startsWith('weather.'));
-    const weatherCards = entities.map((entity) => new WeatherCard(entity, this.getCustomCardConfig(entity) as any).getCard());
+    const weatherCards = entities.map((entity) => WeatherCard.createCard(entity, this.getCustomCardConfig(entity) as any));
     return weatherCards;
   }
 

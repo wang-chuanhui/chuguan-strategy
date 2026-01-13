@@ -121,6 +121,16 @@ export interface WeatherForecastCardConfig extends LovelaceCardConfig {
   double_tap_action?: ActionConfig;
 }
 
+export interface LovelaceColorfulcloudsWeatherCardConfig extends LovelaceCardConfig {
+  type: 'custom:weather-card'
+  entity: string
+  show_houer: boolean
+  show_daily: boolean
+  show_realtime: boolean
+  icon: '/hacsfiles/lovelace-colorfulclouds-weather-card/icons/animated/'
+  secondary_info_attribute: 'wind_speed'
+}
+
 export enum TimeFormat {
   language = "language",
   system = "system",

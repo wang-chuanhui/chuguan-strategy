@@ -54,7 +54,7 @@ class CameraView extends AbstractView {
     this.initializeViewConfig(CameraView.getDefaultConfig(), customConfiguration, CameraView.getViewHeaderCardConfig());
   }
 
-  protected async createAreaCards(area: { area_id: string; name: string; }, domainEntities: EntityRegistryEntry[]): Promise<LovelaceCardConfig[] | null> {
+  protected async createAreaCards(area: { area_id: string; name: string; }, domainEntities: EntityRegistryEntry[], index: number): Promise<LovelaceCardConfig[] | null> {
     const cards = domainEntities.map(item => {
       return new CameraCard(item, this.getCustomCardConfig(item) as any).getCard()
     })

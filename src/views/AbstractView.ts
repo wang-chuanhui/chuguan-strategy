@@ -110,31 +110,34 @@ abstract class AbstractView {
       .toList();
 
     // Create card configurations for each area.
+    let index = 0
     for (const area of Registry.areas) {
       const areaEntities = new RegistryFilter(domainEntities).whereAreaId(area.area_id).toList()
-      const info = await this.createAreaCards(area, areaEntities)
-      if (info) {
-        viewCards.push(...info);
+      if (areaEntities.length > 0) {
+        const info = await this.createAreaCards(area, areaEntities, index)
+        index = index + 1
+        if (info) {
+          viewCards.push(...info);
+        }
       }
-
     }
 
     // Add a Header Card to control all the entities in the view.
-    if (this.showHeader() &&this.viewHeaderCardConfiguration.cards.length && viewCards.length) {
+    if (this.showHeader() && this.viewHeaderCardConfiguration.cards.length && viewCards.length) {
       viewCards.unshift(this.viewHeaderCardConfiguration);
     }
 
     return viewCards;
   }
 
-  protected async createAreaCards(area: { area_id: string, name: string }, domainEntities: EntityRegistryEntry[]) {
+  protected async _createAreaCards(area: { area_id: string, name: string }, domainEntities: EntityRegistryEntry[], showHeader: boolean = true) {
     let areaCards: AbstractCardConfig[] = [];
 
     // Set the target of the Header card to the current area.
     let target: HassServiceTarget = {
       area_id: [area.area_id],
     };
-    const areaEntities = new RegistryFilter(domainEntities).whereAreaId(area.area_id).toList();
+    const areaEntities = domainEntities
 
     // Set the target of the Header card to entities without an area.
     if (area.area_id === 'undisclosed') {
@@ -145,10 +148,7 @@ abstract class AbstractView {
 
     // Create a card configuration for each entity in the current area.
     for (const entity of areaEntities) {
-      const domain = entity.entity_id.split('.')[0]
-      const moduleName = sanitizeClassName(domain + 'Card');
-      const DomainCard = (await import(`../cards/${moduleName}`)).default;
-      const card = new DomainCard(entity, this.getCustomCardConfig(entity)).getCard()
+      const card = await this.createCard(entity)
       areaCards.push(card)
     }
 
@@ -164,13 +164,34 @@ abstract class AbstractView {
       const areaHeaderCardOptions = (
         'headerCardConfiguration' in this.baseConfiguration ? this.baseConfiguration.headerCardConfiguration : {}
       ) as CustomHeaderCardConfig;
-
-      const header = new HeaderCard(target, { title: area.name, ...areaHeaderCardOptions }).createCard()
-      areaCards.unshift(header)
+      if (showHeader) {
+        const header = new HeaderCard(target, { title: area.name, ...areaHeaderCardOptions }).createCard()
+        areaCards.unshift(header)
+      }
       const content: LovelaceCardConfig = { type: 'vertical-stack', cards: areaCards }
       return [content]
     }
     return null
+  }
+
+  protected async createAreaCards(area: { area_id: string, name: string }, domainEntities: EntityRegistryEntry[], index: number) {
+    if (area.area_id === 'undisclosed' && domainEntities.length > 10) {
+      const itemCount = Math.floor(domainEntities.length / 3)
+      const length = domainEntities.length
+      const one = await this._createAreaCards(area, domainEntities.slice(0, length - itemCount * 2), true) ?? []
+      const two = await this._createAreaCards(area, domainEntities.slice(length - itemCount * 2, length - itemCount), index > 0) ?? []
+      const three = await this._createAreaCards(area, domainEntities.slice(length - itemCount), index > 0) ?? []
+      return [...one, ...two, ...three]
+    }
+    return await this._createAreaCards(area, domainEntities)
+  }
+
+  protected async createCard(entity: EntityRegistryEntry) {
+    const domain = entity.entity_id.split('.')[0]
+    const moduleName = sanitizeClassName(domain + 'Card');
+    const DomainCard = (await import(`../cards/${moduleName}`)).default;
+    const card = new DomainCard(entity, this.getCustomCardConfig(entity)).getCard()
+    return card
   }
 
   /**

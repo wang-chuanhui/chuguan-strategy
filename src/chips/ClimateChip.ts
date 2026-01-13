@@ -14,7 +14,7 @@ class ClimateChip extends AbstractChip {
   static getDefaultConfig(): TemplateChipConfig {
     return {
       type: 'template',
-      icon: 'mdi:fan',
+      icon: 'mdi:home-thermometer',
       icon_color: 'orange',
       content: Registry.getCountTemplate('climate', 'ne', 'off'),
       tap_action: {

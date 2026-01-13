@@ -29,7 +29,7 @@ class FanChip extends AbstractChip {
       },
       hold_action: {
         action: 'navigate',
-        navigation_path: 'fans',
+        navigation_path: 'climates',
       },
     };
   }

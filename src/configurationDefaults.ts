@@ -66,7 +66,7 @@ export const ConfigurationDefaults: StrategyDefaults = {
     camera: {
       title: localize('camera.cameras'),
       showControls: false,
-      hidden: false,
+      hidden: true,
     },
     climate: {
       title: localize('climate.climates'),
@@ -117,7 +117,7 @@ export const ConfigurationDefaults: StrategyDefaults = {
     lock: {
       title: localize('lock.locks'),
       showControls: false,
-      hidden: false,
+      hidden: true,
     },
     media_player: {
       title: localize('media_player.media_players'),
@@ -216,7 +216,7 @@ export const ConfigurationDefaults: StrategyDefaults = {
   views: {
     camera: {
       order: 6,
-      hidden: false,
+      hidden: true,
     },
     button: {
       order: 9,
@@ -228,11 +228,11 @@ export const ConfigurationDefaults: StrategyDefaults = {
     },
     cover: {
       order: 4,
-      hidden: false,
+      hidden: true,
     },
     fan: {
       order: 8,
-      hidden: false,
+      hidden: true,
     },
     home: {
       order: 1,
@@ -248,7 +248,7 @@ export const ConfigurationDefaults: StrategyDefaults = {
     },
     lock: {
       order: 7,
-      hidden: false,
+      hidden: true,
     },
     scene: {
       order: 12,
@@ -266,6 +266,10 @@ export const ConfigurationDefaults: StrategyDefaults = {
       order: 11,
       hidden: false,
     },
+    sensor: {
+      order: 13,
+      hidden: false,
+    }
   },
   quick_access_cards: [],
 };

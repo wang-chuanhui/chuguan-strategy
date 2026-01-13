@@ -42,7 +42,7 @@ class SecurityView extends AbstractView {
         this.initializeViewConfig(SecurityView.getDefaultConfig(), customConfiguration, SecurityView.getViewHeaderCardConfig())
     }
 
-    protected async createAreaCards(area: { area_id: string; name: string; }, domainEntities: EntityRegistryEntry[]): Promise<LovelaceCardConfig[] | null> {
+    protected async createAreaCards(area: { area_id: string; name: string; }, domainEntities: EntityRegistryEntry[], index: number): Promise<LovelaceCardConfig[] | null> {
         if (area.area_id == 'undisclosed') {
             const cameras = domainEntities.filter(entity => entity.entity_id.startsWith('camera.'))
             const res: LovelaceCardConfig[] = []
@@ -56,7 +56,7 @@ class SecurityView extends AbstractView {
                 }
                 const others = domainEntities.filter(entity => !entity.entity_id.startsWith('camera.'))
                 if (others.length > 0) {
-                    const otherCards = await super.createAreaCards(area, others)
+                    const otherCards = await super.createAreaCards(area, others, index)
                     if (otherCards) {
                         res.push(...otherCards)
                     }
@@ -64,7 +64,7 @@ class SecurityView extends AbstractView {
                 return res
             }
         }
-        return super.createAreaCards(area, domainEntities)
+        return super.createAreaCards(area, domainEntities, index)
     }
 
 }
