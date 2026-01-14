@@ -55,7 +55,7 @@ export default class WeatherCard extends AbstractCard {
     }
 
     static createCard(entity: EntityRegistryEntry, customConfiguration: any) {
-        if (entity.platform == 'tianqi') {
+        if (entity.platform == 'tianqi' && customElements.get('weather-card')) {
             const state = Registry.hassStates[entity.entity_id]
             if (state?.attributes?.support_caiyun) {
                 return new LovelaceColorfulcloudsWeatherCard(entity, customConfiguration).getCard()
@@ -77,7 +77,7 @@ export class LovelaceColorfulcloudsWeatherCard extends AbstractCard {
             show_daily: true,
             show_realtime: true,
             icon: '/hacsfiles/lovelace-colorfulclouds-weather-card/icons/animated/',
-            secondary_info_attribute: 'wind_speed',
+            secondary_info_attribute: 'wind_bearing',
         }
     }
 

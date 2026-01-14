@@ -16,7 +16,7 @@ class SensorCard extends AbstractCard {
       type: 'custom:mushroom-entity-card',
       icon: undefined,
       animate: true,
-      // line_color: 'green',
+      line_color: 'green',
     };
   }
 

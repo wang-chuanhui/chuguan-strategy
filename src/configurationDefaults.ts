@@ -214,68 +214,68 @@ export const ConfigurationDefaults: StrategyDefaults = {
     },
   },
   views: {
-    camera: {
-      order: 6,
-      hidden: true,
-    },
-    button: {
-      order: 9,
-      hidden: false,
-    },
-    climate: {
-      order: 5,
-      hidden: false,
-    },
-    cover: {
-      order: 4,
-      hidden: true,
-    },
-    fan: {
-      order: 8,
-      hidden: true,
-    },
     home: {
       order: 1,
-      hidden: false,
-    },
-    light: {
-      order: 2,
       hidden: false,
     },
     security: {
       order: 2,
       hidden: false,
     },
-    lock: {
-      order: 7,
-      hidden: true,
-    },
     scene: {
-      order: 12,
-      hidden: false,
-    },
-    switch: {
       order: 3,
       hidden: false,
     },
-    vacuum: {
-      order: 10,
+    light: {
+      order: 4,
       hidden: false,
     },
-    valve: {
+    switch: {
+      order: 5,
+      hidden: false,
+    },
+    climate: {
+      order: 6,
+      hidden: false,
+    },
+    cover: {
+      order: 7,
+      hidden: true,
+    },
+    fan: {
+      order: 8,
+      hidden: true,
+    },
+    camera: {
+      order: 8,
+      hidden: true,
+    },
+    lock: {
+      order: 10,
+      hidden: true,
+    },
+    media_player: {
       order: 11,
+      hidden: false,
+    },
+    water_heater: {
+      order: 12,
       hidden: false,
     },
     sensor: {
       order: 13,
       hidden: false,
-    }, 
-    media_player: {
+    },
+    vacuum: {
       order: 14,
       hidden: false,
     },
-    water_heater: {
+    valve: {
       order: 15,
+      hidden: false,
+    },
+    button: {
+      order: 16,
       hidden: false,
     },
   },

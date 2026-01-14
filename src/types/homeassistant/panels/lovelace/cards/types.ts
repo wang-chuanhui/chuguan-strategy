@@ -128,7 +128,7 @@ export interface LovelaceColorfulcloudsWeatherCardConfig extends LovelaceCardCon
   show_daily: boolean
   show_realtime: boolean
   icon: '/hacsfiles/lovelace-colorfulclouds-weather-card/icons/animated/'
-  secondary_info_attribute: 'wind_speed'
+  secondary_info_attribute: 'wind_bearing'
 }
 
 export enum TimeFormat {
