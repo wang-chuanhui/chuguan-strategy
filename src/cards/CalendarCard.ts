@@ -17,9 +17,12 @@ class CalendarCard extends AbstractCard {
     }
 
     constructor(entities: EntityRegistryEntry[], customConfiguration?: CalendarCardConfig) {
-        super(entities[0]);
+        super(entities[0] ?? []);
         this.configuration = { ...this.configuration, ...CalendarCard.getDefaultConfig(), ...customConfiguration };
         this.configuration.entities = entities.map((entity) => entity.entity_id);
+        if (this.configuration.entities.length == 0) {
+            this.configuration.entities = ['']
+        }
     }
 
 }
@@ -41,7 +44,7 @@ export class CalendarProCard extends AbstractCard {
     }
 
     constructor(entities: EntityRegistryEntry[], customConfiguration?: LovelaceCardConfig) {
-        super(entities[0]);
+        super(entities[0] ?? {});
         const language = Registry.config.hass.language
         if (language) {
             this.configuration.language = language;

@@ -36,8 +36,10 @@ export function gen_background(id: string): LovelaceViewBackgroundConfig {
         options.background_image ||
         '/hacsfiles/chuguan-strategy/view_background.jpg'
     )
-    const exists = url_exists(bg_image)
-    if (!exists) {
+    if (url_exists(bg_image) == false) {
+        bg_image = '/local/community/chuguan-strategy/view_background.jpg'
+    }
+    if (url_exists(bg_image) == false) {
         bg_image = '/local/chuguan-strategy/view_background.jpg'
     }
     return {
