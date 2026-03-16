@@ -20,6 +20,8 @@ export class DockedSidebar extends LitElement {
     }))
   }
 
+  eventListener?: (e: any) => void
+
   setConfig(config: {}) {
 
   }
@@ -27,6 +29,21 @@ export class DockedSidebar extends LitElement {
   connectedCallback(): void {
     super.connectedCallback()
     this.queryCard()
+    this.eventListener = (e) => {
+      const detail = e.detail || {}
+      const action = detail.action
+      if (action == "fire-dom-event") {
+        this._handleClick()
+      }
+    }
+    window.addEventListener('ll-custom', this.eventListener)
+  }
+
+  disconnectedCallback() {
+    super.disconnectedCallback()
+    if (this.eventListener) {
+      window.removeEventListener('ll-custom', this.eventListener)
+    }
   }
 
   queryCard(): void {
@@ -39,7 +56,7 @@ export class DockedSidebar extends LitElement {
           icon: 'mdi:page-layout-sidebar-left', 
           icon_color: 'blue', 
           tap_action: {
-            action: 'none'
+            action: 'fire-dom-event',
           }, 
           hold_action: {
             action: 'none'
@@ -56,7 +73,7 @@ export class DockedSidebar extends LitElement {
 
   render() {
     return html`
-        <mushroom-template-card id="docked-sidebar" @click="${this._handleClick}">
+        <mushroom-template-card id="docked-sidebar">
       </mushroom-template-card>
     `;
   }
