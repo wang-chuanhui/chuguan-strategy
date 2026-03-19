@@ -180,15 +180,27 @@ class HomeView extends AbstractView {
 
   private getClockCards(): LovelaceCardConfig[] {
     const clockCards = [
-      new ClockCard({} as any, { clock_style: 'analog', no_background: true, border: true }).getCard(),
-      new ClockCard({} as any, {} as any).getCard(),
+      new ClockCard({} as any, {show_seconds: false} as any).getCard(),
     ];
-    return stackHorizontal(clockCards, 2);
+    return clockCards;
   }
 
   private getWeatherCards(): LovelaceCardConfig[] {
     const entities = Registry.entities.filter((entity) => entity.entity_id.startsWith('weather.'));
-    const weatherCards = entities.map((entity) => WeatherCard.createCard(entity, this.getCustomCardConfig(entity) as any));
+    const showName = entities.length > 1
+    const weatherCards = entities.map((entity) => {
+      let title: undefined | string = undefined
+      if (showName) {
+        const state = Registry.hassStates[entity.entity_id]
+        if (state) {
+          title = state.attributes.friendly_name
+        }
+        if (title == undefined) {
+          title = (entity.name ?? entity.original_name) as string
+        }
+      }
+      return WeatherCard.createCard(entity, {...this.getCustomCardConfig(entity), title} as any)
+    });
     return weatherCards;
   }
 

@@ -9,7 +9,7 @@ export default class ClockCard extends AbstractCard {
         return {
             type: 'custom:chuguan-clock-card',
             clock_style: 'digital', 
-            clock_size: 'medium', 
+            clock_size: 'large', 
             show_seconds: true, 
             seconds_motion: 'tick', 
             time_format: TimeFormat.twenty_four, 

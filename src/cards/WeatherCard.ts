@@ -1,6 +1,5 @@
-import { HassEntity } from "home-assistant-js-websocket";
 import { EntityRegistryEntry } from "../types/homeassistant/data/entity_registry";
-import { LovelaceColorfulcloudsWeatherCardConfig, WeatherForecastCardConfig } from "../types/homeassistant/panels/lovelace/cards/types";
+import { ClockWeatherCardConfig, LovelaceColorfulcloudsWeatherCardConfig, WeatherForecastCardConfig } from "../types/homeassistant/panels/lovelace/cards/types";
 import AbstractCard from "./AbstractCard";
 import { Registry } from "../Registry";
 
@@ -55,11 +54,10 @@ export default class WeatherCard extends AbstractCard {
     }
 
     static createCard(entity: EntityRegistryEntry, customConfiguration: any) {
-        if (entity.platform == 'tianqi' && customElements.get('weather-card')) {
+        if (customElements.get('clock-weather-card')) {
             const state = Registry.hassStates[entity.entity_id]
-            if (state?.attributes?.support_caiyun) {
-                return new LovelaceColorfulcloudsWeatherCard(entity, customConfiguration).getCard()
-            }
+            console.log(entity, state)
+            return new ClockWeatherCard(entity, customConfiguration).getCard()
         }
         return new WeatherCard(entity, customConfiguration).getCard()
     }
@@ -91,6 +89,50 @@ export class LovelaceColorfulcloudsWeatherCard extends AbstractCard {
         this.configuration = {
             ...this.configuration,
             ...LovelaceColorfulcloudsWeatherCard.getDefaultCardConfig(),
+            ...customConfiguration, 
+            entity: entity.entity_id
+        }
+        if (this.has_hourly) {
+            this.configuration.show_houer = true
+        }
+        if (this.has_daily) {
+            this.configuration.show_daily = true
+        }
+    }
+
+    setupFeaturesSupported(entity: EntityRegistryEntry, supported_features: number): void {
+        this.has_daily = (supported_features & 1) !== 0
+        this.has_hourly = (supported_features & 2) !== 0
+    }
+
+}
+
+export class ClockWeatherCard extends AbstractCard {
+
+    static getDefaultCardConfig(): ClockWeatherCardConfig {
+        return {
+            type: 'custom:clock-weather-card',
+            entity: '',
+            weather_icon_type: 'fill', 
+            animated_icon: false, 
+            date_pattern: 'yyyy-MM-dd',
+            show_wind: true,
+            show_decimal: true,
+            hide_clock: true,
+            hide_date: true,
+        }
+    }
+
+    has_daily = false
+    has_hourly = false
+
+        constructor(entity: EntityRegistryEntry, customConfiguration: ClockWeatherCardConfig) {
+        super(entity);
+        this.setupFeatures(entity);
+
+        this.configuration = {
+            ...this.configuration,
+            ...ClockWeatherCard.getDefaultCardConfig(),
             ...customConfiguration, 
             entity: entity.entity_id
         }

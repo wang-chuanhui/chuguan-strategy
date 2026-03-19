@@ -131,6 +131,33 @@ export interface LovelaceColorfulcloudsWeatherCardConfig extends LovelaceCardCon
   secondary_info_attribute: 'wind_bearing'
 }
 
+export interface ClockWeatherCardConfig extends LovelaceCardConfig {
+  entity: string
+  title?: string
+  sun_entity?: string
+  temperature_sensor?: string
+  humidity_sensor?: string
+  weather_icon_type?: 'fill' | 'line'
+  animated_icon?: boolean
+  forecast_rows?: number
+  locale?: string
+  time_format?: '12' | '24'
+  time_pattern?: string
+  date_pattern?: string
+  hide_today_section?: boolean
+  hide_forecast_section?: boolean
+  show_humidity?: boolean
+  show_wind?: boolean
+  hourly_forecast?: boolean
+  hide_clock?: boolean
+  hide_date?: boolean
+  use_browser_time?: boolean
+  time_zone?: string
+  show_decimal?: boolean
+  apparent_sensor?: string
+  aqi_sensor?: string
+}
+
 export enum TimeFormat {
   language = "language",
   system = "system",
