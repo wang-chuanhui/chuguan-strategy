@@ -46,6 +46,12 @@ class CoverCard extends AbstractCard {
     if (this.hasOpen == false) {
       return null;
     }
+    const id = entity.entity_id
+    const state = Registry.hassStates[id]
+    const deviceclass = state?.attributes.device_class ?? ""
+    if (['door', 'garage', 'gate', 'window'].includes(deviceclass)) {
+          return this.is_generic_card_active(entity, '==', 'closed')
+    }
     return this.is_generic_card_active(entity, '!=', 'closed')
   }
   protected getSubClassCustomCardConfig(entity: EntityRegistryEntry): CoverCardConfig | null | undefined {

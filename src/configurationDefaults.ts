@@ -100,11 +100,6 @@ export const ConfigurationDefaults: StrategyDefaults = {
       showControls: false,
       hidden: false,
     },
-    input_select: {
-      title: localize('input_select.input_selects'),
-      showControls: false,
-      hidden: false,
-    },
     light: {
       title: localize('light.lights'),
       iconOn: 'mdi:lightbulb',
@@ -125,20 +120,10 @@ export const ConfigurationDefaults: StrategyDefaults = {
       showControls: false,
       hidden: false,
     },
-    number: {
-      title: localize('generic.numbers'),
-      showControls: false,
-      hidden: false,
-    },
     scene: {
       title: localize('scene.scenes'),
       showControls: false,
       onService: 'scene.turn_on',
-      hidden: false,
-    },
-    select: {
-      title: localize('select.selects'),
-      showControls: false,
       hidden: false,
     },
     security: {
@@ -157,16 +142,6 @@ export const ConfigurationDefaults: StrategyDefaults = {
       showControls: false,
       hidden: false,
       stack_count: 2
-    },
-    text: {
-      title: localize('text.texts'),
-      showControls: false,
-      hidden: false,
-    },
-    todo: {
-      title: localize('todo.todos'),
-      showControls: false,
-      hidden: false,
     },
     switch: {
       title: localize('switch.switches'),

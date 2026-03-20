@@ -147,10 +147,10 @@ export class AreaView {
                             Registry.strategyOptions.domains['_'].stack_count
                         );
 
-                        viewCards.push({
-                            type: 'vertical-stack',
-                            cards: [headerCard, ...miscellaneousCards],
-                        });
+                        // viewCards.push({
+                        //     type: 'vertical-stack',
+                        //     cards: [headerCard, ...miscellaneousCards],
+                        // });
                     }
                 } catch (e) {
                     logMessage(lvlError, 'Error creating card configurations for domain `miscellaneous`', e);

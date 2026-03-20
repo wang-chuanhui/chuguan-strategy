@@ -52,6 +52,10 @@ class ValveCard extends AbstractCard {
 
     this.configuration = { ...this.configuration, ...configuration, ...customConfiguration };
   }
+
+  is_card_active(entity: EntityRegistryEntry) {
+    return this.is_generic_card_active(entity, '!=', 'closed')
+  }
 }
 
 export default ValveCard;
