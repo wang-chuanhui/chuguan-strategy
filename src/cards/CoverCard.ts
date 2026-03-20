@@ -17,7 +17,7 @@ class CoverCard extends AbstractCard {
     return {
       type: 'custom:mushroom-cover-card',
       icon: undefined,
-      layout: 'horizontal',
+      layout: 'default',
       show_buttons_control: true,
       show_position_control: true,
       show_tilt_position_control: true,

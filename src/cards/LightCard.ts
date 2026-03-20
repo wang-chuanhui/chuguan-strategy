@@ -17,7 +17,7 @@ class LightCard extends AbstractCard {
     return {
       type: 'custom:mushroom-light-card',
       icon: undefined,
-      layout: 'horizontal',
+      layout: 'default',
       show_brightness_control: true,
       show_color_control: true,
       show_color_temp_control: true,
@@ -62,19 +62,20 @@ class LightCard extends AbstractCard {
       return null
     }
      const supportedColorModes = state.attributes['supported_color_modes']
+     console.log('supportedColorModes', state.entity_id, supportedColorModes)
     if (Array.isArray(supportedColorModes)) {
       let onoff = false, brightness = false, color_temp = false, color = false,
           scm = supportedColorModes[0]
           onoff = scm == 'onoff'
           brightness = [ 'brightness', 'color_temp', 'hs', 'xy',
-                          'rgb', 'rgbw', 'rgbww' ].includes(scm)
-          color_temp = scm == 'color_temp'
-          color = [ 'hs', 'xy', 'rgb', 'rgbw', 'rgbww' ].includes(scm)
+                          'rgb', 'rgbw', 'rgbww' ].includes(scm) || supportedColorModes.includes('brightness')
+          color_temp = (scm == 'color_temp') || supportedColorModes.includes('color_temp')
+          color = [ 'hs', 'xy', 'rgb', 'rgbw', 'rgbww' ].includes(scm) || supportedColorModes.includes('hs')
           return {
-            show_brightness_control: brightness,
-            show_color_temp_control: color_temp,
-            show_color_control: color,
-            layout: 'horizontal',
+            show_brightness_control: true,
+            show_color_temp_control: true,
+            show_color_control: true,
+            layout: 'default',
             stack_count: (brightness || color || color_temp) ? 2 : 1,
           } as LightCardConfig
     }

@@ -55,8 +55,6 @@ export default class WeatherCard extends AbstractCard {
 
     static createCard(entity: EntityRegistryEntry, customConfiguration: any) {
         if (customElements.get('clock-weather-card')) {
-            const state = Registry.hassStates[entity.entity_id]
-            console.log(entity, state)
             return new ClockWeatherCard(entity, customConfiguration).getCard()
         }
         return new WeatherCard(entity, customConfiguration).getCard()

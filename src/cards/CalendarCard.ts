@@ -32,14 +32,7 @@ export class CalendarProCard extends AbstractCard {
     static getDefaultConfig(): LovelaceCardConfig {
         return {
             type: 'custom:calendar-card-pro',
-            entities: [],
-            weather: {
-                position: 'both',
-                date: {
-                    show_low_temp: true
-                },
-                entity: undefined
-            }
+            entities: []
         }
     }
 

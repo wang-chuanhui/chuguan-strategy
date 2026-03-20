@@ -82,37 +82,6 @@ class HomeView extends AbstractView {
       homeViewCards.push(chipsSection);
     }
 
-    // if (personsSection) {
-    //   homeViewCards.push(personsSection);
-    // }
-
-    // Create the greeting section.
-    if (!Registry.strategyOptions.home_view.hidden.includes('greeting')) {
-      homeViewCards.push({
-        type: 'custom:mushroom-template-card',
-        primary: `{% set time = now().hour %}
-           {% if (time >= 18) %}
-             ${localize('generic.good_evening')},{{user}}!
-           {% elif (time >= 12) %}
-             ${localize('generic.good_afternoon')}, {{user}}!
-           {% elif (time >= 6) %}
-             ${localize('generic.good_morning')}, {{user}}!
-           {% else %}
-             ${localize('generic.hello')}, {{user}}! {% endif %}`,
-        icon: 'mdi:hand-wave',
-        icon_color: 'orange',
-        tap_action: {
-          action: 'none',
-        } as ActionConfig,
-        double_tap_action: {
-          action: 'none',
-        } as ActionConfig,
-        hold_action: {
-          action: 'none',
-        } as ActionConfig,
-      } as TemplateCardConfig);
-    }
-
     homeViewCards.push(...this.getClockCards())
     homeViewCards.push(...this.getWeatherCards());
     // homeViewCards.push(...this.getTodoCard());
@@ -152,7 +121,7 @@ class HomeView extends AbstractView {
   private getCalendarCard(): LovelaceCardConfig[] {
     const entities = Registry.entities.filter((entity) => entity.entity_id.startsWith('calendar.'));
     const calendarCard = new CalendarCard(entities);
-    return [...this.getCalendarProCard(), calendarCard.getCard(), ...this.getUpdates()];
+    return [...this.getCalendarProCard(), calendarCard.getCard()];
   }
 
   private getCalendarProCard(): LovelaceCardConfig[] {

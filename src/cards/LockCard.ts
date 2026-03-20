@@ -15,7 +15,7 @@ class LockCard extends AbstractCard {
     return {
       type: 'custom:mushroom-lock-card',
       icon: undefined,
-      layout: 'horizontal',
+      layout: 'default',
     };
   }
 
@@ -34,7 +34,7 @@ class LockCard extends AbstractCard {
   is_card_active(entity: EntityRegistryEntry) {
       // This hides the button
       // const no_button = "\nha-card div.actions { display: none; }"
-      const card = this.is_generic_card_active(entity, '!=', 'locked')
+      const card = this.is_generic_card_active(entity, '==', 'locked')
 
       return card
     }

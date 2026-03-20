@@ -14,6 +14,7 @@ class ButtonCard extends AbstractCard {
   static getDefaultConfig(): EntityCardConfig {
     return {
       type: 'custom:mushroom-entity-card',
+      layout: 'default',
       tap_action: {
         action: 'perform-action',
         perform_action: 'button.press', 

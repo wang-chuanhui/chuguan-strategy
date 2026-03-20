@@ -130,7 +130,7 @@ abstract class AbstractView {
     return viewCards;
   }
 
-  protected async _createAreaCards(area: { area_id: string, name: string }, domainEntities: EntityRegistryEntry[], showHeader: boolean = true) {
+  protected async _createAreaCards(area: { area_id: string, name: string }, domainEntities: EntityRegistryEntry[], showHeader: boolean = true, stack_count: number | undefined = undefined) {
     let areaCards: AbstractCardConfig[] = [];
 
     // Set the target of the Header card to the current area.
@@ -156,7 +156,7 @@ abstract class AbstractView {
     if (areaCards.length) {
       areaCards = stackHorizontal(
         areaCards,
-        Registry.strategyOptions.domains[this.domain as SupportedDomains]?.stack_count ??
+        stack_count ?? Registry.strategyOptions.domains[this.domain as SupportedDomains]?.stack_count ??
         Registry.strategyOptions.domains['_'].stack_count
       );
 
@@ -174,16 +174,19 @@ abstract class AbstractView {
     return null
   }
 
-  protected async createAreaCards(area: { area_id: string, name: string }, domainEntities: EntityRegistryEntry[], index: number) {
+  protected async createAreaCards(area: { area_id: string, name: string }, domainEntities: EntityRegistryEntry[], index: number, stack_count: number | undefined = undefined) {
     if (area.area_id === 'undisclosed' && domainEntities.length > 10) {
       const itemCount = Math.floor(domainEntities.length / 3)
       const length = domainEntities.length
-      const one = await this._createAreaCards(area, domainEntities.slice(0, length - itemCount * 2), true) ?? []
-      const two = await this._createAreaCards(area, domainEntities.slice(length - itemCount * 2, length - itemCount), index > 0) ?? []
-      const three = await this._createAreaCards(area, domainEntities.slice(length - itemCount), index > 0) ?? []
+      const one = await this._createAreaCards(area, domainEntities.slice(0, length - itemCount * 2), true, stack_count) ?? []
+      const two = await this._createAreaCards(area, domainEntities.slice(length - itemCount * 2, length - itemCount), index > 0, stack_count) ?? []
+      const three = await this._createAreaCards(area, domainEntities.slice(length - itemCount), index > 0, stack_count) ?? []
       return [...one, ...two, ...three]
     }
-    return await this._createAreaCards(area, domainEntities)
+    if (this.domain == 'security') {
+      console.log('security', area, domainEntities, true, stack_count)
+    }
+    return await this._createAreaCards(area, domainEntities, true, stack_count)
   }
 
   protected async createCard(entity: EntityRegistryEntry) {

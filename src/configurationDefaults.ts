@@ -49,7 +49,7 @@ export const ConfigurationDefaults: StrategyDefaults = {
       title: localize('alarm_control_panel.title'),
       showControls: false,
       hidden: false,
-      stack_count: 1,
+      stack_count: 2,
     },
     binary_sensor: {
       title: localize('sensor.binary'),
@@ -118,6 +118,7 @@ export const ConfigurationDefaults: StrategyDefaults = {
       title: localize('lock.locks'),
       showControls: false,
       hidden: true,
+      stack_count: 2,
     },
     media_player: {
       title: localize('media_player.media_players'),

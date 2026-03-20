@@ -35,7 +35,8 @@ class SensorCard extends AbstractCard {
   static async createCard(entity: EntityRegistryEntry) {
     const state = Registry.hassStates[entity.entity_id];
     const device_class = state?.attributes.device_class;
-    if (device_class == null || device_class == 'enum') {
+    const mgc = customElements.get('mini-graph-card')
+    if (device_class == null || device_class == 'enum' || mgc == undefined) {
       return new SensorCard(entity, { icon: undefined } as EntityCardConfig).getCard();
     }
     const options = {

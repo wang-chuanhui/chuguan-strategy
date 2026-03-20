@@ -15,6 +15,7 @@ class InputSelectCard extends SelectCard {
     return {
       type: 'custom:mushroom-select-card',
       icon: undefined,
+      layout: 'default'
     };
   }
 

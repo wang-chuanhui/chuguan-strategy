@@ -17,7 +17,7 @@ class ClimateCard extends AbstractCard {
     return {
       type: 'custom:mushroom-climate-card',
       icon: undefined,
-      layout: 'horizontal',
+      layout: 'default',
       hvac_modes: ['off', 'cool', 'heat', 'fan_only'],
       show_temperature_control: true,
       collapsible_controls: true,

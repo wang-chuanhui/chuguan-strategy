@@ -11,7 +11,7 @@ class AlarmControlPanelCard extends AbstractCard {
         return {
             type: 'custom:mushroom-alarm-control-panel-card',
             icon: undefined,
-            layout: 'horizontal',
+            layout: 'default',
         }
     }
     constructor(entity: EntityRegistryEntry, customConfiguration?: AlarmControlPanelCardConfig) {

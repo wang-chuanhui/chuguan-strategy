@@ -12,7 +12,7 @@ class PersonCard extends AbstractCard {
   static getDefaultConfig(): PersonCardConfig {
     return {
       type: 'custom:mushroom-person-card',
-      layout: 'vertical',
+      layout: 'default',
       primary_info: 'none',
       secondary_info: 'none',
       icon_type: 'entity-picture',

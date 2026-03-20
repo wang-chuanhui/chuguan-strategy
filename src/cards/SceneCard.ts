@@ -20,6 +20,7 @@ class SceneCard extends AbstractCard {
   static getDefaultConfig(): EntityCardConfig {
     return {
       type: 'custom:mushroom-entity-card',
+      layout: 'default',
       tap_action: {
         action: 'perform-action',
         perform_action: 'scene.turn_on',

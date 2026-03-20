@@ -12,7 +12,7 @@ class HumidifierCard extends AbstractCard {
             type: 'custom:mushroom-humidifier-card',
             show_target_humidity_control: true,
             collapsible_controls: false,
-            layout: 'horizontal', 
+            layout: 'default', 
             icon: undefined
         }
     }

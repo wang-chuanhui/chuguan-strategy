@@ -18,7 +18,7 @@ class VacuumCard extends AbstractCard {
       type: 'custom:mushroom-vacuum-card',
       icon: undefined,
       icon_animation: true,
-      layout: 'horizontal',
+      layout: 'default',
       commands: [...VACUUM_COMMANDS],
       tap_action: {
         action: 'more-info',

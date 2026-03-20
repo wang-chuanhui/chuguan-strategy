@@ -15,7 +15,7 @@ class SelectCard extends AbstractCard {
     return {
       type: 'custom:mushroom-select-card',
       icon: undefined,
-      layout: 'horizontal',
+      layout: 'default',
     };
   }
 
