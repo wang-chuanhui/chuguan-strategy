@@ -79,10 +79,16 @@ class HomeView extends AbstractView {
     }
 
     if (chipsSection) {
-      homeViewCards.push(chipsSection);
+      // homeViewCards.push({
+      //   type: 'horizontal-stack',
+      //   cards: [...this.getClockCards(), chipsSection],
+      // });
+      homeViewCards.push(chipsSection)
+      homeViewCards.push(...this.getClockCards())
+    }else {
+      homeViewCards.push(...this.getClockCards())
     }
 
-    homeViewCards.push(...this.getClockCards())
     homeViewCards.push(...this.getWeatherCards());
     // homeViewCards.push(...this.getTodoCard());
 
@@ -110,7 +116,7 @@ class HomeView extends AbstractView {
     ];
     const cameras = Registry.entities.filter((entity) => entity.entity_id.startsWith('camera.'));
     if (cameras.length > 0) {
-      res.unshift({
+      res.push({
         type: 'vertical-stack',
         cards: this.getCameraCards(cameras),
       })
@@ -317,7 +323,6 @@ class HomeView extends AbstractView {
 
     return {
       type: 'vertical-stack',
-      title: Registry.strategyOptions.home_view.hidden.includes('areasTitle') ? undefined : localize('generic.areas'),
       cards: stackHorizontal(cardConfigurations, Registry.strategyOptions.home_view.stack_count['_'], {
         'custom:mushroom-template-card': Registry.strategyOptions.home_view.stack_count.areas?.[0],
         area: Registry.strategyOptions.home_view.stack_count.areas?.[1],

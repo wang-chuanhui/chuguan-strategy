@@ -17,7 +17,7 @@ class AreaCard extends AbstractCard {
       icon_color: 'blue',
       tap_action: { action: 'navigate', navigation_path: '' },
       hold_action: { action: 'none' },
-      layout: 'vertical'
+      layout: 'horizontal',
     };
   }
 

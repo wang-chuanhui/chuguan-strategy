@@ -31,9 +31,9 @@ export const ConfigurationDefaults: StrategyDefaults = {
     // TODO: Make chips sortable.
     weather_entity: 'auto',
     light_count: true,
-    fan_count: true,
-    cover_count: true,
     switch_count: true,
+    cover_count: true,
+    fan_count: true,
     climate_count: true,
     extra_chips: [],
   },
@@ -211,7 +211,7 @@ export const ConfigurationDefaults: StrategyDefaults = {
   home_view: {
     hidden: [],
     stack_count: {
-      _: 2,
+      _: 3,
     },
   },
   views: {
