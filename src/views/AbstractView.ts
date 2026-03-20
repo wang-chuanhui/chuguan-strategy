@@ -183,9 +183,6 @@ abstract class AbstractView {
       const three = await this._createAreaCards(area, domainEntities.slice(length - itemCount), index > 0, stack_count) ?? []
       return [...one, ...two, ...three]
     }
-    if (this.domain == 'security') {
-      console.log('security', area, domainEntities, true, stack_count)
-    }
     return await this._createAreaCards(area, domainEntities, true, stack_count)
   }
 

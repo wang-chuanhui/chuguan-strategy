@@ -56,9 +56,7 @@ class SecurityView extends AbstractView {
                 }
                 const others = domainEntities.filter(entity => !entity.entity_id.startsWith('camera.'))
                 if (others.length > 0) {
-                    console.log('security', others)
                     const otherCards = await super.createAreaCards(area, others, index, 2)
-                    console.log('security', otherCards)
                     if (otherCards) {
                         res.push(...otherCards)
                     }

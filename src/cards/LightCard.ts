@@ -62,7 +62,6 @@ class LightCard extends AbstractCard {
       return null
     }
      const supportedColorModes = state.attributes['supported_color_modes']
-     console.log('supportedColorModes', state.entity_id, supportedColorModes)
     if (Array.isArray(supportedColorModes)) {
       let onoff = false, brightness = false, color_temp = false, color = false,
           scm = supportedColorModes[0]
