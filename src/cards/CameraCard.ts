@@ -1,5 +1,6 @@
 // noinspection JSUnusedGlobalSymbols Class is dynamically imported.
 
+import { Registry } from '../Registry';
 import { EntityRegistryEntry } from '../types/homeassistant/data/entity_registry';
 import { PictureEntityCardConfig } from '../types/homeassistant/panels/lovelace/cards/types';
 import AbstractCard from './AbstractCard';
@@ -31,6 +32,15 @@ class CameraCard extends AbstractCard {
     super(entity);
 
     this.configuration = { ...this.configuration, ...CameraCard.getDefaultConfig(), ...customConfiguration };
+    if (customElements.get('webrtc-camera')) {
+      const state = Registry.hassStates[entity.entity_id];
+      this.configuration.type = 'custom:webrtc-camera';
+      this.configuration.entity = entity.entity_id;
+      this.configuration.title = state.attributes.friendly_name || entity.original_name;
+      if (state.attributes.entity_picture) {
+        this.configuration.poster = window.location.origin + state.attributes.entity_picture;
+      }
+    }
   }
 }
 
