@@ -32,13 +32,18 @@ class CameraCard extends AbstractCard {
     super(entity);
 
     this.configuration = { ...this.configuration, ...CameraCard.getDefaultConfig(), ...customConfiguration };
-    if (customElements.get('webrtc-camera')) {
+    if (customElements.get('webrtc-camera') || true) {
       const state = Registry.hassStates[entity.entity_id];
+      console.log(entity, state, state.attributes.ptz)
       this.configuration.type = 'custom:webrtc-camera';
       this.configuration.entity = entity.entity_id;
       this.configuration.title = state.attributes.friendly_name || entity.original_name;
+      this.configuration.mode = 'webrtc'
       if (state.attributes.entity_picture) {
         this.configuration.poster = window.location.origin + state.attributes.entity_picture;
+      }
+      if (state.attributes.ptz) {
+        this.configuration.ptz = state.attributes.ptz;
       }
     }
   }
