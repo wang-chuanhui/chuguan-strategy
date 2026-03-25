@@ -37,7 +37,6 @@ class CameraCard extends AbstractCard {
       this.configuration.type = 'custom:webrtc-camera';
       this.configuration.entity = entity.entity_id;
       this.configuration.title = state.attributes.friendly_name || entity.original_name;
-      this.configuration.mode = 'webrtc'
       if (state.attributes.entity_picture) {
         this.configuration.poster = window.location.origin + state.attributes.entity_picture;
       }
