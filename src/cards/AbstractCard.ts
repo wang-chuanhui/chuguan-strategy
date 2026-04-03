@@ -64,22 +64,67 @@ abstract class AbstractCard {
 
   is_generic_card_active(entity: RegistryEntry, cmp = '==', state = 'on', ha_card_extra = '') {
     // console.info('IS CARD ACTIVE', entity.entity_id, cmp, state)
+    // const style = {
+    //   '.': `ha-card {
+    //               background-color: {{ 'var(--primary-background-color)'
+    //                                    if states(config.entity)${cmp}'${state}' else
+    //                                    'rgba(var(--rgb-primary-text-color), 0.4)' }};
+    //               backdrop-filter: blur(20px);
+    //               -webkit-backdrop-filter: blur(20px);
+    //             }${ha_card_extra}`,
+      // 'mushroom-state-info$': `.container { {{
+      //                                '--card-primary-color: black;
+      //                                 --card-secondary-color: grey;'
+      //                                  if states(config.entity)${cmp}'${state}' else
+      //                                '--card-primary-color: white;
+      //                                 --card-secondary-color: lightgrey;'
+      //                              }} }`
+    // }
+
+    // rgb(from var(--my-card-bg-active) calc(255 - r) calc(255 - g) calc(255 - b) / 0.3) 
+    // rgba(0, 0, 0, 0.3)
     const style = {
-      '.': `ha-card {
-                  background-color: {{ 'white'
-                                       if states(config.entity)${cmp}'${state}' else
-                                       'rgba(0, 0, 0, 0.3)' }};
-                  backdrop-filter: blur(20px);
-                  -webkit-backdrop-filter: blur(20px);
-                }${ha_card_extra}`,
-      'mushroom-state-info$': `.container { {{
-                                     '--card-primary-color: black;
-                                      --card-secondary-color: grey;'
-                                       if states(config.entity)${cmp}'${state}' else
-                                     '--card-primary-color: white;
-                                      --card-secondary-color: lightgrey;'
-                                   }} }`
+  '.': `
+
+  :host {
+      --my-card-bg-active: rgb(var(--rgb-card-background-color));
+      --my-card-bg-inactive: rgb(from var(--my-card-bg-active) calc(255 - r) calc(255 - g) calc(255 - b) / 0.3);
+      --my-text-active: rgb(var(--rgb-primary-text-color));
+      --my-text-inactive: rgb(from var(--my-text-active) calc(255 - r) calc(255 - g) calc(255 - b));
+      --my-boarder-active: rgb(from var(--my-card-bg-active) calc(255 - r) calc(255 - g) calc(255 - b) / 0.1);
+      --my-boarder-inactive: rgb(var(--rgb-card-background-color), 0.1);
+      }
+
+    ha-card {
+
+      /* 3. 应用逻辑 */
+      background-color: {{ 
+        'var(--my-card-bg-active)' if states(config.entity)${cmp}'${state}' 
+        else 'var(--my-card-bg-inactive)' 
+      }};
+      
+      color: {{ 
+        'var(--my-text-active)' if states(config.entity)${cmp}'${state}' 
+        else 'var(--my-text-inactive)' 
+      }};
+
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: {{ 
+        '1px solid var(--my-boarder-active)' if states(config.entity)${cmp}'${state}' 
+        else '1px solid var(--my-boarder-inactive)' 
+      }};
+      transition: all 0.3s ease; /* 增加平滑过渡效果 */
     }
+  `, 
+       'mushroom-state-info$': `.container { {{
+                                     '--card-primary-color: var(--my-text-active);
+                                      --card-secondary-color: var(--my-text-active);'
+                                       if states(config.entity)${cmp}'${state}' else
+                                     '--card-primary-color: var(--my-text-inactive);
+                                      --card-secondary-color: var(--my-text-inactive);'
+                                   }} }`
+}
 
     return {
       style: style
