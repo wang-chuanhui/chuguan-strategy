@@ -179,6 +179,7 @@ export interface ClockCardConfig extends LovelaceCardConfig {
   border?: boolean;
   ticks?: "none" | "quarter" | "hour" | "minute";
   face_style?: "markers" | "numbers_upright" | "roman";
+  show_date?: boolean;
 }
 
 export enum TimeZone {

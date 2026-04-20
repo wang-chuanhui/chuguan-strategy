@@ -66,16 +66,16 @@ export class ChuguanClockCard extends LitElement {
               min_rows: this._config?.title ? 2 : 1,
               rows: 2,
               max_rows: 4,
-              min_columns: 4,
-              columns: 6,
+              min_columns: this._config?.show_date ? 8 : 4,
+              columns: this._config?.show_date ? 12 : 6,
             };
           case "large":
             return {
               min_rows: 2,
               rows: 2,
               max_rows: 4,
-              min_columns: 6,
-              columns: 6,
+              min_columns: this._config?.show_date ? 12 : 6,
+              columns: this._config?.show_date ? 12 : 6,
             };
           default:
             return {

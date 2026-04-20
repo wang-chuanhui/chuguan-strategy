@@ -28,6 +28,8 @@ import { AreaView } from './views/AreaView';
 import SettingView from './pages/SettingView';
 import './shared/EventButton';
 import './shared/SortListCard';
+import './clock/chuguan-clock-card'
+import { getWallPanelConfig } from './utilities/wallpanel';
 /**
  * Based on mushroom-strategy (https://github.com/DigiLive/mushroom-strategy), Copyright (c) 2025 Ferry Cools, BSD-3-Clause
  */
@@ -100,7 +102,8 @@ class MushroomStrategy extends HTMLTemplateElement {
     );
     views.push(...new SettingView().getViews());
     console.log(views)
-    return { views };
+    const wallpanelConfig = getWallPanelConfig()
+    return { views, ...wallpanelConfig }; 
   }
 
   /**
