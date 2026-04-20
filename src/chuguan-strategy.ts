@@ -103,6 +103,7 @@ class MushroomStrategy extends HTMLTemplateElement {
     views.push(...new SettingView().getViews());
     console.log(views)
     const wallpanelConfig = getWallPanelConfig()
+    console.log(JSON.stringify(wallpanelConfig))
     return { views, ...wallpanelConfig }; 
   }
 

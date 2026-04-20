@@ -77,6 +77,14 @@ export class ChuguanClockCard extends LitElement {
               min_columns: this._config?.show_date ? 12 : 6,
               columns: this._config?.show_date ? 12 : 6,
             };
+          case "huge":
+            return {
+              min_rows: 2,
+              rows: 2,
+              max_rows: 4,
+              min_columns: this._config?.show_date ? 18 : 12,
+              columns: this._config?.show_date ? 18 : 12,
+            };
           default:
             return {
               min_rows: 1,
@@ -96,6 +104,7 @@ export class ChuguanClockCard extends LitElement {
       <ha-card
         class=${classMap({
           "no-background": this._config.no_background ?? false,
+          "no-border": this._config.no_border ?? false,
         })}
       >
         <div
@@ -132,6 +141,9 @@ export class ChuguanClockCard extends LitElement {
     .no-background {
       background: none;
       box-shadow: none;
+    }
+
+    .no-border {
       border: none;
     }
 

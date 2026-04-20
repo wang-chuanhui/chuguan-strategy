@@ -7,7 +7,7 @@ function getWeatherCards(): LovelaceCardConfig[] {
     if (!entity) {
       return []
     }
-    const weatherCards = [WeatherCard.createCard(entity, {} as any)]
+    const weatherCards = [{...WeatherCard.createCard(entity, {} as any), no_background: true, no_border: true}]
     return weatherCards;
   }
 
@@ -25,21 +25,25 @@ export function getWallPanelConfig() {
             stop_screensaver_on_mouse_move: false,
             stop_screensaver_on_key_down: false,
             show_progress_bar: false,
+            show_images: false,
+            touch_zone_size_next_image: 0, 
+            touch_zone_size_previous_image: 0,
             cards: [
+                ...weatherCards,
                 {
                     type: 'custom:chuguan-clock-card',
                     clock_style: 'digital',
-                    clock_size: 'large',
+                    clock_size: 'huge',
                     show_seconds: false,
                     seconds_motion: 'tick',
                     time_format: 24,
-                    no_background: false,
+                    no_background: true,
                     border: false,
                     ticks: 'minute',
                     face_style: 'markers',
-                    show_date: true
+                    show_date: true, 
+                    no_border: true,
                 },
-                ...weatherCards
             ],
         }
     }

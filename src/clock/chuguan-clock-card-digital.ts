@@ -183,6 +183,12 @@ export class ChuguanClockCardDigital extends LitElement {
       gap: 20px;
     }
 
+    .time-parts.size-huge {
+      font-size: 14rem;
+      gap: 23px;
+      flex-direction: column;
+    }
+
     .time-parts.size-medium .time-part.second,
     .time-parts.size-medium .time-part.am-pm {
       font-size: 16px;
@@ -247,6 +253,10 @@ export class ChuguanClockCardDigital extends LitElement {
     }
     .time-parts.size-large .date-section {
       font-size: 1.4rem;
+    }
+
+    .time-parts.size-huge .date-section {
+      font-size: 5rem;
     }
 
 

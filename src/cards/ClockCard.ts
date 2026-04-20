@@ -14,6 +14,7 @@ export default class ClockCard extends AbstractCard {
             seconds_motion: 'tick', 
             time_format: TimeFormat.twenty_four, 
             no_background: true,
+            no_border: true,
             border: false, 
             ticks: 'minute', 
             face_style: 'markers', 

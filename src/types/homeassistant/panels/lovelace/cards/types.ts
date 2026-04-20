@@ -156,6 +156,8 @@ export interface ClockWeatherCardConfig extends LovelaceCardConfig {
   show_decimal?: boolean
   apparent_sensor?: string
   aqi_sensor?: string
+  no_background?: boolean
+  no_border?: boolean
 }
 
 export enum TimeFormat {
@@ -169,12 +171,13 @@ export interface ClockCardConfig extends LovelaceCardConfig {
   type: "custom:chuguan-clock-card";
   title?: string;
   clock_style?: "digital" | "analog";
-  clock_size?: "small" | "medium" | "large";
+  clock_size?: "small" | "medium" | "large" | 'huge';
   show_seconds?: boolean | undefined;
   seconds_motion?: "continuous" | "tick";
   time_format?: TimeFormat;
   time_zone?: string;
   no_background?: boolean;
+  no_border?: boolean
   // Analog clock options
   border?: boolean;
   ticks?: "none" | "quarter" | "hour" | "minute";
