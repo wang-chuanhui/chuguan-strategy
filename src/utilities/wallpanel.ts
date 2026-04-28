@@ -19,7 +19,7 @@ export function getWallPanelConfig() {
             hide_toolbar: false,
             hide_sidebar: false,
             fullscreen: false,
-            idle_time: 10,
+            idle_time: 60,
             enabled_on_views: [],
             display_time: 60,
             stop_screensaver_on_mouse_move: false,
