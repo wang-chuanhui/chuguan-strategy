@@ -120,6 +120,11 @@ export const ConfigurationDefaults: StrategyDefaults = {
       showControls: false,
       hidden: false,
     },
+    number: {
+      title: localize('number.numbers'),
+      showControls: false,
+      hidden: false,
+    },
     scene: {
       title: localize('scene.scenes'),
       showControls: false,

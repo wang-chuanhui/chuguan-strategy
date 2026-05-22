@@ -34,7 +34,7 @@ const SUPPORTED_DOMAINS = [
   'light',
   'lock',
   'media_player',
-  // 'number',
+  'number',
   'scene',
   'security',
   // 'select',
