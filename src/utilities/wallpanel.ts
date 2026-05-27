@@ -22,8 +22,6 @@ export function getWallPanelConfig() {
             idle_time: 60,
             enabled_on_views: [],
             display_time: 60,
-            stop_screensaver_on_mouse_move: false,
-            stop_screensaver_on_key_down: false,
             show_progress_bar: false,
             show_images: false,
             touch_zone_size_next_image: 0, 
