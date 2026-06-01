@@ -261,4 +261,5 @@ export const ConfigurationDefaults: StrategyDefaults = {
     },
   },
   quick_access_cards: [],
+  favorite_entities: []
 };

@@ -30,6 +30,7 @@ import './shared/EventButton';
 import './shared/SortListCard';
 import './clock/chuguan-clock-card'
 import { getWallPanelConfig } from './utilities/wallpanel';
+import './favorite/dialog'
 /**
  * Based on mushroom-strategy (https://github.com/DigiLive/mushroom-strategy), Copyright (c) 2025 Ferry Cools, BSD-3-Clause
  */

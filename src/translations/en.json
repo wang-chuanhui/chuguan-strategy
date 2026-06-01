@@ -32,7 +32,8 @@
     "unavailable": "Unavailable",
     "unclosed": "Unclosed",
     "undisclosed": "Other",
-    "unknown": "Unknown"
+    "unknown": "Unknown", 
+    "favorites": "Favorites"
   },
   "input_select": {
     "input_selects": "Input Selects"

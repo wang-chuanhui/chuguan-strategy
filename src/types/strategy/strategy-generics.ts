@@ -246,6 +246,7 @@ export interface StrategyConfig {
   quick_access_cards: LovelaceCardConfig[];
   background_images?: {[key: string]: string}
   background_image?: string
+  favorite_entities?: string[]
 }
 
 /**

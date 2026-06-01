@@ -1,0 +1,389 @@
+import { CSSResultGroup, LitElement, css, html, TemplateResult } from 'lit'
+import { customElement, property, state } from 'lit/decorators.js'
+import { HomeAssistant } from '../types/homeassistant/types';
+import { Registry } from '../Registry';
+import { EntityRegistryEntry } from '../types/homeassistant/data/entity_registry';
+
+@customElement('chuguan-favorite-selector')
+export class FavoriteSelector extends LitElement {
+  @property({ attribute: false }) public hass!: HomeAssistant;
+  
+  @state() private _showDialog: boolean = false;
+  @state() private _searchQuery: string = '';
+  @state() private _selectedEntities: string[] = [];
+  @state() private _availableEntities: EntityRegistryEntry[] = [];
+
+  @state() private _config: any;
+
+  public setConfig(config: any) {
+    this._config = config;
+  }
+
+  connectedCallback() {
+    super.connectedCallback();
+    this._loadEntities();
+  }
+
+  private _loadEntities() {
+    const currentFavorites = Registry.strategyOptions.favorite_entities || [];
+    this._selectedEntities = [...currentFavorites];
+    
+    this._availableEntities = Registry.entities.filter(entity => {
+      const domain = entity.entity_id.split('.')[0];
+      const excludedDomains = ['zone', 'persistent_notification', 'sun', 'update'];
+      return !excludedDomains.includes(domain);
+    }).sort((a, b) => {
+      const nameA = (a.name || a.original_name || '').toLowerCase();
+      const nameB = (b.name || b.original_name || '').toLowerCase();
+      return nameA.localeCompare(nameB);
+    });
+  }
+
+  private _openDialog() {
+    this._showDialog = true;
+    this._loadEntities();
+  }
+
+  private _closeDialog() {
+    this._showDialog = false;
+    this._searchQuery = '';
+  }
+
+  private _handleSearch(e: Event) {
+    this._searchQuery = (e.target as HTMLInputElement).value;
+  }
+
+  private _toggleEntity(entityId: string) {
+    const index = this._selectedEntities.indexOf(entityId);
+    if (index > -1) {
+      this._selectedEntities = this._selectedEntities.filter(id => id !== entityId);
+    } else {
+      this._selectedEntities = [...this._selectedEntities, entityId];
+    }
+  }
+
+  private async _saveFavorites() {
+    this._closeDialog();
+    
+    this.dispatchEvent(new CustomEvent('cg_save_favorites', {
+      detail: { entities: this._selectedEntities },
+      bubbles: true,
+      composed: true
+    }));
+  }
+
+  private _getFilteredEntities(): EntityRegistryEntry[] {
+    if (!this._searchQuery.trim()) {
+      return this._availableEntities;
+    }
+    
+    const query = this._searchQuery.toLowerCase();
+    return this._availableEntities.filter(entity => {
+      const name = (entity.name || entity.original_name || '').toLowerCase();
+      const entityId = entity.entity_id.toLowerCase();
+      const domain = entity.entity_id.split('.')[0];
+      return name.includes(query) || entityId.includes(query) || domain.includes(query);
+    });
+  }
+
+  private _getEntityName(entity: EntityRegistryEntry): string {
+    if (entity.name) return entity.name;
+    if (entity.original_name) return entity.original_name;
+    const domain = entity.entity_id.split('.')[0];
+    const entityId = entity.entity_id.split('.')[1];
+    return `${domain} - ${entityId.replace(/_/g, ' ')}`;
+  }
+
+  private _getEntitySecondary(entity: EntityRegistryEntry): string {
+    const domain = entity.entity_id.split('.')[0];
+    const state = Registry.hassStates[entity.entity_id];
+    if (state) {
+      const deviceClass = state.attributes?.device_class;
+      if (deviceClass) {
+        return `${domain} - ${deviceClass}`;
+      }
+    }
+    return entity.entity_id;
+  }
+
+  private _getEntityIcon(entity: EntityRegistryEntry): string {
+    const domain = entity.entity_id.split('.')[0];
+    const state = Registry.hassStates[entity.entity_id];
+    
+    if (state?.attributes?.icon) {
+      return state.attributes.icon;
+    }
+    
+    const icons: Record<string, string> = {
+      light: 'mdi:lightbulb',
+      switch: 'mdi:power-socket',
+      sensor: 'mdi:gauge',
+      binary_sensor: 'mdi:eye',
+      climate: 'mdi:thermostat',
+      cover: 'mdi:window-shutter',
+      fan: 'mdi:fan',
+      media_player: 'mdi:speaker',
+      camera: 'mdi:cctv',
+      lock: 'mdi:lock',
+      person: 'mdi:account',
+      weather: 'mdi:weather-cloudy',
+      vacuum: 'mdi:robot-vacuum',
+      water_heater: 'mdi:water-boiler',
+      scene: 'mdi:palette',
+      button: 'mdi:gesture-tap-button',
+      number: 'mdi:counter',
+      input_boolean: 'mdi:toggle-switch',
+      automation: 'mdi:robot',
+      script: 'mdi:script-text',
+      input_select: 'mdi:format-list-bulleted',
+      input_number: 'mdi:counter',
+      input_text: 'mdi:text',
+      input_datetime: 'mdi:calendar-clock',
+      calendar: 'mdi:calendar',
+    };
+    return icons[domain] || 'mdi:help-circle';
+  }
+
+  private _getEntityIconColor(entity: EntityRegistryEntry): string {
+    const domain = entity.entity_id.split('.')[0];
+    const state = Registry.hassStates[entity.entity_id];
+    
+    if (!state) return 'var(--secondary-text-color)';
+    
+    const colors: Record<string, string> = {
+      light: state.state === 'on' ? 'var(--amber-color)' : 'var(--secondary-text-color)',
+      switch: state.state === 'on' ? 'var(--green-color)' : 'var(--secondary-text-color)',
+      climate: state.state !== 'off' ? 'var(--green-color)' : 'var(--secondary-text-color)',
+      fan: state.state === 'on' ? 'var(--green-color)' : 'var(--secondary-text-color)',
+      cover: state.state === 'open' ? 'var(--green-color)' : 'var(--secondary-text-color)',
+      lock: state.state === 'locked' ? 'var(--green-color)' : 'var(--red-color)',
+      person: 'var(--blue-color)',
+    };
+    
+    return colors[domain] || 'var(--secondary-text-color)';
+  }
+
+  render() {
+    const filteredEntities = this._getFilteredEntities();
+    const selectedCount = this._selectedEntities.length;
+    
+    return html`
+      ${this._showDialog ? html`
+        <ha-dialog
+          open
+          @closed=${this._closeDialog}
+          .heading=${true}
+          scrimClickAction
+          escapeKeyAction
+        >
+          <div slot="heading">
+            <ha-header-bar>
+              <span slot="title">选择收藏实体</span>
+              <ha-icon-button
+                slot="actionItems"
+                @click=${this._closeDialog}
+                .path=${'M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z'}
+              ></ha-icon-button>
+            </ha-header-bar>
+          </div>
+          
+          <div class="dialog-content">
+            <div class="search-container">
+              <ha-textfield
+                .value=${this._searchQuery}
+                @input=${this._handleSearch}
+                placeholder="搜索实体名称或ID..."
+                outlined
+                .iconLeading=${html`<ha-icon icon="mdi:magnify"></ha-icon>`}
+                .iconTrailing=${this._searchQuery ? html`
+                  <ha-icon-button
+                    @click=${() => { this._searchQuery = ''; }}
+                    .path=${'M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z'}
+                  ></ha-icon-button>
+                ` : ''}
+              ></ha-textfield>
+            </div>
+            
+            ${selectedCount > 0 ? html`
+              <div class="selected-count">
+                已选择 ${selectedCount} 个实体
+              </div>
+            ` : ''}
+            
+            <div class="entity-list">
+              ${filteredEntities.map(entity => {
+                const isSelected = this._selectedEntities.includes(entity.entity_id);
+                return html`
+                  <div 
+                    class="entity-item ${isSelected ? 'selected' : ''}"
+                    @click=${() => this._toggleEntity(entity.entity_id)}
+                  >
+                    <div class="entity-icon" style="color: ${this._getEntityIconColor(entity)}">
+                      <ha-icon .icon=${this._getEntityIcon(entity)}></ha-icon>
+                    </div>
+                    <div class="entity-info">
+                      <div class="entity-name">${this._getEntityName(entity)}</div>
+                      <div class="entity-secondary">${this._getEntitySecondary(entity)}</div>
+                    </div>
+                    <div class="entity-checkbox">
+                      <ha-checkbox
+                        .checked=${isSelected}
+                      ></ha-checkbox>
+                    </div>
+                  </div>
+                `;
+              })}
+              
+              ${filteredEntities.length === 0 ? html`
+                <div class="no-results">
+                  <ha-icon icon="mdi:search-off"></ha-icon>
+                  <div>未找到匹配的实体</div>
+                </div>
+              ` : ''}
+            </div>
+          </div>
+          
+          <mwc-button slot="primaryAction" @click=${this._saveFavorites} dialogInitialFocus>
+            确定${selectedCount > 0 ? ` (${selectedCount})` : ''}
+          </mwc-button>
+          <mwc-button slot="secondaryAction" @click=${this._closeDialog}>
+            取消
+          </mwc-button>
+        </ha-dialog>
+      ` : ''}
+      
+      <mushroom-chip
+        icon="mdi:star-plus"
+        @click=${this._openDialog}
+      >
+        管理收藏
+      </mushroom-chip>
+    `;
+  }
+
+  static get styles(): CSSResultGroup {
+    return css`
+      :host {
+        display: inline-block;
+      }
+      
+      ha-dialog {
+        --dialog-content-padding: 0;
+        --mdc-dialog-min-width: 560px;
+        --mdc-dialog-max-width: 90vw;
+        --mdc-dialog-max-height: 85vh;
+      }
+      
+      .dialog-content {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        max-height: 70vh;
+      }
+      
+      .search-container {
+        padding: 16px 24px 8px;
+      }
+      
+      ha-textfield {
+        width: 100%;
+      }
+      
+      .selected-count {
+        padding: 8px 24px;
+        font-size: 12px;
+        color: var(--primary-color);
+        font-weight: 500;
+      }
+      
+      .entity-list {
+        flex: 1;
+        overflow-y: auto;
+        padding: 8px 0;
+      }
+      
+      .entity-item {
+        display: flex;
+        align-items: center;
+        padding: 12px 24px;
+        cursor: pointer;
+        transition: background-color 0.2s;
+        gap: 16px;
+      }
+      
+      .entity-item:hover {
+        background-color: var(--secondary-background-color);
+      }
+      
+      .entity-item.selected {
+        background-color: rgba(var(--rgb-primary-color), 0.08);
+      }
+      
+      .entity-icon {
+        flex-shrink: 0;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background-color: var(--card-background-color);
+        border-radius: 50%;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      
+      .entity-icon ha-icon {
+        font-size: 20px;
+      }
+      
+      .entity-info {
+        flex: 1;
+        min-width: 0;
+      }
+      
+      .entity-name {
+        font-weight: 500;
+        color: var(--primary-text-color);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        margin-bottom: 4px;
+      }
+      
+      .entity-secondary {
+        font-size: 12px;
+        color: var(--secondary-text-color);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      
+      .entity-checkbox {
+        flex-shrink: 0;
+      }
+      
+      .no-results {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 48px 24px;
+        color: var(--secondary-text-color);
+        gap: 16px;
+      }
+      
+      .no-results ha-icon {
+        font-size: 48px;
+        opacity: 0.5;
+      }
+      
+      mushroom-chip {
+        cursor: pointer;
+        --chip-background: var(--card-background-color);
+      }
+      
+      mushroom-chip:hover {
+        --chip-background: var(--secondary-background-color);
+      }
+    `;
+  }
+}

@@ -23,6 +23,14 @@ export class ConfigManager {
             const detail: SortItem[] = (e as CustomEvent).detail;
             this.saveDomainSort(detail)
         })
+        document.addEventListener('cg_toggle_favorite', (e) => {
+            const detail = (e as CustomEvent).detail;
+            this.toggleFavorite(detail.entity_id)
+        })
+        document.addEventListener('cg_save_favorites', (e) => {
+            const detail = (e as CustomEvent).detail;
+            this.saveFavorites(detail.entities)
+        })
     }
 
     getCurrentDashboardKey(): string | null {
@@ -71,7 +79,7 @@ export class ConfigManager {
             }
         }
         await this.saveConfig(this.options as StrategyConfig)
-        window.location.reload()
+        this._reloadLovelace()
     }
 
     async saveDomainSort(details: SortItem[]) {
@@ -95,6 +103,36 @@ export class ConfigManager {
             }
         }
         await this.saveConfig(this.options as StrategyConfig)
+    }
+
+    async toggleFavorite(entityId: string) {
+        if (this.options.favorite_entities == null) {
+            this.options.favorite_entities = []
+        }
+
+        const index = this.options.favorite_entities.indexOf(entityId);
+        if (index > -1) {
+            this.options.favorite_entities.splice(index, 1);
+        } else {
+            this.options.favorite_entities.push(entityId);
+        }
+
+        await this.saveConfig(this.options as StrategyConfig)
+        this._reloadLovelace()
+    }
+
+    async saveFavorites(entities: string[]) {
+        this.options.favorite_entities = entities;
+        await this.saveConfig(this.options as StrategyConfig)
+        this._reloadLovelace()
+    }
+
+    private _reloadLovelace() {
+        window.dispatchEvent(new CustomEvent('location-changed', {
+            bubbles: true,
+            composed: true,
+            detail: { replace: false }
+        }));
     }
 
 }

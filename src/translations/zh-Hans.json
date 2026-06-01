@@ -32,7 +32,8 @@
     "unavailable": "不可用",
     "unclosed": "未关闭",
     "undisclosed": "其他",
-    "unknown": "未知"
+    "unknown": "未知", 
+    "favorites": "收藏"
   },
   "input_select": {
     "input_selects": "输入选择器"

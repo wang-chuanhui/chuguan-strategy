@@ -25,6 +25,8 @@ import "../clock/chuguan-clock-card";
 import ClockCard from '../cards/ClockCard';
 import UpdateCard from '../cards/UpdateCard';
 import WeatherCard from '../cards/WeatherCard';
+import '../favorite/selector'
+import { getFavoriteEntities } from '../favorite/view';
 
 /**
  * Home View Class.
@@ -34,6 +36,8 @@ import WeatherCard from '../cards/WeatherCard';
 class HomeView extends AbstractView {
   /** The domain of the entities that the view is representing. */
   static readonly domain = 'home' as const;
+
+  useFavoriteEntities = true;
 
   /**
    * Class constructor.
@@ -85,7 +89,7 @@ class HomeView extends AbstractView {
       // });
       homeViewCards.push(chipsSection)
       homeViewCards.push(...this.getClockCards())
-    }else {
+    } else {
       homeViewCards.push(...this.getClockCards())
     }
 
@@ -102,6 +106,22 @@ class HomeView extends AbstractView {
 
     if (Registry.strategyOptions.extra_cards) {
       homeViewCards.push(...Registry.strategyOptions.extra_cards);
+    }
+
+    if (this.useFavoriteEntities) {
+      const favoriteEntities = await getFavoriteEntities();
+      console.log(favoriteEntities);
+      const res = [
+        {
+          type: 'vertical-stack',
+          cards: homeViewCards,
+        },
+        {
+          type: 'vertical-stack',
+          cards: [this.getCalendarCard()[0], ...favoriteEntities],
+        },
+      ];
+      return res
     }
 
     const res = [
@@ -155,7 +175,7 @@ class HomeView extends AbstractView {
 
   private getClockCards(): LovelaceCardConfig[] {
     const clockCards = [
-      new ClockCard({} as any, {show_seconds: false} as any).getCard(),
+      new ClockCard({} as any, { show_seconds: false } as any).getCard(),
     ];
     return clockCards;
   }
@@ -174,7 +194,7 @@ class HomeView extends AbstractView {
           title = (entity.name ?? entity.original_name) as string
         }
       }
-      return WeatherCard.createCard(entity, {...this.getCustomCardConfig(entity), title} as any)
+      return WeatherCard.createCard(entity, { ...this.getCustomCardConfig(entity), title } as any)
     });
     return weatherCards;
   }
