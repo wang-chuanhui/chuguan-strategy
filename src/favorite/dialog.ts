@@ -1,21 +1,53 @@
 import { CSSResultGroup, LitElement, css, html } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
-import Sortable from 'sortablejs'
 import { HomeAssistant } from '../types/homeassistant/types'
 import { Registry } from '../Registry'
 import { EntityRegistryEntry } from '../types/homeassistant/data/entity_registry'
+import { computeDomain } from '../types/homeassistant/data/icons'
+
+interface EntityItem {
+  entity_id: string
+  name: string
+  icon: string
+}
+
+type ComboBoxLitRenderer<T> = (item: T, index: number) => any
 
 @customElement('chuguan-favorite-dialog')
 export class FavoriteDialog extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant
   @property({ type: Boolean }) public open = false
-  
+
   @state() private _favoriteEntities: EntityRegistryEntry[] = []
   @state() private _newEntityId: string = ''
 
-  private _sortable: Sortable | null = null
-
   @state() private _config: any
+
+  private _rowRenderer: ComboBoxLitRenderer<EntityItem> = (item: EntityItem) =>
+    html`<ha-list-item graphic="avatar" .twoline=${true}>
+      <ha-icon slot="graphic" .icon=${item.icon}></ha-icon>
+      <span>${item.name}</span>
+      <span slot="secondary">${item.entity_id}</span>
+    </ha-list-item>`
+
+  private _getEntityIcon(entityId: string): string {
+    const domain = computeDomain(entityId)
+    const icons: Record<string, string> = {
+      light: 'mdi:lightbulb',
+      switch: 'mdi:toggle-switch',
+      sensor: 'mdi:eye',
+      binary_sensor: 'mdi:eye',
+      climate: 'mdi:thermostat',
+      cover: 'mdi:window-shutter',
+      fan: 'mdi:fan',
+      media_player: 'mdi:speaker',
+      camera: 'mdi:cctv',
+      lock: 'mdi:lock',
+      vacuum: 'mdi:robot-vacuum',
+      weather: 'mdi:weather-cloudy',
+    }
+    return icons[domain] || 'mdi:help-circle'
+  }
 
   setConfig(config: any) {
     this._config = config
@@ -28,17 +60,12 @@ export class FavoriteDialog extends LitElement {
 
   disconnectedCallback() {
     super.disconnectedCallback()
-    if (this._sortable) {
-      this._sortable.destroy()
-      this._sortable = null
-    }
   }
 
   attributeChangedCallback(name: string, oldVal: string | null, newVal: string | null) {
     if (name === 'open' && newVal === 'true') {
       this._loadFavorites()
       this._newEntityId = ''
-      setTimeout(() => this._initSortable(), 100)
     }
   }
 
@@ -52,26 +79,17 @@ export class FavoriteDialog extends LitElement {
   private _closeDialog() {
     this.open = false
     this._newEntityId = ''
-    this.dispatchEvent(new CustomEvent('close', {
-      bubbles: true,
-      composed: true
-    }))
   }
 
-  private _initSortable() {
-    const list = this.shadowRoot?.querySelector('.favorite-list')
-    if (list && !this._sortable) {
-      this._sortable = new Sortable(list as HTMLElement, {
-        animation: 150,
-        handle: '.drag-handle',
-        onEnd: (evt) => {
-          if (evt.oldIndex !== undefined && evt.newIndex !== undefined) {
-            const item = this._favoriteEntities.splice(evt.oldIndex, 1)[0]
-            this._favoriteEntities.splice(evt.newIndex, 0, item)
-            this._saveOrder()
-          }
-        }
-      })
+  private _handleSortUpdate(e: CustomEvent) {
+    const { oldIndex, newIndex } = e.detail
+    if (oldIndex !== undefined && newIndex !== undefined) {
+      // 创建数组副本以确保 Lit 能检测到变化
+      const newEntities = [...this._favoriteEntities]
+      const [item] = newEntities.splice(oldIndex, 1)
+      newEntities.splice(newIndex, 0, item)
+      this._favoriteEntities = newEntities
+      this._saveOrder()
     }
   }
 
@@ -90,6 +108,7 @@ export class FavoriteDialog extends LitElement {
   }
 
   private _handleEntityChange(e: CustomEvent, entityId: string) {
+    console.log('Entity changed:', e.detail.value, entityId)
     const newEntityId = e.detail.value
     if (newEntityId && newEntityId !== entityId) {
       const index = this._favoriteEntities.findIndex(e => e.entity_id === entityId)
@@ -101,6 +120,9 @@ export class FavoriteDialog extends LitElement {
         }
       }
     }
+    if (newEntityId == undefined) {
+      this._removeFavorite(entityId)
+    }
   }
 
   private _handleNewEntityChange(e: CustomEvent) {
@@ -110,7 +132,7 @@ export class FavoriteDialog extends LitElement {
 
   private async _addNewFavorite() {
     if (!this._newEntityId) return
-    
+
     if (this._favoriteEntities.some(e => e.entity_id === this._newEntityId)) {
       return
     }
@@ -123,13 +145,14 @@ export class FavoriteDialog extends LitElement {
     }
   }
 
-  private _getAvailableEntities(): Array<{ entity_id: string; name: string }> {
+  private _getAvailableEntities(): Array<{ entity_id: string; name: string; icon: string }> {
     return Registry.entities
       .map(entity => {
         const name = this._getEntityName(entity)
         return {
           entity_id: entity.entity_id,
-          name: `${name} - ${entity.entity_id}`
+          name: name,
+          icon: this._getEntityIcon(entity.entity_id)
         }
       })
       .sort((a, b) => a.name.localeCompare(b.name))
@@ -164,56 +187,52 @@ export class FavoriteDialog extends LitElement {
         </ha-dialog-header>
         
         <div class="dialog-content">
-            <div class="add-section">
-                <div class="add-label">
-                    添加新实体
+            
+          <div class="section-title">收藏实体 (${this._favoriteEntities.length})</div>
+          
+          <ha-sortable
+            @item-moved=${this._handleSortUpdate}
+            handle-selector=".drag-handle"
+            draggable-selector=".favorite-item"
+          >
+            <div class="favorite-list">
+              ${this._favoriteEntities.map((entity) => html`
+                <div class="favorite-item">
+                  <div class="drag-handle">
+                    <ha-icon icon="mdi:drag"></ha-icon>
+                  </div>
+                  <div class="combo-wrapper">
+                    <ha-combo-box
+                      .hass=${this.hass}
+                      .value=${entity.entity_id}
+                      @value-changed=${(e: CustomEvent) => this._handleEntityChange(e, entity.entity_id)}
+                      .items=${this._getAvailableEntities()}
+                      .renderer=${this._rowRenderer}
+                      item-value-path="entity_id"
+                      item-label-path="name"
+                    ></ha-combo-box>
+                  </div>
                 </div>
+              `)}
+              
+            </div>
+          </ha-sortable>
+
+<div class="add-section">
                 <div class="add-combo-wrapper">
                     <ha-combo-box
                         .hass=${this.hass}
                         .value=${this._newEntityId}
                         @value-changed=${this._handleNewEntityChange}
                         .items=${this._getAvailableEntities()}
-                        label="选择实体"
+                        .renderer=${this._rowRenderer}
+                        label="添加收藏实体"
                         item-value-path="entity_id"
                         item-label-path="name"
                     ></ha-combo-box>
                 </div>
-          </div>
-          <div class="section-title">收藏实体 (${this._favoriteEntities.length})</div>
-          
-          <div class="favorite-list">
-            ${this._favoriteEntities.map((entity) => html`
-              <div class="favorite-item">
-                <div class="drag-handle">
-                  <ha-icon icon="mdi:drag"></ha-icon>
-                </div>
-                <div class="combo-wrapper">
-                  <ha-combo-box
-                    .hass=${this.hass}
-                    .value=${entity.entity_id}
-                    @value-changed=${(e: CustomEvent) => this._handleEntityChange(e, entity.entity_id)}
-                    .items=${this._getAvailableEntities()}
-                    item-value-path="entity_id"
-                    item-label-path="name"
-                  ></ha-combo-box>
-                </div>
-                <ha-icon-button
-                  class="remove-btn"
-                  @click=${() => this._removeFavorite(entity.entity_id)}
-                  .path=${'M19,6.41L17.59,5L12,10.59L6.41,5L5,6.41L10.59,12L5,17.59L6.41,19L12,13.41L17.59,19L19,17.59L13.41,12L19,6.41Z'}
-                ></ha-icon-button>
-              </div>
-            `)}
-            
-            ${this._favoriteEntities.length === 0 ? html`
-              <div class="empty-state">
-                <ha-icon icon="mdi:star-outline"></ha-icon>
-                <div>暂无收藏实体</div>
-                <div class="empty-hint">在下方选择实体添加</div>
-              </div>
-            ` : ''}
-          </div>
+            </div>
+
         </div>
 
         
@@ -248,21 +267,23 @@ export class FavoriteDialog extends LitElement {
       .mdc-dialog__surface {
         min-width: 580px !important;
       }
-
-      ha-header-bar {
-      min-width: 580px !important;
-    }
       
       ha-dialog > div {
-        width: 580px !important;
+        width: 532px !important;
         max-width: 90vw;
-        min-width: 580px !important;
+        min-width: 532px !important;
       }
       
       .dialog-content {
-        padding: 16px 24px;
-        max-height: 70vh;
+        width: 532px;
+        padding: 16px 0;
+        max-height: 100%;
         overflow-y: auto;
+        margin: 0 auto;
+      }
+
+      .dialog-content::-webkit-scrollbar {
+        display: none; /* 或者设置 width: 0; height: 0; */
       }
       
       .section-title {

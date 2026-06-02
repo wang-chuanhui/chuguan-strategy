@@ -47,13 +47,13 @@ export async function getFavoriteEntities() {
         } as any,
     ];
     cards.push(...stackHorizontal(favoriteCards, Registry.strategyOptions.home_view.stack_count['_']));
-    cards.push({
-        type: 'custom:mushroom-template-card',
-        primary: '暂无收藏实体',
-        secondary: '点击右上角按钮添加收藏',
-        icon: 'mdi:star-outline',
-        icon_color: 'grey',
-    });
+    // cards.push({
+    //     type: 'custom:mushroom-template-card',
+    //     primary: '暂无收藏实体',
+    //     secondary: '点击右上角按钮添加收藏',
+    //     icon: 'mdi:star-outline',
+    //     icon_color: 'grey',
+    // });
 
     return [{
         type: 'vertical-stack',
