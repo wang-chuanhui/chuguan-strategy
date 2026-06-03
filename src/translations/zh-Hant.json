@@ -33,7 +33,7 @@
     "unclosed": "未關閉",
     "undisclosed": "其他",
     "unknown": "未知", 
-    "favorites": "收藏"
+    "favorites": "收藏夾"
   },
   "input_select": {
     "input_selects": "輸入選擇器"
@@ -120,5 +120,13 @@
   },
   "weather": {
     "weather": "天氣預報"
+  }, 
+  "favorite": {
+    "title": "收藏夾",
+    "manage": "管理收藏實體", 
+    "entity": "收藏實體", 
+    "add": "添加收藏實體", 
+    "cancel": "取消", 
+    "save": "保存"
   }
 }

@@ -62,7 +62,97 @@ abstract class AbstractCard {
     return null
   }
 
-  is_generic_card_active(entity: RegistryEntry, cmp = '==', state = 'on', ha_card_extra = '') {
+  /**
+   * --state-active-color
+--state-binary_sensor-active-color
+--state-cover-active-color
+--state-device_tracker-active-color
+--state-fan-active-color
+--state-light-active-color
+--state-media_player-active-color
+--state-person-active-color
+--state-plant-active-color
+--state-siren-active-color
+--state-switch-active-color
+--state-update-active-color
+--state-vacuum-active-color
+--state-valve-active-color
+
+   */
+
+    is_generic_card_active(entity: RegistryEntry, cmp = '==', state = 'on', ha_card_extra = '') {
+      let active = '--state-icon-active-color'
+      // if ((entity as EntityRegistryEntry).entity_id) {
+      //   const id = (entity as EntityRegistryEntry).entity_id
+      //   const domain = id.split('.')[0]
+      //   if (domain == 'switch') {
+      //     active = '--state-switch-active-color'
+      //   }else if (domain == 'cover') {
+      //     active = '--state-cover-active-color'
+      //   }
+      // }
+    const style = {
+  '.': `
+
+  :host {
+      --my-card-bg-active: rgb(var(--rgb-card-background-color));
+      --my-card-bg-inactive: rgb(var(--rgb-card-background-color));
+      --my-text-active: rgb(var(--rgb-primary-text-color));
+      --my-text-inactive: rgb(var(--rgb-primary-text-color));
+      --my-icon-active: rgb(var(--rgb-primary-text-color));
+      --my-icon-inactive: rgb(var(--rgb-disabled-text-color, 150, 150, 150));
+      --my-border-active: rgba(var(--rgb-primary-text-color), 0.3);
+      --my-border-inactive: rgba(var(--rgb-primary-text-color), 0.12);
+      }
+
+
+    ha-card {
+      background-color: {{ 
+        'var(--my-card-bg-active)' if states(config.entity)${cmp}'${state}' 
+        else 'var(--my-card-bg-inactive)' 
+      }};
+      
+      color: {{ 
+        'var(--my-text-active)' if states(config.entity)${cmp}'${state}' 
+        else 'var(--my-text-inactive)' 
+      }};
+
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      
+      border: {{ 
+        '1px solid var(--my-border-active)' if states(config.entity)${cmp}'${state}' 
+        else '1px solid var(--my-border-inactive)' 
+      }};
+
+      {{
+        'opacity: 1;' if states(config.entity)${cmp}'${state}' 
+        else 'opacity: 0.65;' 
+      }}
+      
+      transition: all 0.3s ease;
+    }
+  `, 
+       'mushroom-state-info$': `.container { {{
+                                     '--card-primary-color: var(--my-text-active);
+                                      --card-secondary-color: var(--my-text-active);'
+                                       if states(config.entity)${cmp}'${state}' else
+                                     '--card-primary-color: var(--my-text-inactive);
+                                      --card-secondary-color: var(--my-text-inactive);'
+                                   }} }`, 
+        '-mushroom-button$': `.button { {{
+                                      '--icon-color: var(${active});'
+                                       if states(config.entity)${cmp}'${state}' else
+                                     '--icon-color: var(--state-icon-inactive-color);'
+                                    }}  }`
+}
+
+    return {
+      style: style
+    }
+  }
+
+  is_generic_card_active_0(entity: RegistryEntry, cmp = '==', state = 'on', ha_card_extra = '') {
     // console.info('IS CARD ACTIVE', entity.entity_id, cmp, state)
     // const style = {
     //   '.': `ha-card {

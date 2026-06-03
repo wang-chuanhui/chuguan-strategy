@@ -20,7 +20,8 @@ export class FavoriteHeader extends LitElement {
   private _openDialog() {
     const dialog = this.shadowRoot?.querySelector('chuguan-favorite-dialog') as any
     if (dialog) {
-      dialog.open = true
+      dialog.openDialog()
+      // dialog.open = true
     }
   }
 

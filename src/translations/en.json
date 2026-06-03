@@ -120,5 +120,13 @@
   }, 
   "weather": {
     "weather": "Weather"
+  }, 
+  "favorite": {
+    "title": "Favorites",
+    "manage": "Manage Favorites", 
+    "entity": "Favorite Entity", 
+    "add": "Add Favorite Entity", 
+    "cancel": "Cancel", 
+    "save": "Save"
   }
 }

@@ -46,7 +46,7 @@ export async function getFavoriteEntities() {
             title: localize('generic.favorites'),
         } as any,
     ];
-    cards.push(...stackHorizontal(favoriteCards, Registry.strategyOptions.home_view.stack_count['_']));
+    cards.push(...stackHorizontal(favoriteCards, 2));
     // cards.push({
     //     type: 'custom:mushroom-template-card',
     //     primary: '暂无收藏实体',

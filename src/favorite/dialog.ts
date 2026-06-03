@@ -4,12 +4,16 @@ import { HomeAssistant } from '../types/homeassistant/types'
 import { Registry } from '../Registry'
 import { EntityRegistryEntry } from '../types/homeassistant/data/entity_registry'
 import { computeDomain } from '../types/homeassistant/data/icons'
+import { ENTITY_COMPONENT_ICONS } from '../types/homeassistant/data/entity_component_icons'
+import { localize } from '../utilities/localize'
 
 interface EntityItem {
   entity_id: string
   name: string
   icon: string
 }
+
+
 
 type ComboBoxLitRenderer<T> = (item: T, index: number) => any
 
@@ -23,30 +27,34 @@ export class FavoriteDialog extends LitElement {
 
   @state() private _config: any
 
-  private _rowRenderer: ComboBoxLitRenderer<EntityItem> = (item: EntityItem) =>
-    html`<ha-list-item graphic="avatar" .twoline=${true}>
-      <ha-icon slot="graphic" .icon=${item.icon}></ha-icon>
-      <span>${item.name}</span>
+  private _rowRenderer: ComboBoxLitRenderer<EntityRegistryEntry> = (item: EntityRegistryEntry) => {
+    const state = Registry.hassStates[item.entity_id]
+    const name = this._getEntityName(item).trim()
+    return  html`<ha-list-item graphic="avatar" .twoline=${true}>
+      ${state.state
+        ? html`<state-badge
+            slot="graphic"
+            .stateObj=${state}
+            .hass=${this.hass}
+          ></state-badge>`
+        : ""}
+      <span>${name}</span>
       <span slot="secondary">${item.entity_id}</span>
     </ha-list-item>`
+  }
+   
 
   private _getEntityIcon(entityId: string): string {
     const domain = computeDomain(entityId)
-    const icons: Record<string, string> = {
-      light: 'mdi:lightbulb',
-      switch: 'mdi:toggle-switch',
-      sensor: 'mdi:eye',
-      binary_sensor: 'mdi:eye',
-      climate: 'mdi:thermostat',
-      cover: 'mdi:window-shutter',
-      fan: 'mdi:fan',
-      media_player: 'mdi:speaker',
-      camera: 'mdi:cctv',
-      lock: 'mdi:lock',
-      vacuum: 'mdi:robot-vacuum',
-      weather: 'mdi:weather-cloudy',
+    const domainIcons = ENTITY_COMPONENT_ICONS[domain]
+    
+    if (domainIcons) {
+      // 返回默认图标
+      return domainIcons._.default
     }
-    return icons[domain] || 'mdi:help-circle'
+    
+    // 如果找不到，返回默认图标
+    return 'mdi:help-circle'
   }
 
   setConfig(config: any) {
@@ -60,6 +68,12 @@ export class FavoriteDialog extends LitElement {
 
   disconnectedCallback() {
     super.disconnectedCallback()
+  }
+
+  public openDialog() {
+    this.open = true
+    this._loadFavorites()
+    this._newEntityId = ''
   }
 
   attributeChangedCallback(name: string, oldVal: string | null, newVal: string | null) {
@@ -81,6 +95,11 @@ export class FavoriteDialog extends LitElement {
     this._newEntityId = ''
   }
 
+  private _closeAndSave() {
+    this._saveOrder()
+    this._closeDialog()
+  }
+
   private _handleSortUpdate(e: CustomEvent) {
     const { oldIndex, newIndex } = e.detail
     if (oldIndex !== undefined && newIndex !== undefined) {
@@ -89,7 +108,6 @@ export class FavoriteDialog extends LitElement {
       const [item] = newEntities.splice(oldIndex, 1)
       newEntities.splice(newIndex, 0, item)
       this._favoriteEntities = newEntities
-      this._saveOrder()
     }
   }
 
@@ -103,8 +121,8 @@ export class FavoriteDialog extends LitElement {
   }
 
   private _removeFavorite(entityId: string) {
-    this._favoriteEntities = this._favoriteEntities.filter(e => e.entity_id !== entityId)
-    this._saveOrder()
+    const newEntities = [...this._favoriteEntities]
+    this._favoriteEntities = newEntities.filter(e => e.entity_id !== entityId)
   }
 
   private _handleEntityChange(e: CustomEvent, entityId: string) {
@@ -115,8 +133,15 @@ export class FavoriteDialog extends LitElement {
       if (index !== -1) {
         const newEntity = Registry.entities.find(e => e.entity_id === newEntityId)
         if (newEntity) {
-          this._favoriteEntities[index] = newEntity
-          this._saveOrder()
+          const newEntities = [...this._favoriteEntities]
+          newEntities[index] = newEntity
+          const filterEntities: EntityRegistryEntry[] = []
+          newEntities.forEach(e => {
+            if (!filterEntities.some(e2 => e2.entity_id === e.entity_id)) {
+              filterEntities.push(e)
+            }
+          })
+          this._favoriteEntities = filterEntities
         }
       }
     }
@@ -140,26 +165,33 @@ export class FavoriteDialog extends LitElement {
     const entity = Registry.entities.find(e => e.entity_id === this._newEntityId)
     if (entity) {
       this._favoriteEntities = [...this._favoriteEntities, entity]
-      await this._saveOrder()
-      this._newEntityId = ''
+      setTimeout(() => {
+        this._newEntityId = ''
+      }, 1);
     }
   }
 
-  private _getAvailableEntities(): Array<{ entity_id: string; name: string; icon: string }> {
+  private _getListAvailableEntities(): Array<EntityRegistryEntry> {
     return Registry.entities
       .map(entity => {
-        const name = this._getEntityName(entity)
-        return {
-          entity_id: entity.entity_id,
-          name: name,
-          icon: this._getEntityIcon(entity.entity_id)
-        }
+        const name = this._getEntityName(entity).trim()
+        return {...entity, name}
       })
-      .sort((a, b) => a.name.localeCompare(b.name))
+  }
+
+  private _getAvailableEntities(): Array<EntityRegistryEntry> {
+    return Registry.entities
+      .filter(entity => !this._favoriteEntities.some(e => e.entity_id === entity.entity_id))
+      .map(entity => {
+        const name = this._getEntityName(entity).trim()
+        return {...entity, name}
+      })
   }
 
   private _getEntityName(entity: EntityRegistryEntry): string {
     if (entity.name) return entity.name
+    const state = Registry.hassStates[entity.entity_id]
+    if (state && state.attributes.friendly_name) return state.attributes.friendly_name
     if (entity.original_name) return entity.original_name
     const domain = entity.entity_id.split('.')[0]
     const entityId = entity.entity_id.split('.')[1]
@@ -183,12 +215,12 @@ export class FavoriteDialog extends LitElement {
             >
                 <ha-icon style="display: flex;" icon="mdi:close"></ha-icon>
             </ha-icon-button>
-            <span slot="title">管理收藏实体</span>
+            <span slot="title">${localize('favorite.manage')}</span>
         </ha-dialog-header>
         
         <div class="dialog-content">
             
-          <div class="section-title">收藏实体 (${this._favoriteEntities.length})</div>
+          <div class="section-title">${localize('favorite.entity')} (${this._favoriteEntities.length})</div>
           
           <ha-sortable
             @item-moved=${this._handleSortUpdate}
@@ -206,11 +238,18 @@ export class FavoriteDialog extends LitElement {
                       .hass=${this.hass}
                       .value=${entity.entity_id}
                       @value-changed=${(e: CustomEvent) => this._handleEntityChange(e, entity.entity_id)}
-                      .items=${this._getAvailableEntities()}
+                      .items=${this._getListAvailableEntities()}
                       .renderer=${this._rowRenderer}
                       item-value-path="entity_id"
                       item-label-path="name"
-                    ></ha-combo-box>
+                      .icon=${true}
+                    >
+                      <state-badge
+                        slot="icon"
+                        .stateObj=${Registry.hassStates[entity.entity_id]}
+                        .hass=${this.hass}
+                      ></state-badge>  
+                    </ha-combo-box>
                   </div>
                 </div>
               `)}
@@ -218,7 +257,7 @@ export class FavoriteDialog extends LitElement {
             </div>
           </ha-sortable>
 
-<div class="add-section">
+            <div class="add-section">
                 <div class="add-combo-wrapper">
                     <ha-combo-box
                         .hass=${this.hass}
@@ -226,7 +265,7 @@ export class FavoriteDialog extends LitElement {
                         @value-changed=${this._handleNewEntityChange}
                         .items=${this._getAvailableEntities()}
                         .renderer=${this._rowRenderer}
-                        label="添加收藏实体"
+                        label="${localize('favorite.add')}"
                         item-value-path="entity_id"
                         item-label-path="name"
                     ></ha-combo-box>
@@ -237,10 +276,10 @@ export class FavoriteDialog extends LitElement {
 
         
         <mwc-button slot="secondaryAction" @click=${this._closeDialog}>
-          取消
+          ${localize('favorite.cancel')}
         </mwc-button>
-        <mwc-button slot="primaryAction" @click=${this._closeDialog} dialogInitialFocus>
-          保存
+        <mwc-button slot="primaryAction" @click=${this._closeAndSave} dialogInitialFocus>
+          ${localize('favorite.save')}
         </mwc-button>
       </ha-dialog>
       </div>

@@ -28,26 +28,5 @@ function url_exists(url: string, method = 'HEAD') {
 }
 
 export function gen_background(id: string): LovelaceViewBackgroundConfig {
-    const options = Registry.strategyOptions
-    let view_background = options.background_images && options.background_images[id]
-    img
-    let bg_image = (
-        view_background ||
-        options.background_image ||
-        '/hacsfiles/chuguan-strategy/view_background.jpg'
-    )
-    if (url_exists(bg_image) == false) {
-        bg_image = '/local/community/chuguan-strategy/view_background.jpg'
-    }
-    if (url_exists(bg_image) == false) {
-        bg_image = '/local/chuguan-strategy/view_background.jpg'
-    }
-    return {
-        image: bg_image,
-        alignment: 'center',
-        attachment: 'fixed',
-        opacity: 100,
-        repeat: 'repeat',
-        size: 'cover',
-    }
+    return {}
 }

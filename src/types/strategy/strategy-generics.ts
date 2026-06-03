@@ -247,6 +247,7 @@ export interface StrategyConfig {
   background_images?: {[key: string]: string}
   background_image?: string
   favorite_entities?: string[]
+  wallpanel?: any
 }
 
 /**

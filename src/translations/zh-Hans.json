@@ -33,7 +33,7 @@
     "unclosed": "未关闭",
     "undisclosed": "其他",
     "unknown": "未知", 
-    "favorites": "收藏"
+    "favorites": "收藏夹"
   },
   "input_select": {
     "input_selects": "输入选择器"
@@ -120,5 +120,13 @@
   }, 
   "weather": {
     "weather": "天气预报"
+  }, 
+  "favorite": {
+    "title": "收藏夹",
+    "manage": "管理收藏实体", 
+    "entity": "收藏实体", 
+    "add": "添加收藏实体", 
+    "cancel": "取消", 
+    "save": "保存"
   }
 }

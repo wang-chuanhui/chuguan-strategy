@@ -2,12 +2,20 @@ import WeatherCard from "../cards/WeatherCard";
 import { Registry } from "../Registry";
 import { LovelaceCardConfig } from "../types/homeassistant/data/lovelace/config/card";
 
+function whiteColor() {
+    return {
+        'wp_style': {
+            '--primary-text-color': '#FFFFFF'
+        }
+    }
+}
+
 function getWeatherCards(): LovelaceCardConfig[] {
     const entity = Registry.entities.filter((entity) => entity.entity_id.startsWith('weather.'))[0];
     if (!entity) {
       return []
     }
-    const weatherCards = [{...WeatherCard.createCard(entity, {} as any), no_background: true, no_border: true}]
+    const weatherCards = [{...WeatherCard.createCard(entity, {} as any), no_background: true, no_border: true, ...whiteColor()}]
     return weatherCards;
   }
 
@@ -19,7 +27,7 @@ export function getWallPanelConfig() {
             hide_toolbar: false,
             hide_sidebar: false,
             fullscreen: false,
-            idle_time: 60,
+            idle_time: 300,
             enabled_on_views: [],
             display_time: 60,
             show_progress_bar: false,
@@ -41,6 +49,7 @@ export function getWallPanelConfig() {
                     face_style: 'markers',
                     show_date: true, 
                     no_border: true,
+                    ...whiteColor()
                 },
             ],
         }
