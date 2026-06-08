@@ -8,7 +8,7 @@ import { ActionsSharedConfig } from "../types/lovelace-mushroom/shared/config/ac
 import { TemplateCardConfig } from "../types/lovelace-mushroom/cards/template-card-config";
 import DomainSortView from "./DomainSortView";
 import "../shared/DockedSidebar";
-
+import '../favorite/add'
 
 
 export default class SettingView {
@@ -41,6 +41,9 @@ export default class SettingView {
         verticalStackCards.push(...this.getSidebar())
         verticalStackCards.push(this.getSortAres())
         verticalStackCards.push(this.getSortDomain())
+        verticalStackCards.push({
+            type: 'custom:chuguan_add-favorite'
+        })
 
         cards.push({
             type: 'vertical-stack',

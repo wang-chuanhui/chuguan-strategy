@@ -16,13 +16,13 @@ function getCustomCardConfig(entity: EntityRegistryEntry): CustomCardConfig | un
 }
 
 
-export async function getFavoriteEntities() {
+export async function getFavoriteEntities(key: string = 'favorite_entities', title: string = localize('generic.favorites')) {
     const favoriteCards: LovelaceCardConfig[] = [];
-    const favoriteEntityIds = Registry.strategyOptions.favorite_entities ?? []
-
+    const favoriteEntityIds = Registry.strategyOptions[key] ?? []
+    console.log(key, favoriteEntityIds)
     for (const entityId of favoriteEntityIds) {
         const entity = Registry.entities.find(e => e.entity_id === entityId);
-        console.log(entityId, entity)
+
         if (!entity) {
             continue;
         }
@@ -43,7 +43,8 @@ export async function getFavoriteEntities() {
     const cards: LovelaceCardConfig[] = [
         {
             type: 'custom:chuguan-favorite-header',
-            title: localize('generic.favorites'),
+            title: title,
+            key: key,
         } as any,
     ];
     cards.push(...stackHorizontal(favoriteCards, 2));
@@ -59,4 +60,23 @@ export async function getFavoriteEntities() {
         type: 'vertical-stack',
         cards: cards,
     }];
+}
+
+export async function getAllFavoriteEntities() {
+    const keys = Object.keys(Registry.strategyOptions).filter(key => key.startsWith('favorite_entities'))
+    const cards = await Promise.all(keys.map(key => {
+        let title = localize('generic.favorites')
+        if (key != 'favorite_entities') {
+            if (key.startsWith('favorite_entities_')) {
+                title = key.replace('favorite_entities_', '')
+            }else if (key.startsWith('favorite_entities')) {
+                title = key.replace('favorite_entities', '')
+            }
+        }
+        if (title == '') {
+            title = localize('generic.favorites')
+        }
+        return getFavoriteEntities(key, title)
+    }))
+    return cards
 }

@@ -127,6 +127,7 @@
     "entity": "Favorite Entity", 
     "add": "Add Favorite Entity", 
     "cancel": "Cancel", 
-    "save": "Save"
+    "save": "Save", 
+    "delete": "Delete"
   }
 }

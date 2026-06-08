@@ -29,7 +29,15 @@ export class ConfigManager {
         })
         document.addEventListener('cg_save_favorites', (e) => {
             const detail = (e as CustomEvent).detail;
-            this.saveFavorites(detail.entities)
+            this.saveFavorites(detail.entities, detail.key || 'favorite_entities')
+        })
+        document.addEventListener('cg_add_favorites', (e) => {
+            const detail = (e as CustomEvent).detail;
+            this.addFavorites(detail.name)
+        })
+        document.addEventListener('cg_delete_favorites', (e) => {
+            const detail = (e as CustomEvent).detail;
+            this.deleteFavorites(detail.key)
         })
     }
 
@@ -121,8 +129,29 @@ export class ConfigManager {
         this._reloadLovelace()
     }
 
-    async saveFavorites(entities: string[]) {
-        this.options.favorite_entities = entities;
+    async saveFavorites(entities: string[], key: string = 'favorite_entities') {
+        this.options[key] = entities;
+        await this.saveConfig(this.options as StrategyConfig)
+        this._reloadLovelace()
+    }
+
+    async addFavorites(name: string) {
+        if (!name) {
+            return
+        }
+        const key = 'favorite_entities_' + name
+        if (this.options[key] == null) {
+            this.options[key] = []
+        }
+        await this.saveConfig(this.options as StrategyConfig)
+        this._reloadLovelace()
+    }
+
+    async deleteFavorites(key: string) {
+        if (key == null) {
+            return
+        }
+        delete this.options[key];
         await this.saveConfig(this.options as StrategyConfig)
         this._reloadLovelace()
     }

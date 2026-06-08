@@ -7,6 +7,7 @@ import './dialog'
 export class FavoriteHeader extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant
   @property() public title: string = '收藏实体'
+  @property() public key: string = 'favorite_entities'
 
   private _config: any
 
@@ -14,6 +15,9 @@ export class FavoriteHeader extends LitElement {
     this._config = config
     if (config.title) {
       this.title = config.title
+    }
+    if (config.key) {
+      this.key = config.key
     }
   }
 
@@ -30,6 +34,7 @@ export class FavoriteHeader extends LitElement {
       <chuguan-favorite-dialog
         .hass=${this.hass}
         .open=${false}
+        .key=${this.key}
       ></chuguan-favorite-dialog>
       
       <div class="header">

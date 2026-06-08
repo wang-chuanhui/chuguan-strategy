@@ -21,6 +21,7 @@ type ComboBoxLitRenderer<T> = (item: T, index: number) => any
 export class FavoriteDialog extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant
   @property({ type: Boolean }) public open = false
+  @property() public key: string = 'favorite_entities'
 
   @state() private _favoriteEntities: EntityRegistryEntry[] = []
   @state() private _newEntityId: string = ''
@@ -59,6 +60,7 @@ export class FavoriteDialog extends LitElement {
 
   setConfig(config: any) {
     this._config = config
+    console.log('FavoriteDialog config:', this._config)
   }
 
   connectedCallback() {
@@ -84,10 +86,19 @@ export class FavoriteDialog extends LitElement {
   }
 
   private _loadFavorites() {
-    const favoriteIds = Registry.strategyOptions.favorite_entities || []
+    const favoriteIds: string[] = Registry.strategyOptions[this.key] || []
     this._favoriteEntities = favoriteIds
       .map(id => Registry.entities.find(e => e.entity_id === id))
       .filter((e): e is EntityRegistryEntry => e !== undefined)
+  }
+
+  private _delete() {
+    this.dispatchEvent(new CustomEvent('cg_delete_favorites', {
+      detail: { key: this.key },
+      bubbles: true,
+      composed: true
+    }))
+    this._closeDialog()
   }
 
   private _closeDialog() {
@@ -114,7 +125,7 @@ export class FavoriteDialog extends LitElement {
   private async _saveOrder() {
     const entityIds = this._favoriteEntities.map(e => e.entity_id)
     this.dispatchEvent(new CustomEvent('cg_save_favorites', {
-      detail: { entities: entityIds },
+      detail: { entities: entityIds, key: this.key },
       bubbles: true,
       composed: true
     }))
@@ -147,6 +158,36 @@ export class FavoriteDialog extends LitElement {
     }
     if (newEntityId == undefined) {
       this._removeFavorite(entityId)
+    }
+  }
+
+  private _filterChanged(ev: CustomEvent) {
+    const target = ev.target as any;
+    if (target == null) return
+    const filterString = ev.detail.value.trim().toLowerCase();
+    const values = this._getListAvailableEntities()
+    if (filterString) {
+      target.filteredItems = values.filter(e => {
+        if (e.entity_id.includes(filterString)) return true
+        return e.name && e.name.toLowerCase().includes(filterString)
+      })
+    }else {
+      target.filteredItems = values
+    }
+  }
+
+  private _addFilterChanged(ev: CustomEvent) {
+    const target = ev.target as any;
+    if (target == null) return
+    const filterString = ev.detail.value.trim().toLowerCase();
+    const values = this._getAvailableEntities()
+    if (filterString) {
+      target.filteredItems = values.filter(e => {
+        if (e.entity_id.includes(filterString)) return true
+        return e.name && e.name.toLowerCase().includes(filterString)
+      })
+    }else {
+      target.filteredItems = values
     }
   }
 
@@ -238,6 +279,7 @@ export class FavoriteDialog extends LitElement {
                       .hass=${this.hass}
                       .value=${entity.entity_id}
                       @value-changed=${(e: CustomEvent) => this._handleEntityChange(e, entity.entity_id)}
+                      @filter-changed=${this._filterChanged}
                       .items=${this._getListAvailableEntities()}
                       .renderer=${this._rowRenderer}
                       item-value-path="entity_id"
@@ -263,6 +305,7 @@ export class FavoriteDialog extends LitElement {
                         .hass=${this.hass}
                         .value=${this._newEntityId}
                         @value-changed=${this._handleNewEntityChange}
+                        @filter-changed=${this._addFilterChanged}
                         .items=${this._getAvailableEntities()}
                         .renderer=${this._rowRenderer}
                         label="${localize('favorite.add')}"
@@ -274,7 +317,9 @@ export class FavoriteDialog extends LitElement {
 
         </div>
 
-        
+        ${this._favoriteEntities.length == 0 ? html`<mwc-button slot="secondaryAction" @click=${this._delete}>
+          ${localize('favorite.delete')}
+        </mwc-button>` : ''}
         <mwc-button slot="secondaryAction" @click=${this._closeDialog}>
           ${localize('favorite.cancel')}
         </mwc-button>

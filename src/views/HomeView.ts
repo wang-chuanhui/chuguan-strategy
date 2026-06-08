@@ -25,8 +25,7 @@ import "../clock/chuguan-clock-card";
 import ClockCard from '../cards/ClockCard';
 import UpdateCard from '../cards/UpdateCard';
 import WeatherCard from '../cards/WeatherCard';
-import '../favorite/selector'
-import { getFavoriteEntities } from '../favorite/view';
+import { getAllFavoriteEntities, getFavoriteEntities } from '../favorite/view';
 
 /**
  * Home View Class.
@@ -38,6 +37,7 @@ class HomeView extends AbstractView {
   static readonly domain = 'home' as const;
 
   useFavoriteEntities = true;
+  useManyFavoriteEntities = true;
 
   /**
    * Class constructor.
@@ -109,6 +109,24 @@ class HomeView extends AbstractView {
     }
 
     if (this.useFavoriteEntities) {
+      if (this.useManyFavoriteEntities) {
+        const items = await getAllFavoriteEntities();
+        const favoriteEntities = items.map(item => {
+          return {
+            type: 'vertical-stack',
+            cards: [...item],
+          }
+        })
+        console.log(favoriteEntities);
+        const res = [
+          {
+            type: 'vertical-stack',
+            cards: homeViewCards,
+          },
+          ...favoriteEntities,
+        ]
+        return res
+      }
       const favoriteEntities = await getFavoriteEntities();
       console.log(favoriteEntities);
       const res = [
@@ -118,7 +136,7 @@ class HomeView extends AbstractView {
         },
         {
           type: 'vertical-stack',
-          cards: [this.getCalendarCard()[0], ...favoriteEntities],
+          cards: [...favoriteEntities],
         },
       ];
       return res
