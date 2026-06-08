@@ -20,7 +20,6 @@ function getCustomCardConfig(entity: EntityRegistryEntry): CustomCardConfig | un
 export async function getFavoriteEntities(key: string = 'favorite_entities', title: string = localize('generic.favorites')) {
     const favoriteCards: LovelaceCardConfig[] = [];
     const favoriteEntityIds = Registry.strategyOptions[key] ?? []
-    console.log(key, favoriteEntityIds)
     for (const entityId of favoriteEntityIds) {
         const entity = Registry.entities.find(e => e.entity_id === entityId);
 

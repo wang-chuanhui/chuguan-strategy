@@ -28,6 +28,8 @@ export class FavoriteDialog extends LitElement {
 
   @state() private _config: any
 
+  private addTarget: any
+
   private _rowRenderer: ComboBoxLitRenderer<EntityRegistryEntry> = (item: EntityRegistryEntry) => {
     const state = Registry.hassStates[item.entity_id]
     const name = this._getEntityName(item).trim()
@@ -60,7 +62,6 @@ export class FavoriteDialog extends LitElement {
 
   setConfig(config: any) {
     this._config = config
-    console.log('FavoriteDialog config:', this._config)
   }
 
   connectedCallback() {
@@ -76,6 +77,7 @@ export class FavoriteDialog extends LitElement {
     this.open = true
     this._loadFavorites()
     this._newEntityId = ''
+    this.setupAddTargetFilter(this.addTarget, '')
   }
 
   attributeChangedCallback(name: string, oldVal: string | null, newVal: string | null) {
@@ -137,7 +139,6 @@ export class FavoriteDialog extends LitElement {
   }
 
   private _handleEntityChange(e: CustomEvent, entityId: string) {
-    console.log('Entity changed:', e.detail.value, entityId)
     const newEntityId = e.detail.value
     if (newEntityId && newEntityId !== entityId) {
       const index = this._favoriteEntities.findIndex(e => e.entity_id === entityId)
@@ -159,6 +160,7 @@ export class FavoriteDialog extends LitElement {
     if (newEntityId == undefined) {
       this._removeFavorite(entityId)
     }
+    this.setupAddTargetFilter(this.addTarget, '')
   }
 
   private _filterChanged(ev: CustomEvent) {
@@ -179,7 +181,15 @@ export class FavoriteDialog extends LitElement {
   private _addFilterChanged(ev: CustomEvent) {
     const target = ev.target as any;
     if (target == null) return
+    this.addTarget= target
     const filterString = ev.detail.value.trim().toLowerCase();
+    this.setupAddTargetFilter(target, filterString)
+  }
+
+  setupAddTargetFilter(target: any, filterString: string) {
+    if (target == null) {
+      return
+    }
     const values = this._getAvailableEntities()
     if (filterString) {
       target.filteredItems = values.filter(e => {
@@ -194,6 +204,10 @@ export class FavoriteDialog extends LitElement {
   private _handleNewEntityChange(e: CustomEvent) {
     this._newEntityId = e.detail.value || ''
     this._addNewFavorite()
+    setTimeout(() => {
+      this._newEntityId = ''
+      this.setupAddTargetFilter(this.addTarget, '')
+    }, 1);
   }
 
   private async _addNewFavorite() {
@@ -206,9 +220,6 @@ export class FavoriteDialog extends LitElement {
     const entity = Registry.entities.find(e => e.entity_id === this._newEntityId)
     if (entity) {
       this._favoriteEntities = [...this._favoriteEntities, entity]
-      setTimeout(() => {
-        this._newEntityId = ''
-      }, 1);
     }
   }
 
@@ -332,7 +343,6 @@ export class FavoriteDialog extends LitElement {
   }
 
   static get styles(): CSSResultGroup {
-    console.log('dialog get styles')
     return css`
       :host {
         display: block;
