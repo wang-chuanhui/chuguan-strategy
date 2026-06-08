@@ -1,3 +1,4 @@
+import SensorCard from "../cards/SensorCard";
 import TileCard from "../cards/TileCard";
 import { Registry } from "../Registry";
 import { EntityRegistryEntry } from "../types/homeassistant/data/entity_registry";
@@ -29,12 +30,18 @@ export async function getFavoriteEntities(key: string = 'favorite_entities', tit
 
         try {
             const domain = entityId.split('.')[0];
+            if (domain == 'sensor') {
+                const card = await SensorCard.createCard(entity);
+                favoriteCards.push(card);
+                continue;
+            }
             const moduleName = sanitizeClassName(domain + 'Card');
             const DomainCard = (await import(`../cards/${moduleName}`)).default;
 
             const card = new DomainCard(entity, getCustomCardConfig(entity)).getCard();
             favoriteCards.push(card);
         } catch (e) {
+            console.error(e);
             const card = new TileCard(entity, getCustomCardConfig(entity) as StackCardConfig).getCard()
             favoriteCards.push(card);
         }

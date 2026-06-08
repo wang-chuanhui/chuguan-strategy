@@ -4,16 +4,16 @@ import AbstractCard from "./AbstractCard";
 import { Registry } from "../Registry";
 
 
-export default class WeatherCard extends AbstractCard {
+export class WeatherCard extends AbstractCard {
 
-    static getDefaultCardConfig() : WeatherForecastCardConfig {
+    static getDefaultCardConfig(): WeatherForecastCardConfig {
         return {
             entity: '',
             type: "weather-forecast",
-            show_current: true, 
-            show_forecast: false, 
-            forecast_type: 'hourly', 
-            secondary_info_attribute: 'wind_speed', 
+            show_current: true,
+            show_forecast: false,
+            forecast_type: 'hourly',
+            secondary_info_attribute: 'wind_speed',
             round_temperature: true
         }
     }
@@ -29,19 +29,19 @@ export default class WeatherCard extends AbstractCard {
         this.configuration = {
             ...this.configuration,
             ...WeatherCard.getDefaultCardConfig(),
-            ...customConfiguration, 
+            ...customConfiguration,
             entity: entity.entity_id
         }
         if (this.has_hourly) {
             this.configuration.show_forecast = true
             this.configuration.forecast_type = 'hourly'
-        }else if (this.has_twice_daily) {
+        } else if (this.has_twice_daily) {
             this.configuration.show_forecast = true
             this.configuration.forecast_type = 'twice_daily'
-        }else if (this.has_daily) {
+        } else if (this.has_daily) {
             this.configuration.show_forecast = true
             this.configuration.forecast_type = 'daily'
-        }else {
+        } else {
             this.configuration.show_forecast = true
             this.configuration.forecast_type = 'legacy'
         }
@@ -80,14 +80,14 @@ export class LovelaceColorfulcloudsWeatherCard extends AbstractCard {
     has_daily = false
     has_hourly = false
 
-        constructor(entity: EntityRegistryEntry, customConfiguration: LovelaceColorfulcloudsWeatherCardConfig) {
+    constructor(entity: EntityRegistryEntry, customConfiguration: LovelaceColorfulcloudsWeatherCardConfig) {
         super(entity);
         this.setupFeatures(entity);
 
         this.configuration = {
             ...this.configuration,
             ...LovelaceColorfulcloudsWeatherCard.getDefaultCardConfig(),
-            ...customConfiguration, 
+            ...customConfiguration,
             entity: entity.entity_id
         }
         if (this.has_hourly) {
@@ -105,14 +105,14 @@ export class LovelaceColorfulcloudsWeatherCard extends AbstractCard {
 
 }
 
-export class ClockWeatherCard extends AbstractCard {
+export default class ClockWeatherCard extends AbstractCard {
 
     static getDefaultCardConfig(): ClockWeatherCardConfig {
         return {
             type: 'custom:clock-weather-card',
             entity: '',
-            weather_icon_type: 'fill', 
-            animated_icon: false, 
+            weather_icon_type: 'fill',
+            animated_icon: false,
             date_pattern: 'yyyy-MM-dd',
             show_wind: true,
             show_decimal: true,
@@ -124,14 +124,14 @@ export class ClockWeatherCard extends AbstractCard {
     has_daily = false
     has_hourly = false
 
-        constructor(entity: EntityRegistryEntry, customConfiguration: ClockWeatherCardConfig) {
+    constructor(entity: EntityRegistryEntry, customConfiguration: ClockWeatherCardConfig) {
         super(entity);
         this.setupFeatures(entity);
 
         this.configuration = {
             ...this.configuration,
             ...ClockWeatherCard.getDefaultCardConfig(),
-            ...customConfiguration, 
+            ...customConfiguration,
             entity: entity.entity_id
         }
         if (this.has_hourly) {
@@ -145,6 +145,10 @@ export class ClockWeatherCard extends AbstractCard {
     setupFeaturesSupported(entity: EntityRegistryEntry, supported_features: number): void {
         this.has_daily = (supported_features & 1) !== 0
         this.has_hourly = (supported_features & 2) !== 0
+    }
+
+    static createCard(entity: EntityRegistryEntry, customConfiguration: any) {
+        return WeatherCard.createCard(entity, customConfiguration);
     }
 
 }

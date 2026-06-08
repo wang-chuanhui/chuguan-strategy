@@ -61,6 +61,9 @@ const getEntityIcon = async (
       icon = getIconFromTranslations(state, translations);
     }
   }
+  if (icon == 'mdi:eye') {
+    return undefined
+  }
   return icon;
 };
 

@@ -6,7 +6,7 @@ import { EntityCardConfig } from "../types/lovelace-mushroom/cards/entity-card-c
 import AbstractCard from "./AbstractCard";
 
 
-class CalendarCard extends AbstractCard {
+export class CalendarCard extends AbstractCard {
 
     static getDefaultConfig(): CalendarCardConfig {
         return {
@@ -37,6 +37,9 @@ export class CalendarProCard extends AbstractCard {
     }
 
     constructor(entities: EntityRegistryEntry[], customConfiguration?: LovelaceCardConfig) {
+        if (Array.isArray(entities) == false) {
+            entities = Registry.entities.filter((entity) => entity.entity_id.startsWith('calendar.'));
+        }
         super(entities[0] ?? {});
         const language = Registry.config.hass.language
         if (language) {
@@ -53,4 +56,4 @@ export class CalendarProCard extends AbstractCard {
 
 }
 
-export default CalendarCard;
+export default CalendarProCard;
