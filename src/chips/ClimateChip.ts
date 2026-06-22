@@ -16,7 +16,7 @@ class ClimateChip extends AbstractChip {
       type: 'template',
       icon: 'mdi:home-thermometer',
       icon_color: 'orange',
-      content: Registry.getCountTemplate('climate', 'ne', 'off'),
+      content: Registry.getCountTemplate3(['climate', 'humidifier'], 'ne', 'off'),
       tap_action: {
         action: 'navigate',
         navigation_path: 'climates',

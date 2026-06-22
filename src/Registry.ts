@@ -131,7 +131,7 @@ class Registry {
     } catch (e) {
       logMessage(lvlFatal, 'Error importing strategy options!', e);
     }
-    
+
     setDebugLevel(Registry.strategyOptions.debug ? lvlFatal : lvlOff);
     if (Registry.strategyOptions.debug) {
       logAllEvents()
@@ -160,7 +160,7 @@ class Registry {
       const domainEntities = all[domain];
       if (!domainEntities[dc]) {
         domainEntities[dc] = [entity];
-      }else {
+      } else {
         domainEntities[dc].push(entity);
       }
     }
@@ -223,7 +223,7 @@ class Registry {
 
       Registry.config.areas = new RegistryFilter(Registry.areas).orderBy(['order', 'name'], 'asc').toList();
       if (Registry.strategyOptions.areas.undisclosed?.hidden == true) {
-        Registry.config.areas.push({...ConfigurationDefaults.areas.undisclosed, ...Registry.strategyOptions.areas['_'], ...Registry.strategyOptions.areas.undisclosed});
+        Registry.config.areas.push({ ...ConfigurationDefaults.areas.undisclosed, ...Registry.strategyOptions.areas['_'], ...Registry.strategyOptions.areas.undisclosed });
       }
       Registry._areas = new RegistryFilter(Registry.areas).isNotHidden().orderBy(['order', 'name'], 'asc').toList();
     }
@@ -289,6 +289,82 @@ class Registry {
     states.push(
       ...new RegistryFilter(Registry.entities)
         .whereDomain(domain)
+        .where((entity) => !entity.entity_id.endsWith('_stateful_scene') && entity.platform !== 'group')
+        .toList()
+        .map((entity) => `states['${entity.entity_id}']`)
+    );
+
+    // noinspection SpellCheckingInspection
+    return `{% set entities = [${states}] %}
+       {{ entities
+          | selectattr('state','${operator}','${value}')
+          | selectattr('state','ne','unavailable')
+          | selectattr('state','ne','unknown')
+          | list
+          | count
+        }}`;
+  }
+
+  static getCountTemplate2(domain: SupportedDomains, operator: string, value: string): string {
+    // noinspection JSMismatchedCollectionQueryUpdate
+    /**
+     * Array of entity state-entries, filtered by domain.
+     *
+     * Each element contains a template-string which is used to access home assistant's state machine (state object) in
+     * a template; E.g. `states['light.kitchen']`.
+     */
+    const states: string[] = [];
+
+    if (!Registry.initialized) {
+      logMessage(lvlWarn, 'Registry is not initialized!');
+
+      return '?';
+    }
+
+    states.push(
+      ...new RegistryFilter(Registry.entities)
+        .whereDomain(domain)
+        .whereEntryState(state => {
+          return state.attributes?.cannot_turn_off !== true
+        })
+        .where((entity) => !entity.entity_id.endsWith('_stateful_scene') && entity.platform !== 'group')
+        .toList()
+        .map((entity) => `states['${entity.entity_id}']`)
+    );
+
+    // noinspection SpellCheckingInspection
+    return `{% set entities = [${states}] %}
+       {{ entities
+          | selectattr('state','${operator}','${value}')
+          | selectattr('state','ne','unavailable')
+          | selectattr('state','ne','unknown')
+          | list
+          | count
+        }}`;
+  }
+
+  static getCountTemplate3(domains: SupportedDomains[], operator: string, value: string): string {
+    // noinspection JSMismatchedCollectionQueryUpdate
+    /**
+     * Array of entity state-entries, filtered by domain.
+     *
+     * Each element contains a template-string which is used to access home assistant's state machine (state object) in
+     * a template; E.g. `states['light.kitchen']`.
+     */
+    const states: string[] = [];
+
+    if (!Registry.initialized) {
+      logMessage(lvlWarn, 'Registry is not initialized!');
+
+      return '?';
+    }
+
+    states.push(
+      ...new RegistryFilter(Registry.entities)
+        .where(entry => {
+          const domain: SupportedDomains = entry.entity_id.split('.')[0] as any
+          return domains.includes(domain);
+        })
         .where((entity) => !entity.entity_id.endsWith('_stateful_scene') && entity.platform !== 'group')
         .toList()
         .map((entity) => `states['${entity.entity_id}']`)

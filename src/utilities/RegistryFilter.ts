@@ -1,5 +1,6 @@
 // noinspection JSUnusedGlobalSymbols
 
+import { HassEntity } from 'home-assistant-js-websocket';
 import { Registry } from '../Registry';
 import { DeviceRegistryEntry } from '../types/homeassistant/data/device_registry';
 import { EntityCategory, EntityRegistryEntry } from '../types/homeassistant/data/entity_registry';
@@ -334,6 +335,21 @@ class RegistryFilter<T extends RegistryEntry, K extends keyof T = keyof T> {
       }
 
       return invert ? category !== entityCategory : category === entityCategory;
+    };
+    this.filters.push(predicate);
+    return this;
+  }
+
+  whereEntryState(closure: (state: HassEntity) => boolean): this {
+    const predicate = (entry: T) => {
+      const entity_id = (entry as any).entity_id || ""
+      if (entity_id) {
+        const state = Registry.hassStates[entity_id];
+        if (state) {
+          return closure(state);
+        }
+      }
+      return true
     };
     this.filters.push(predicate);
     return this;

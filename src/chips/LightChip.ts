@@ -17,13 +17,16 @@ class LightChip extends AbstractChip {
       type: 'template',
       icon: 'mdi:lightbulb-group',
       icon_color: 'amber',
-      content: Registry.getCountTemplate('light', 'eq', 'on'),
+      content: Registry.getCountTemplate2('light', 'eq', 'on'),
       tap_action: {
         action: 'perform-action',
         perform_action: 'light.turn_off',
         target: {
           entity_id: new RegistryFilter(Registry.entities)
             .whereDomain('light')
+            .whereEntryState(state => {
+              return state.attributes?.cannot_turn_off !== true
+            })
             .getValuesByProperty('entity_id') as string[],
         },
       },
