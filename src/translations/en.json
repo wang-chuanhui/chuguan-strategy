@@ -129,5 +129,8 @@
     "cancel": "Cancel", 
     "save": "Save", 
     "delete": "Delete"
+  }, 
+  "number": {
+    "numbers": "Numbers"
   }
 }

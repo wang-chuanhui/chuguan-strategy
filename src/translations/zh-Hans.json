@@ -129,5 +129,8 @@
     "cancel": "取消", 
     "save": "保存", 
     "delete": "删除"
+  }, 
+  "number": {
+    "numbers": "数字"
   }
 }
