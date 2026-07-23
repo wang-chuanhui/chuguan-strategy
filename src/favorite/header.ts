@@ -33,7 +33,9 @@ export class FavoriteHeader extends LitElement {
   render() {
     const picker = customElements.get('ha-generic-picker')
     const hasPicker = picker != undefined
-
+    console.log(picker)
+    const box = customElements.get('ha-combo-box')
+    console.log(box)
     return html`
 
     ${hasPicker ? html`

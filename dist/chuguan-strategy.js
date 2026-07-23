@@ -931,9 +931,9 @@
         width: 100%;
       }
 
-    `}};$([(0,w.MZ)({attribute:!1})],O.prototype,"hass",void 0),$([(0,w.MZ)({type:Boolean})],O.prototype,"open",void 0),$([(0,w.MZ)()],O.prototype,"key",void 0),$([(0,w.wk)()],O.prototype,"_favoriteEntities",void 0),$([(0,w.wk)()],O.prototype,"_newEntityId",void 0),$([(0,w.wk)()],O.prototype,"_config",void 0),O=$([(0,w.EM)("chuguan-favorite-dialog-12")],O);var x=function(t,e,i,r){var n,o=arguments.length,a=o<3?e:null===r?r=Object.getOwnPropertyDescriptor(e,i):r;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)a=Reflect.decorate(t,e,i,r);else for(var s=t.length-1;s>=0;s--)(n=t[s])&&(a=(o<3?n(a):o>3?n(e,i,a):n(e,i))||a);return o>3&&a&&Object.defineProperty(e,i,a),a};let S=class extends y.WF{constructor(){super(...arguments),this.title="收藏实体",this.key="favorite_entities"}setConfig(t){this._config=t,t.title&&(this.title=t.title),t.key&&(this.key=t.key)}_openDialog(){const t=this.shadowRoot?.querySelector("chuguan-favorite-dialog");t&&t.openDialog()}render(){const t=null!=customElements.get("ha-generic-picker");return y.qy`
+    `}};$([(0,w.MZ)({attribute:!1})],O.prototype,"hass",void 0),$([(0,w.MZ)({type:Boolean})],O.prototype,"open",void 0),$([(0,w.MZ)()],O.prototype,"key",void 0),$([(0,w.wk)()],O.prototype,"_favoriteEntities",void 0),$([(0,w.wk)()],O.prototype,"_newEntityId",void 0),$([(0,w.wk)()],O.prototype,"_config",void 0),O=$([(0,w.EM)("chuguan-favorite-dialog-12")],O);var x=function(t,e,i,r){var n,o=arguments.length,a=o<3?e:null===r?r=Object.getOwnPropertyDescriptor(e,i):r;if("object"==typeof Reflect&&"function"==typeof Reflect.decorate)a=Reflect.decorate(t,e,i,r);else for(var s=t.length-1;s>=0;s--)(n=t[s])&&(a=(o<3?n(a):o>3?n(e,i,a):n(e,i))||a);return o>3&&a&&Object.defineProperty(e,i,a),a};let S=class extends y.WF{constructor(){super(...arguments),this.title="收藏实体",this.key="favorite_entities"}setConfig(t){this._config=t,t.title&&(this.title=t.title),t.key&&(this.key=t.key)}_openDialog(){const t=this.shadowRoot?.querySelector("chuguan-favorite-dialog");t&&t.openDialog()}render(){const t=customElements.get("ha-generic-picker"),e=null!=t;console.log(t);const i=customElements.get("ha-combo-box");return console.log(i),y.qy`
 
-    ${t?y.qy`
+    ${e?y.qy`
       <chuguan-favorite-dialog
         .hass=${this.hass}
         .open=${!1}
