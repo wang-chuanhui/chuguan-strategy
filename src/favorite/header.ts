@@ -28,6 +28,11 @@ export class FavoriteHeader extends LitElement {
       dialog.openDialog()
       // dialog.open = true
     }
+    const dialog12 = this.shadowRoot?.querySelector('chuguan-favorite-dialog-12') as any
+    if (dialog12) {
+      dialog12.openDialog()
+      // dialog12.open = true
+    }
   }
 
   render() {
