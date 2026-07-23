@@ -18,6 +18,7 @@ import { logAllEvents, logMessage, lvlFatal, lvlOff, lvlWarn, setDebugLevel } fr
 import setupCustomLocalize from './utilities/localize';
 import RegistryFilter from './utilities/RegistryFilter';
 import { ConfigManager } from './utilities/config';
+import { HomeAssistant } from './types/homeassistant/types';
 
 /**
  * Registry Class
@@ -48,13 +49,13 @@ class Registry {
   static get devices(): DeviceRegistryEntry[] {
     return Registry._devices;
   }
-
+  private static hass: HomeAssistant;
   /** Entries of Home Assistant's state registry */
   private static _hassStates: HassEntities;
 
   /** Home Assistant's State registry. */
   static get hassStates(): HassEntities {
-    return Registry._hassStates;
+    return Registry.hass.states;
   }
 
   /** Indicates whether this module is initialized. */
@@ -120,6 +121,7 @@ class Registry {
     setupCustomLocalize(info.hass);
 
     // Import the Hass States and strategy options.
+    Registry.hass = info.hass;
     Registry._hassStates = info.hass.states;
     const { ConfigurationDefaults } = await import('./configurationDefaults');
     Registry.config = new ConfigManager(info.hass);
