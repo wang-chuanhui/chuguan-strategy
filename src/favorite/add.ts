@@ -1,7 +1,6 @@
 import { CSSResultGroup, LitElement, css, html } from 'lit'
 import { customElement, property, state } from 'lit/decorators.js'
 import { HomeAssistant } from '../types/homeassistant/types'
-import './dialog'
 import { localize } from '../utilities/localize'
 
 @customElement('chuguan_add-favorite')

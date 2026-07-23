@@ -17,8 +17,8 @@ interface EntityItem {
 
 type ComboBoxLitRenderer<T> = (item: T, index: number) => any
 
-@customElement('chuguan-favorite-dialog')
-export class FavoriteDialog extends LitElement {
+@customElement('chuguan-favorite-dialog-12')
+export class FavoriteDialog12 extends LitElement {
   @property({ attribute: false }) public hass!: HomeAssistant
   @property({ type: Boolean }) public open = false
   @property() public key: string = 'favorite_entities'

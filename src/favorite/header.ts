@@ -2,6 +2,7 @@ import { CSSResultGroup, LitElement, css, html } from 'lit'
 import { customElement, property } from 'lit/decorators.js'
 import { HomeAssistant } from '../types/homeassistant/types'
 import './dialog'
+import './dialog-12'
 
 @customElement('chuguan-favorite-header')
 export class FavoriteHeader extends LitElement {
@@ -30,12 +31,25 @@ export class FavoriteHeader extends LitElement {
   }
 
   render() {
+    const picker = customElements.get('ha-generic-picker')
+    const hasPicker = picker != undefined
+
     return html`
+
+    ${hasPicker ? html`
       <chuguan-favorite-dialog
         .hass=${this.hass}
         .open=${false}
         .key=${this.key}
       ></chuguan-favorite-dialog>
+      ` : html`
+        <chuguan-favorite-dialog-12
+        .hass=${this.hass}
+        .open=${false}
+        .key=${this.key}
+      ></chuguan-favorite-dialog-12>
+      `}
+      
       
       <div class="header">
         <div class="title-section">
