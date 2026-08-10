@@ -194,11 +194,11 @@ abstract class AbstractView {
         return true
       })
       if (otherEntities.length > 10) {
-        const itemCount = Math.floor(domainEntities.length / 3)
-        const length = domainEntities.length
-        const one = await this._createAreaCards(area, domainEntities.slice(0, length - itemCount * 2), true, stack_count) ?? []
-        const two = await this._createAreaCards(area, domainEntities.slice(length - itemCount * 2, length - itemCount), index > 0, stack_count) ?? []
-        const three = await this._createAreaCards(area, domainEntities.slice(length - itemCount), index > 0, stack_count) ?? []
+        const itemCount = Math.floor(otherEntities.length / 3)
+        const length = otherEntities.length
+        const one = await this._createAreaCards(area, otherEntities.slice(0, length - itemCount * 2), true, stack_count) ?? []
+        const two = await this._createAreaCards(area, otherEntities.slice(length - itemCount * 2, length - itemCount), true, stack_count) ?? []
+        const three = await this._createAreaCards(area, otherEntities.slice(length - itemCount), true, stack_count) ?? []
         viewCards.push(...(one ?? []))
         viewCards.push(...(two ?? []))
         viewCards.push(...(three ?? []))
