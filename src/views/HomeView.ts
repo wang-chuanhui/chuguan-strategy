@@ -117,7 +117,7 @@ class HomeView extends AbstractView {
             cards: [...item],
           }
         })
-        console.log(favoriteEntities);
+        // console.log(favoriteEntities);
         const res = [
           {
             type: 'vertical-stack',
@@ -128,7 +128,7 @@ class HomeView extends AbstractView {
         return res
       }
       const favoriteEntities = await getFavoriteEntities();
-      console.log(favoriteEntities);
+      // console.log(favoriteEntities);
       const res = [
         {
           type: 'vertical-stack',

@@ -1,7 +1,7 @@
 import { HassServiceTarget } from "home-assistant-js-websocket";
 import { Registry } from "../Registry";
 import { LovelaceCardConfig } from "../types/homeassistant/data/lovelace/config/card";
-import { isSupportedDomain, NotInAreaDomains, StrategyArea, StrategyViewConfig } from "../types/strategy/strategy-generics";
+import { isSupportedDomain, NotInAreaDomains, StrategyArea, StrategyViewConfig, SupportedDomains } from "../types/strategy/strategy-generics";
 import RegistryFilter from "../utilities/RegistryFilter";
 import { sanitizeClassName } from "../utilities/auxiliaries";
 import HeaderCard from "../cards/HeaderCard";
@@ -10,6 +10,9 @@ import { stackHorizontal } from "../utilities/cardStacking";
 import { logMessage, lvlError } from "../utilities/debug";
 import { gen_background } from "../utilities/background";
 import WeatherCard from "../cards/WeatherCard";
+import { getDevice, groupByDevice } from "../utilities/group";
+import { EntityRegistryEntry } from "../types/homeassistant/data/entity_registry";
+import { StackCardConfig } from "../types/homeassistant/panels/lovelace/cards/types";
 
 
 export class AreaView {
@@ -53,7 +56,6 @@ export class AreaView {
 
         // Prepare promises for all supported domains
         const domainCardPromises = exposedDomainNames.filter(isSupportedDomain).map(async (domain) => {
-            const moduleName = sanitizeClassName(domain + 'Card');
 
             const entities = new RegistryFilter(areaEntities)
                 .whereDomain(domain)
@@ -72,49 +74,7 @@ export class AreaView {
                 }
             ).createCard();
 
-            try {
-                const DomainCard = (await import(`../cards/${moduleName}`)).default;
-
-                if (domain === 'sensor') {
-                    let domainCardsPromises = entities
-                        // .filter((entity) => Registry.hassStates[entity.entity_id]?.attributes.unit_of_measurement)
-                        .map(async (entity) => {
-                            return await SensorCard.createCard(entity);
-                        });
-                    let domainCards = await Promise.all(domainCardsPromises);
-                    if (domainCards.length) {
-                        domainCards = stackHorizontal(
-                            domainCards,
-                            Registry.strategyOptions.domains[domain].stack_count ?? Registry.strategyOptions.domains['_'].stack_count
-                        );
-
-                        return { type: 'vertical-stack', cards: [headerCard, ...domainCards] };
-                    }
-
-                    return null;
-                }
-
-                let domainCards = entities.map((entity) => {
-                    const cardOptions = {
-                        ...(entity.device_id && Registry.strategyOptions.card_options?.[entity.device_id]),
-                        ...Registry.strategyOptions.card_options?.[entity.entity_id],
-                    };
-                    if (domain == 'weather') {
-                        return WeatherCard.createCard(entity, cardOptions);
-                    }
-                    return new DomainCard(entity, cardOptions).getCard();
-                });
-
-                domainCards = stackHorizontal(
-                    domainCards,
-                    Registry.strategyOptions.domains[domain].stack_count ?? Registry.strategyOptions.domains['_'].stack_count
-                );
-
-                return domainCards.length ? { type: 'vertical-stack', cards: [headerCard, ...domainCards] } : null;
-            } catch (e) {
-                logMessage(lvlError, `Error creating card configurations for domain ${domain}`, e);
-                return null;
-            }
+            return await this.getDomainEntitiesCard(domain, entities, headerCard);
         });
 
         // Await all domain card stacks
@@ -157,8 +117,174 @@ export class AreaView {
                 }
             }
         }
-        console.log(viewCards)
+        // console.log(viewCards)
         return viewCards;
     }
 
+    async getDomainEntitiesCard(domain: SupportedDomains, entities: EntityRegistryEntry[], headerCard?: StackCardConfig) {
+        try {
+            const moduleName = sanitizeClassName(domain + 'Card');
+            const DomainCard = (await import(`../cards/${moduleName}`)).default;
+
+            if (domain === 'sensor') {
+                let domainCardsPromises = entities
+                    // .filter((entity) => Registry.hassStates[entity.entity_id]?.attributes.unit_of_measurement)
+                    .map(async (entity) => {
+                        return await SensorCard.createCard(entity);
+                    });
+                let domainCards = await Promise.all(domainCardsPromises);
+                if (domainCards.length) {
+                    domainCards = stackHorizontal(
+                        domainCards,
+                        Registry.strategyOptions.domains[domain].stack_count ?? Registry.strategyOptions.domains['_'].stack_count
+                    );
+
+                    return { type: 'vertical-stack', cards: [headerCard, ...domainCards].filter(Boolean) };
+                }
+
+                return null;
+            }
+
+            let domainCards = entities.map((entity) => {
+                const cardOptions = {
+                    ...(entity.device_id && Registry.strategyOptions.card_options?.[entity.device_id]),
+                    ...Registry.strategyOptions.card_options?.[entity.entity_id],
+                };
+                if (domain == 'weather') {
+                    return WeatherCard.createCard(entity, cardOptions);
+                }
+                return new DomainCard(entity, cardOptions).getCard();
+            });
+
+            domainCards = stackHorizontal(
+                domainCards,
+                Registry.strategyOptions.domains[domain].stack_count ?? Registry.strategyOptions.domains['_'].stack_count
+            );
+
+            return domainCards.length ? { type: 'vertical-stack', cards: [headerCard, ...domainCards].filter(Boolean) } : null;
+        } catch (e) {
+            logMessage(lvlError, `Error creating card configurations for domain ${domain}`, e);
+            return null;
+        }
+    }
+
+    async getDeviceEntitiesCard(deviceId: string, entities: EntityRegistryEntry[]) {
+        const device = getDevice(deviceId);
+        const headerCard = new HeaderCard(
+            { entity_id: entities.map((entity) => entity.entity_id) },
+            {
+                title: device?.name_by_user || device?.name || deviceId,
+            }
+            ).createCard();
+        const cards: any[] = []
+        for (const entity of entities) {
+            const domain: any = entity.entity_id.split('.')[0];
+            const typeCards = await this.getDomainEntitiesCard(domain, [entity]);
+            const domainCards = typeCards?.cards ?? [];
+            cards.push(...domainCards)
+        }
+        return {
+            type: 'vertical-stack',
+            cards: [headerCard, ...cards].filter(Boolean),
+        }
+    }
+
+}
+
+
+export class UndisclosedView extends AreaView {
+    constructor(area: StrategyArea) {
+        super(area);
+        console.log('UndisclosedView', area)
+    }
+
+    async getCards(): Promise<LovelaceCardConfig[]> {
+        const exposedDomainNames = Registry.getExposedNames('domain');
+        const area = this.area;
+        const areaEntities = new RegistryFilter(Registry.entities).whereAreaId(area.area_id).whereNotDomain(NotInAreaDomains).toList();
+        const deviceMap = groupByDevice(areaEntities);
+        const viewCards: LovelaceCardConfig[] = [...(area.extra_cards ?? [])];
+
+        // Set the target for any Header card to the current area.
+        const target: HassServiceTarget = { area_id: [area.area_id] };
+
+        // Prepare promises for all supported domains
+        const domainCardPromises = exposedDomainNames.filter(isSupportedDomain).map(async (domain) => {
+
+            const entities = new RegistryFilter(areaEntities)
+                .whereDomain(domain)
+                .where((entity) => !(domain === 'switch' && entity.entity_id.endsWith('_stateful_scene')))
+                .toList()
+                .filter(entity => {
+                    for (const [deviceId, entities] of deviceMap) {
+                        if (entities.includes(entity)) {
+                            return false;
+                        }
+                    }
+                    return true;
+                });
+
+            if (!entities.length) {
+                return null;
+            }
+
+            const headerCard = new HeaderCard(
+                { entity_id: entities.map((entity) => entity.entity_id) },
+                {
+                    ...Registry.strategyOptions.domains['_'],
+                    ...Registry.strategyOptions.domains[domain],
+                }
+            ).createCard();
+
+            return await this.getDomainEntitiesCard(domain, entities, headerCard);
+        });
+        
+        for (const [deviceId, entities] of deviceMap) {
+            const deviceCard = await this.getDeviceEntitiesCard(deviceId, entities);
+            viewCards.push(deviceCard);
+        }
+
+        // Await all domain card stacks
+        const domainCardStacks = (await Promise.all(domainCardPromises)).filter(Boolean) as LovelaceCardConfig[];
+        viewCards.push(...domainCardStacks);
+
+        // Miscellaneous domain
+        if (!Registry.strategyOptions.domains.default.hidden) {
+            const miscellaneousEntities = new RegistryFilter(areaEntities)
+                .not()
+                .where((entity) => isSupportedDomain(entity.entity_id.split('.', 1)[0]))
+                .toList();
+
+            if (miscellaneousEntities.length) {
+                try {
+                    const MiscellaneousCard = (await import('../cards/MiscellaneousCard')).default;
+                    let miscellaneousCards = miscellaneousEntities.map((entity) =>
+                        new MiscellaneousCard(entity, Registry.strategyOptions.card_options?.[entity.entity_id]).getCard()
+                    );
+
+                    const headerCard = new HeaderCard(target, {
+                        ...Registry.strategyOptions.domains['_'],
+                        ...Registry.strategyOptions.domains['default'],
+                    }).createCard();
+
+                    if (miscellaneousCards.length) {
+                        miscellaneousCards = stackHorizontal(
+                            miscellaneousCards,
+                            Registry.strategyOptions.domains['default'].stack_count ??
+                            Registry.strategyOptions.domains['_'].stack_count
+                        );
+
+                        // viewCards.push({
+                        //     type: 'vertical-stack',
+                        //     cards: [headerCard, ...miscellaneousCards],
+                        // });
+                    }
+                } catch (e) {
+                    logMessage(lvlError, 'Error creating card configurations for domain `miscellaneous`', e);
+                }
+            }
+        }
+        // console.log(viewCards)
+        return viewCards;
+    }
 }

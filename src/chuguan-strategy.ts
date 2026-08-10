@@ -24,7 +24,7 @@ import semver from 'semver/preload';
 import { NOTIFICATIONS } from './notifications';
 import { gen_background } from './utilities/background';
 import { subscribeEvnets } from './utilities/event';
-import { AreaView } from './views/AreaView';
+import { AreaView, UndisclosedView } from './views/AreaView';
 import SettingView from './pages/SettingView';
 import './shared/EventButton';
 import './shared/SortListCard';
@@ -48,7 +48,7 @@ class MushroomStrategy extends HTMLTemplateElement {
    * Called when opening a dashboard.
    */
   static async generateDashboard(info: DashboardInfo): Promise<LovelaceConfig> {
-    console.log(info)
+    // console.log(info)
     await Registry.initialize(info);
 
     await MushroomStrategy.handleNotifications(info.hass);
@@ -102,7 +102,7 @@ class MushroomStrategy extends HTMLTemplateElement {
       ...areas.map((area, index) => (AreaView.getView(area, maxOrder + index + 1)))
     );
     views.push(...new SettingView().getViews());
-    console.log(views)
+    // console.log(views)
     const wallpanelConfig = getWallPanelConfig()
     const configWallpanel = Registry.config.options.wallpanel ?? {}
     wallpanelConfig.wallpanel = {...wallpanelConfig.wallpanel, ...configWallpanel}
@@ -122,7 +122,7 @@ class MushroomStrategy extends HTMLTemplateElement {
    * Called upon opening a subview.
    */
   static async generateView(info: ViewInfo): Promise<LovelaceViewConfig> {
-    console.log(info)
+    // console.log(info)
     const options = info.view.strategy?.options
     if (options?.type === 'setting') {
       const cards = await new SettingView().getCards();
@@ -137,6 +137,11 @@ class MushroomStrategy extends HTMLTemplateElement {
     }
     if (options?.area) {
       const area = options.area
+      if (area.area_id == 'undisclosed') {
+        const areaView = new UndisclosedView(area);
+        const areaCards = await areaView.getCards();
+        return {cards: areaCards}
+      }
       const areaView = new AreaView(area);
       const areaCards = await areaView.getCards();
       return {cards: areaCards}

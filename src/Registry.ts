@@ -166,7 +166,7 @@ class Registry {
         domainEntities[dc].push(entity);
       }
     }
-    console.log(all)
+    // console.log(all)
     // Process the entries of the Strategy Options.
     Registry._strategyOptions.extra_views.map((view) => ({
       ...view,
