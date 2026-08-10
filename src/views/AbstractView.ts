@@ -12,6 +12,7 @@ import { logMessage, lvlFatal } from '../utilities/debug';
 import RegistryFilter from '../utilities/RegistryFilter';
 import { stackHorizontal } from '../utilities/cardStacking';
 import { EntityRegistryEntry } from '../types/homeassistant/data/entity_registry';
+import { getDevice, groupByDevice } from '../utilities/group';
 
 /**
  * Abstract View Class.
@@ -175,6 +176,38 @@ abstract class AbstractView {
   }
 
   protected async createAreaCards(area: { area_id: string, name: string }, domainEntities: EntityRegistryEntry[], index: number, stack_count: number | undefined = undefined) {
+    if (area.area_id === 'undisclosed') {
+      const viewCards: LovelaceCardConfig[] = [];
+      const deviceMap = groupByDevice(domainEntities)
+      for (const [deviceId, entities] of deviceMap) {
+        const device = getDevice(deviceId);
+        const name = device?.name_by_user ?? device?.name ?? deviceId
+        const deviceCard = await this._createAreaCards({ area_id: 'undisclosed', name }, entities, true, stack_count)
+        viewCards.push(...(deviceCard ?? []));
+      }
+      const otherEntities = domainEntities.filter(entity => {
+        for (const [deviceId, entities] of deviceMap) {
+          if (entities.includes(entity)) {
+            return false
+          }
+        }
+        return true
+      })
+      if (otherEntities.length > 10) {
+        const itemCount = Math.floor(domainEntities.length / 3)
+        const length = domainEntities.length
+        const one = await this._createAreaCards(area, domainEntities.slice(0, length - itemCount * 2), true, stack_count) ?? []
+        const two = await this._createAreaCards(area, domainEntities.slice(length - itemCount * 2, length - itemCount), index > 0, stack_count) ?? []
+        const three = await this._createAreaCards(area, domainEntities.slice(length - itemCount), index > 0, stack_count) ?? []
+        viewCards.push(...(one ?? []))
+        viewCards.push(...(two ?? []))
+        viewCards.push(...(three ?? []))
+      }else {
+        const otherCard = await this._createAreaCards(area, otherEntities, true, stack_count)
+        viewCards.push(...(otherCard ?? []))
+      }
+      return viewCards;
+    }
     if (area.area_id === 'undisclosed' && domainEntities.length > 10) {
       const itemCount = Math.floor(domainEntities.length / 3)
       const length = domainEntities.length
